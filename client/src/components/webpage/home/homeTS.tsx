@@ -5,6 +5,13 @@ const GraphQLcheck = () => {
   console.log('lemme see');
 }
 
+const test = async () => {
+  let predata = await fetch(`http://localhost:5000/pokemon?query={allbooks{name}}`)
+  let data = await predata.json()
+  console.log('data')
+  console.log(data)
+}
+
 let myname:string = "me";
 
 // let jackass = ['steveo, knoxville, weeman, bam, preston, dunn']
@@ -21,6 +28,7 @@ export default function HomeTS () {
       {/* <h1 className={styles.h2}> {cookiedough} </h1> */}
       {/* <h1> {jackass[0]} </h1> */}
       <button onClick={GraphQLcheck}></button>
+      <button onClick={test} id="Btn_Test"> </button>
     </div>
   )
 }
