@@ -1,33 +1,66 @@
-import './App.css';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
-import React from "react"
-import HomeTS from './components/webpage/home/homeTS'
-import {useState, useEffect} from 'react';
+import React from "react";
+import "./home.css"
+import {useState, useEffect} from 'react'
+import actionObject from "../../../redux/actions"
+import store from "../../../redux/store"
+// client/src/redux/actions.js
 
-import {connect} from "react-redux"
-
-function App() {
-
-  const [hydroData, setHydroData] = useState();
-  const [hydroIntake, setHydroIntake] = useState();
-  const [hydroSchedule, setHydroSchedule] = useState([]);
-  const [hydroSettings, setHydroSettings] = useState();
-  const [reload, setReload] = useState();
-  const [date, setDate] = useState();
-
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState();
-
-  return (
-
-      <Router>
-
-    <Routes>
-    <Route path={'/'} element={ < HomeTS /> } />
-    </Routes>
-
-  </Router>
-  );
+const GraphQLcheck = () => {
+  console.log('lemme see');
 }
 
-export default App;
+
+
+let myname:string = "me";
+
+// let jackass = ['steveo, knoxville, weeman, bam, preston, dunn']
+let icecream = ['vanilla', 'chocolate', 'strawberry', 'rumraisin', 'cookiedough']
+let vanilla:string = icecream[0];
+let chocolate:string = icecream[1];
+let strawberry:string = icecream[2];
+let rumraisin:string = icecream[3];
+let cookiedough:string = icecream[4];
+
+export default function HomeTS () {
+
+  let global_var:any;
+  let setPokemon = actionObject.setPokemon
+  let GET_WATER_BOTTLE = actionObject.GET_WATER_BOTTLE
+  let pokemon;
+
+  const test = async () => {
+    // let query = `{allbooks{name}}`
+    // let predata = await fetch(`http://localhost:5000/fill_cont?query=${query}`)
+    // let data = await predata.json()
+    // console.log('data')
+    // console.log(data)
+    console.log('global_var')
+    console.log(global_var)
+
+    let response = await setPokemon({ payload: "pikachu" }).payload;
+    let pikachu = response.payload; // let pikachu = response.payload.payload;
+    console.log(`I think I'm gonna go just to see ${pikachu}`)
+
+    const hopefullyfuji = await GET_WATER_BOTTLE()
+    console.log('hopefullyfuji')
+    console.log(hopefullyfuji)
+    
+    
+
+  }
+
+  useEffect( () => {
+    (async() => {
+      global_var = await store.getState()
+
+    })()
+
+  }, [])
+
+  return (
+    <div id="Page_1">
+      <button onClick={GraphQLcheck}></button>
+      <button onClick={test} id="Btn_Test"> </button>
+    </div>
+  )
+}
