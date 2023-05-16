@@ -1,0 +1,35 @@
+{
+  "name": "fill_cont",
+  "version": "1.0.0",
+  "description": "// const promises = [           //   new Promise((resolve) => {           //     browser = puppeteer.launch();           //     browser.then((browserInstance) => {           //       resolve(browserInstance);           //     });           //   }),                       //   new Promise((resolve) => {           //     browser.then((browserInstance) => {           //       const page = browserInstance.newPage();           //       page.goto(url || url_path).then(() => {           //         resolve(page);           //       });           //     });           //   })           // ];",
+  "main": "index.js",
+  "dependencies": {
+    "@prisma/client": "^4.14.0",
+    "concurrently": "^8.0.1",
+    "dotenv": "^16.0.3",
+    "express-graphql": "^0.12.0",
+    "fs": "^0.0.1-security",
+    "graphql": "^16.6.0",
+    "prisma": "^4.14.0",
+    "process": "^0.11.10",
+    "puppeteer": "^20.2.0",
+    "typescript": "^5.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "server": "nodemon --quiet server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frankcollins3/react_express_node_template.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/frankcollins3/react_express_node_template/issues"
+  },
+  "homepage": "https://github.com/frankcollins3/react_express_node_template#readme"
+}
