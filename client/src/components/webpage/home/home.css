@@ -1,0 +1,10 @@
+#Page_1 {
+    min-height: 100vh;
+    min-width: 100vw;
+    background: #dedede70;
+    border: 1px dashed #72d3fe;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;  
+  }

@@ -1,0 +1,107 @@
+.App {
+  text-align: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+/* #Page_1 {
+  min-height: 100vh;
+  min-width: 100vw;
+  background: #dedede70;
+  border: 1px dashed #72d3fe;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;  
+} */
+
+/* flexbox */           
+.flex { display: flex; }
+.column { flex-direction: column; }
+.row { flex-direction: row; }
+.justCenterAlignCenter { justify-content: center; align-items: center; }
+/* flexbox end */
+
+.Screen {
+  height: 500px;
+  width: 500px;
+  display: flex;
+  display: grid;
+  grid-area: screen;
+  justify-content: center;
+  align-content: space-around;
+  overflow-y: scroll;  
+}
+
+.Screen div:nth-child(odd) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.Screen-List {
+}
+
+#Pokemon-Screen-Card {  
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.Pokemon-Screen-Data {  
+  list-style-type: none;
+  margin-top: 0.45em;
+  color: gray;  
+}
+
+.Pokemon-Screen-Img {
+  height: 95px;
+  width: 125px;
+}
+  
+.pokeball {
+  height: 50px; 
+  width: 50px;
+  justify-self: center;
+}
+.greatball {
+  height: 50px; 
+  width: 50px;
+  justify-self: center;
+}
+.ultraball {
+  height: 50px; 
+  width: 50px;
+  justify-self: center;
+}
+
+.Pokeball-Container  {
+  grid-area: pokeballs;
+}
+
+.gear { height: 50px; width: 50px; }
+
+.Container {
+  display: grid;
+  grid-template-columns: 500px;
+  grid-template-rows: auto;
+  justify-content: center;
+  align-content: center;
+  grid-template-areas: 
+    "screen"
+    "pokeballs" "pokeballs" "pokeballs";    
+}
+
+.Intro-Buttons {
+  border-radius: 50%;
+  height: 45px;
+  width: 45px;
+  margin: 0 0.5em;
+}
+
+.Bg-Cover-noRepeat {
+  background-size: cover;
+  background-repeat: no-repeat;
+}
