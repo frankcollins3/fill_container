@@ -326,7 +326,7 @@ const schema = new GraphQLSchema({
 })
 
 
-app.use('/pokemon', expressGraphQL({
+app.use('/fill_cont', expressGraphQL({
   schema: schema,
   graphiql: true
 }))
@@ -334,6 +334,6 @@ app.use('/pokemon', expressGraphQL({
 app.use('/data', dataRouter)
 app.use('/anotherdata', anotherDataRouter);
 
-app.listen(PORT || 5000, () => console.log(`Any Port:${PORT} in a S T O R M !!`))
+app.listen(PORT || 5000, () => console.log(`Drink up on Port: ${PORT}`))
 
 module.exports = app;
