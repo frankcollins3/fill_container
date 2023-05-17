@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,25 +7,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model pokemon {
-  id        Int      @id @default(autoincrement())
-  name      String?
-  poke_id   Int?
-  type      String?
-  moves     String?
-  abilities String?
-  image     String?
-  users     String?
-}
-
-model user {
+model users {
   id        Int      @id @default(autoincrement())
   username  String?
-  password  String?
   email     String?
+  password  String?
   age       Int?
+  settings  settings[]
 }
 
-
-
-
+model settings {
+  id         Int      @id @default(autoincrement())  
+  users      users @relation(fields: [id], references: [id])
+  age        Int
+  height     Int
+  weight     Int
+  start_time Int
+  end_time   Int
+  reminder   Int
+  activity   Int
+  users_id   Int
+}
