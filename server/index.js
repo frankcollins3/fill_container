@@ -5,7 +5,7 @@ const axios = require("axios");
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const puppeteer = require("puppeteer");
-require("dotenv").config();
+require('dotenv').config()
 
 // routes functions:
 const allPokemon = require("./routes/allPokemon")
@@ -156,15 +156,16 @@ const SettingsType = new GraphQLObjectType({
         age: { type: GraphQLInt },        
   //  id | age | height | weight | reminder | end_time | start_time | users_id 
       })})
+
+      const EnvType = new GraphQLObjectType({
+        name: 'ENV',
+        description: 'all ENV variables',
+        fields: () => {
+          DATABASE_URL: type: new GraphQLNonNull(GraphQLString)
+        }
+      })
   
-const TestType = new GraphQLObjectType({
-  name: 'Test',
-  description: 'We are testing yet',
-  fields: () => ({
-    name: { type: new GraphQLNonNull(GraphQLString) },
-    // : { type: new GraphQLNonNull(GraphQLString) },
-  })
-})
+
 
 const RootQueryType = new GraphQLObjectType({
   name: 'Query',
@@ -283,13 +284,16 @@ const RootQueryType = new GraphQLObjectType({
       },
       resolve: (parent, args) => authors.find(author => author.id === args.id)
     },
-    seesettings: {
-      type: SettingsType,
-      description: 'see all settings',
-      // dont need args 
-      resolve: () => {        
-        return {weight: 300}
-        // return "300lbs"
+    ENV: {
+      type: GraphQLString,
+      // type: GraphQLList(EnvType),
+      description: 'List of Env Variables',
+      resolve: () => {
+        let obj = { DATABASE_URL: "heres my url" }
+        let db_url = process.env.DATABASE_URL
+        // return {DATABASE_URL: 'heres my url'};
+        return db_url || obj.DATABASE_URL;
+        // return obj.DATABASE_URL;
       }
     }, 
     allDBsettings: {
@@ -300,25 +304,14 @@ const RootQueryType = new GraphQLObjectType({
          let bucket = [];
          let settings = await prisma.settings.findMany()
          let set1 = settings[0]
-
-
-//    await settings.forEach( (stat) => { 
-// let obj = { id: stat.id, weight: stat.weight, height: stat.height, age: stat.age, reminder: stat.reminder, start_time: stat.start_time, end_time: stat.end_time }        
-//    bucket.push(obj);
-//    })             
-//           return bucket
-
-return { id, weight, height, age, reminder, start_time, end_time, reminder, users_id } = settings 
-// {id: 1, age: 30, height: 68, weight: 170, reminder: 0, start_time: 8, end_time: 8, users_id: 1 }, 
-//   {id: set1.id, age: set1.age, height: set1.height, weight: set1.weight, reminder: set1.reminder, start_time: set1.start_time, end_time: set1.end_time, users_id: set1.users_id },
+         return { id, weight, height, age, reminder, start_time, end_time, reminder, users_id } = settings 
       }
-  },   
+    },   
   allUsers: {
     type: new GraphQLList(UsersType),
     description: 'List of Users from Postgres & Prisma',
     resolve: async () => {
       let allusers = await prisma.users.findMany()
-
       return { id, username, email, password, age } = allusers
     }
   }
