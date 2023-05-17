@@ -125,6 +125,13 @@ const PokemonType = new GraphQLObjectType({
       image: { type: GraphQLString },
     })})
 
+const SettingsType = new GraphQLObjectType({
+    name: 'Settings',
+    description: "Settings for Fluid Intake",
+    fields: () => ({      
+      weight: { type: new GraphQLNonNull(GraphQLString)}
+    })})
+
 const TestType = new GraphQLObjectType({
   name: 'Test',
   description: 'We are testing yet',
@@ -221,12 +228,7 @@ const RootQueryType = new GraphQLObjectType({
               // puppeteer.launch({headless: true}).then(async(browser) => {            
                   const page = await browser.newPage();
                   await page.goto('file:///Users/medium/Desktop/alert.html');
-              
-                  // Write HTML code to the #writing-board element
-                  // await page.evaluate(() => {
-                  //   const writingBoard = document.querySelector('#writing-board');
-                  //   writingBoard.innerHTML = '<h1>Here is my alert</h1>';
-                  // });
+
                   return await page.evaluate(async() => {
                     // const tree = document.valuetree;
                     const tree = await window.valuetree
@@ -245,10 +247,8 @@ const RootQueryType = new GraphQLObjectType({
                   // await browser.close();
                 })
               ];              
-              // await Promise.all(promises);          
+
               return await Promise.all(promises)      
-        // return ['hey', 'how', 'are', 'you']
-        // return promises 
       }
     },    
     authors: {
@@ -263,7 +263,33 @@ const RootQueryType = new GraphQLObjectType({
         id: { type: GraphQLInt }
       },
       resolve: (parent, args) => authors.find(author => author.id === args.id)
-    }
+    },
+    seesettings: {
+      type: SettingsType,
+      description: 'see all settings',
+      // dont need args 
+      resolve: () => {
+        console.log('weight')
+        console.log(weight)
+        return { weight: '300lbs' }
+      }
+    }, 
+    allDBsettings: {
+      type: new GraphQLList(SettingsType),
+      // type: GraphQLString,
+      description: 'List of Settings',
+      resolve: async () => {
+         let bucket = [];
+         let settings = await prisma.settings.findMany()
+         settings.forEach( (stat) => { 
+           let obj = { weight: stat.weight }        
+           bucket.push(obj);
+          })
+          return [ {weight: 130}, {weight: 270}, {weight: settings[1].weight} ]                       
+          // return [ {weight: 130}, {weight: 270} ]                       
+          // return bucket;                       
+      }
+  },    
   })
 })
 
