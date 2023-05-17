@@ -7,6 +7,10 @@ const prisma = new PrismaClient();
 const puppeteer = require("puppeteer");
 require("dotenv").config();
 
+// routes functions:
+const allPokemon = require("./routes/allPokemon")
+const data = require("./routes/data")
+
 // const indexRouter = require('./routes/index');
 // const usersRouter = require('./routes/users');
 const dataRouter = require('./routes/data')
@@ -129,14 +133,15 @@ const SettingsType = new GraphQLObjectType({
     name: 'Settings',
     description: "Settings for Fluid Intake",
     fields: () => ({      
-      id: { type: new GraphQLNonNull(GraphQLInt) },
-      age: { type: new GraphQLNonNull(GraphQLInt) },
+      // id: { type: new GraphQLNonNull(GraphQLInt) },
+      // age: { type: new GraphQLNonNull(GraphQLInt) },
       weight: { type: new GraphQLNonNull(GraphQLInt) },
-      height: { type: new GraphQLNonNull(GraphQLInt) },
-      reminder: { type: new (GraphQLInt) },
-      end_time: { type: new GraphQLNonNull(GraphQLInt) },
-      start_time: { type: new GraphQLNonNull(GraphQLInt) },
-      users_id: { type: new GraphQLNonNull(GraphQLInt) },                  
+      // height: { type: new GraphQLNonNull(GraphQLInt) },
+      // reminder: { type: GraphQLInt },
+      // end_time: { type: new GraphQLNonNull(GraphQLInt) },
+      // start_time: { type: new GraphQLNonNull(GraphQLInt) },
+      // users_id: { type: new GraphQLNonNull(GraphQLInt) },                  
+
 //  id | age | height | weight | reminder | end_time | start_time | users_id 
     })})
 
@@ -148,12 +153,10 @@ const SettingsType = new GraphQLObjectType({
         username: { type: GraphQLString },
         password: { type: GraphQLString },
         email: { type: GraphQLString },
-        age: { type: GraphQLInt },        
+        age: { type: GraphQLIntnt },        
   //  id | age | height | weight | reminder | end_time | start_time | users_id 
       })})
-
-    
-
+  
 const TestType = new GraphQLObjectType({
   name: 'Test',
   description: 'We are testing yet',
@@ -203,15 +206,9 @@ const RootQueryType = new GraphQLObjectType({
            let pokemon = await prisma.pokemon.findMany()
            pokemon.forEach( (pokemon) => { 
              let obj = { name: pokemon.name, poke_id: pokemon.id }
-            //  let obj = { name: pokemon.name, id: pokemon.id, type: pokemon.sprites.front_default }
-            //  let obj = { name: pokemon.name, id: pokemon.id, type: types[0].type }
-             // let obj = { name: pokemon.name, id: pokemon.id + 1}
              bucket.push(obj);
             })
-            return bucket; 
-                  
-          //   return pokemon
-          //  return pokemon[0].name  // this returns the name           
+            return bucket;                   
         }
     },    
     allDataAllPokemon: {
@@ -290,10 +287,9 @@ const RootQueryType = new GraphQLObjectType({
       type: SettingsType,
       description: 'see all settings',
       // dont need args 
-      resolve: () => {
-        console.log('weight')
-        console.log(weight)
-        return { weight: '300lbs' }
+      resolve: () => {        
+        return {weight: 300}
+        // return "300lbs"
       }
     }, 
     allDBsettings: {
@@ -302,28 +298,27 @@ const RootQueryType = new GraphQLObjectType({
       description: 'List of Settings',
       resolve: async () => {
          let bucket = [];
-        //  let settings = await prisma.settings.findMany()
-        //    settings.forEach( (stat) => { 
-        //      bucket.push(obj);
-             // let obj = { weight: stat.weight}        
-       // let obj = { id: stat.id, weight: stat.weight, height: stat.height, reminder: stat.reminder, start_time: stat.start_time, end_time: stat.end_time, users_id: stat.users_id }        
-  // })
-          // id | age | height | weight | reminder | end_time | start_time | users_id 
-          // return bucket
+         let settings = await prisma.settings.findMany()
+
+   await settings.forEach( (stat) => { 
+   let obj = { 
+    id: stat.id, weight: stat.weight, height: stat.height, age: stat.age, reminder: stat.reminder, 
+    start_time: stat.start_time, end_time: stat.end_time
+   }        
+   bucket.push(obj);
+})
+
+             
+          return bucket
 
           return [
             {id: 1, age: 30, height: 68, weight: 170, reminder: 0, start_time: 8, end_time: 8, users_id: 1 },
-            {id: 2, age: 30, height: 88, weight: 280, reminder: 12, start_time: 4, end_time: 2, users_id: 2 }
-            // { id: 1, username: 'mastermizery', email: 'fwc3rd@gmail.com', password: '777', age: 30 },
-
+            {id: 2, age: 30, height: 88, weight: 280, reminder: 12, start_time: 4, end_time: 2, users_id: 2 },
+            {id: settings[0].id, age: settings[0].age, height: settings[0].height, weight: settings[0].weight, 
+              reminder: settings[0].reminder, start_time: settings[0].start_time, end_time: settings[0].end_time, users_id: settings[0].users_id },
           ]
-          // return bucket
-          // return bucket
-          // return [ {weight: 130 }, {weight: 270 }, {weight: settings[1].weight} ]                       
-          // return [ {weight: 130}, {weight: 270}, {weight: settings[1].weight} ]                       
-                       
       }
-  },    
+  },   
   })
 })
 
