@@ -129,8 +129,30 @@ const SettingsType = new GraphQLObjectType({
     name: 'Settings',
     description: "Settings for Fluid Intake",
     fields: () => ({      
-      weight: { type: new GraphQLNonNull(GraphQLString)}
+      id: { type: new GraphQLNonNull(GraphQLInt) },
+      age: { type: new GraphQLNonNull(GraphQLInt) },
+      weight: { type: new GraphQLNonNull(GraphQLInt) },
+      height: { type: new GraphQLNonNull(GraphQLInt) },
+      reminder: { type: new (GraphQLInt) },
+      end_time: { type: new GraphQLNonNull(GraphQLInt) },
+      start_time: { type: new GraphQLNonNull(GraphQLInt) },
+      users_id: { type: new GraphQLNonNull(GraphQLInt) },                  
+//  id | age | height | weight | reminder | end_time | start_time | users_id 
     })})
+
+    const UsersType = new GraphQLObjectType({
+      name: 'Users',
+      description: "Users Properties:",
+      fields: () => ({      
+        id: { type: new GraphQLNonNull(GraphQLInt) },
+        username: { type: GraphQLString },
+        password: { type: GraphQLString },
+        email: { type: GraphQLString },
+        age: { type: GraphQLInt },        
+  //  id | age | height | weight | reminder | end_time | start_time | users_id 
+      })})
+
+    
 
 const TestType = new GraphQLObjectType({
   name: 'Test',
@@ -280,14 +302,26 @@ const RootQueryType = new GraphQLObjectType({
       description: 'List of Settings',
       resolve: async () => {
          let bucket = [];
-         let settings = await prisma.settings.findMany()
-         settings.forEach( (stat) => { 
-           let obj = { weight: stat.weight }        
-           bucket.push(obj);
-          })
-          return [ {weight: 130}, {weight: 270}, {weight: settings[1].weight} ]                       
-          // return [ {weight: 130}, {weight: 270} ]                       
-          // return bucket;                       
+        //  let settings = await prisma.settings.findMany()
+        //    settings.forEach( (stat) => { 
+        //      bucket.push(obj);
+             // let obj = { weight: stat.weight}        
+       // let obj = { id: stat.id, weight: stat.weight, height: stat.height, reminder: stat.reminder, start_time: stat.start_time, end_time: stat.end_time, users_id: stat.users_id }        
+  // })
+          // id | age | height | weight | reminder | end_time | start_time | users_id 
+          // return bucket
+
+          return [
+            {id: 1, age: 30, height: 68, weight: 170, reminder: 0, start_time: 8, end_time: 8, users_id: 1 },
+            {id: 2, age: 30, height: 88, weight: 280, reminder: 12, start_time: 4, end_time: 2, users_id: 2 }
+            // { id: 1, username: 'mastermizery', email: 'fwc3rd@gmail.com', password: '777', age: 30 },
+
+          ]
+          // return bucket
+          // return bucket
+          // return [ {weight: 130 }, {weight: 270 }, {weight: settings[1].weight} ]                       
+          // return [ {weight: 130}, {weight: 270}, {weight: settings[1].weight} ]                       
+                       
       }
   },    
   })
