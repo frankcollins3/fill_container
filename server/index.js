@@ -138,6 +138,7 @@ const SettingsType = new GraphQLObjectType({
       weight: { type: new GraphQLNonNull(GraphQLInt) },
       height: { type: new GraphQLNonNull(GraphQLInt) },
       reminder: { type: GraphQLInt },
+      activity: { type: GraphQLInt },
       end_time: { type: new GraphQLNonNull(GraphQLInt) },
       start_time: { type: new GraphQLNonNull(GraphQLInt) },
       users_id: { type: new GraphQLNonNull(GraphQLInt) },                  
@@ -157,13 +158,14 @@ const SettingsType = new GraphQLObjectType({
   //  id | age | height | weight | reminder | end_time | start_time | users_id 
       })})
 
-      const EnvType = new GraphQLObjectType({
+      const EnvType = new GraphQLObjectType({            
         name: 'ENV',
-        description: 'all ENV variables',
-        fields: () => {
-          DATABASE_URL: type: new GraphQLNonNull(GraphQLString)
-        }
-      })
+        description: "Env Variables",
+        fields: () => ({      
+          DATABASE_URL: { type: new GraphQLNonNull(GraphQLString) },
+          REACT_APP_API: { type: new GraphQLNonNull(GraphQLString) },
+          // id: { type: GraphQLInt }        
+        })})
   
 
 
@@ -285,15 +287,25 @@ const RootQueryType = new GraphQLObjectType({
       resolve: (parent, args) => authors.find(author => author.id === args.id)
     },
     ENV: {
-      type: GraphQLString,
-      // type: GraphQLList(EnvType),
+      // type: GraphQLString,
+      // type: GraphQLObjectType(EnvType),
+      type: new GraphQLList(EnvType),
       description: 'List of Env Variables',
       resolve: () => {
-        let obj = { DATABASE_URL: "heres my url" }
+        // let obj = { DATABASE_URL: "heres my url" }
         let db_url = process.env.DATABASE_URL
-        // return {DATABASE_URL: 'heres my url'};
-        return db_url || obj.DATABASE_URL;
-        // return obj.DATABASE_URL;
+        let dev = process.env.REACT_APP_API_DEV      
+        let prod = process.env.REACT_APP_API_PROD
+        let server = process.env.NODE_ENV === 'development' ? dev : prod
+
+        // [DEV && PROD]
+
+              
+        // return { DATABASE_URL: db_url, REACT_APP_API: api }
+        return [
+          { DATABASE_URL: db_url, REACT_APP_API: dev },
+          { DATABASE_URL: 'dum', REACT_APP_API: 'dummy data' },
+        ]      
       }
     }, 
     allDBsettings: {
@@ -304,7 +316,7 @@ const RootQueryType = new GraphQLObjectType({
          let bucket = [];
          let settings = await prisma.settings.findMany()
          let set1 = settings[0]
-         return { id, weight, height, age, reminder, start_time, end_time, reminder, users_id } = settings 
+         return { id, weight, height, age, reminder, start_time, end_time, reminder, activity, users_id } = settings 
       }
     },   
   allUsers: {
