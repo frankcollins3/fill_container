@@ -129,18 +129,18 @@ const PokemonType = new GraphQLObjectType({
       image: { type: GraphQLString },
     })})
 
-const SettingsType = new GraphQLObjectType({
+const SettingsType = new GraphQLObjectType({            
     name: 'Settings',
     description: "Settings for Fluid Intake",
     fields: () => ({      
-      // id: { type: new GraphQLNonNull(GraphQLInt) },
-      // age: { type: new GraphQLNonNull(GraphQLInt) },
+      id: { type: new GraphQLNonNull(GraphQLInt) },
+      age: { type: new GraphQLNonNull(GraphQLInt) },
       weight: { type: new GraphQLNonNull(GraphQLInt) },
-      // height: { type: new GraphQLNonNull(GraphQLInt) },
-      // reminder: { type: GraphQLInt },
-      // end_time: { type: new GraphQLNonNull(GraphQLInt) },
-      // start_time: { type: new GraphQLNonNull(GraphQLInt) },
-      // users_id: { type: new GraphQLNonNull(GraphQLInt) },                  
+      height: { type: new GraphQLNonNull(GraphQLInt) },
+      reminder: { type: GraphQLInt },
+      end_time: { type: new GraphQLNonNull(GraphQLInt) },
+      start_time: { type: new GraphQLNonNull(GraphQLInt) },
+      users_id: { type: new GraphQLNonNull(GraphQLInt) },                  
 
 //  id | age | height | weight | reminder | end_time | start_time | users_id 
     })})
@@ -153,7 +153,7 @@ const SettingsType = new GraphQLObjectType({
         username: { type: GraphQLString },
         password: { type: GraphQLString },
         email: { type: GraphQLString },
-        age: { type: GraphQLIntnt },        
+        age: { type: GraphQLInt },        
   //  id | age | height | weight | reminder | end_time | start_time | users_id 
       })})
   
@@ -299,26 +299,30 @@ const RootQueryType = new GraphQLObjectType({
       resolve: async () => {
          let bucket = [];
          let settings = await prisma.settings.findMany()
+         let set1 = settings[0]
 
-   await settings.forEach( (stat) => { 
-   let obj = { 
-    id: stat.id, weight: stat.weight, height: stat.height, age: stat.age, reminder: stat.reminder, 
-    start_time: stat.start_time, end_time: stat.end_time
-   }        
-   bucket.push(obj);
-})
 
-             
-          return bucket
+//    await settings.forEach( (stat) => { 
+// let obj = { id: stat.id, weight: stat.weight, height: stat.height, age: stat.age, reminder: stat.reminder, start_time: stat.start_time, end_time: stat.end_time }        
+//    bucket.push(obj);
+//    })             
+//           return bucket
 
-          return [
-            {id: 1, age: 30, height: 68, weight: 170, reminder: 0, start_time: 8, end_time: 8, users_id: 1 },
-            {id: 2, age: 30, height: 88, weight: 280, reminder: 12, start_time: 4, end_time: 2, users_id: 2 },
-            {id: settings[0].id, age: settings[0].age, height: settings[0].height, weight: settings[0].weight, 
-              reminder: settings[0].reminder, start_time: settings[0].start_time, end_time: settings[0].end_time, users_id: settings[0].users_id },
-          ]
+return { id, weight, height, age, reminder, start_time, end_time, reminder, users_id } = settings 
+// {id: 1, age: 30, height: 68, weight: 170, reminder: 0, start_time: 8, end_time: 8, users_id: 1 }, 
+//   {id: set1.id, age: set1.age, height: set1.height, weight: set1.weight, reminder: set1.reminder, start_time: set1.start_time, end_time: set1.end_time, users_id: set1.users_id },
       }
   },   
+  allUsers: {
+    type: new GraphQLList(UsersType),
+    description: 'List of Users from Postgres & Prisma',
+    resolve: async () => {
+      let allusers = await prisma.users.findMany()
+
+      return { id, username, email, password, age } = allusers
+    }
+  }
+
   })
 })
 
