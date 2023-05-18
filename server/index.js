@@ -164,6 +164,7 @@ const SettingsType = new GraphQLObjectType({
         fields: () => ({      
           DATABASE_URL: { type: new GraphQLNonNull(GraphQLString) },
           REACT_APP_API: { type: new GraphQLNonNull(GraphQLString) },
+          REACT_APP_NODE_ENV: { type: GraphQLString }
           // id: { type: GraphQLInt }        
         })})
   
@@ -292,19 +293,17 @@ const RootQueryType = new GraphQLObjectType({
       type: new GraphQLList(EnvType),
       description: 'List of Env Variables',
       resolve: () => {
-        // let obj = { DATABASE_URL: "heres my url" }
-        let db_url = process.env.DATABASE_URL
-        let dev = process.env.REACT_APP_API_DEV      
-        let prod = process.env.REACT_APP_API_PROD
-        let server = process.env.NODE_ENV === 'development' ? dev : prod
+        let env = process.env
+        let db_url = env.DATABASE_URL
+        let dev = env.REACT_APP_API_DEV      
+        let prod = env.REACT_APP_API_PROD
+        let REACT_APP_NODE_ENV = env.REACT_APP_NODE_ENV
+        // let server = process.env.NODE_ENV === 'development' ? dev : prod
+        let serverStringForSplit = `${dev}***${prod}`
 
-        // [DEV && PROD]
-
-              
-        // return { DATABASE_URL: db_url, REACT_APP_API: api }
         return [
-          { DATABASE_URL: db_url, REACT_APP_API: dev },
-          { DATABASE_URL: 'dum', REACT_APP_API: 'dummy data' },
+          { DATABASE_URL: db_url, REACT_APP_API: serverStringForSplit, REACT_APP_NODE_ENV: REACT_APP_NODE_ENV },
+          { DATABASE_URL: 'dum', REACT_APP_API: 'dummy data', REACT_APP_NODE_ENV: 'filler' },
         ]      
       }
     }, 
