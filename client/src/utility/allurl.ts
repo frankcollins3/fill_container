@@ -15,9 +15,12 @@ export default async function allurl () {
     let env_prod:string = dev_and_prod[1]
 
     let NODE_ENV = data[0].REACT_APP_NODE_ENV
+    console.log('NODE_ENV')
+    console.log(NODE_ENV)
 
     let allDBsettingsURL;
-    let API = NODE_ENV === 'deployment' ? env_dev : env_prod
+    let API = NODE_ENV === 'development' ? env_dev : env_prod
+    // let API = NODE_ENV === 'development' ? env_prod : env_dev
     let allUsersURL
 
     let urlObject = {
@@ -30,7 +33,7 @@ export default async function allurl () {
     const applyAPI = () => {
         if (NODE_ENV === 'development') {
             console.log('NODE_ENV equals deployment')
-            urlObject.API = env_dev;
+            urlObject.API = API;
             urlObject.allDBsettingsURL = `${API}fill_cont?query={allDBsettings{id,age,height,weight,reminder,activity,star_time,end_time,users_id}}`;
             urlObject.allUsersURL = `${API}fill_cont?query={allUsers{id,username,password,email,age}}`
         } else {
