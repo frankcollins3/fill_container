@@ -3,6 +3,7 @@ import "./home.css"
 import {useState, useEffect} from 'react'
 import actionObject from "../../../redux/actions"
 import store from "../../../redux/store"
+import allurl from '../../../utility/allurl'
 
 const GraphQLcheck = () => {
   console.log('lemme see');
@@ -26,25 +27,29 @@ export default function HomeTS () {
   let pokemon;
 
   const test = async () => {
-    let query = `{allbooks{name}}`
+    // let query = `{allbooks{name}}`
     // let test_query = `{allDBsettings{weight}}`
-    let test_query = `{allDBsettings{id,age,height,weight,reminder,start_time,end_time,users_id}}`
+    // let test_query = `{allDBsettings{id,age,height,weight,reminder,activity,start_time,end_time,users_id}}`
     // id | age | height | weight | reminder | end_time | start_time | users_id 
-    let predata = await fetch(`http://localhost:5000/fill_cont?query=${test_query}`)
-    // let predata = await fetch(`http://localhost:5000/fill_cont?query=${query}`)
-    let data = await predata.json()
-    console.log('data')
-    console.log(data)
-    // let response = await setPokemon({ payload: "pikachu" }).payload;
-    // let pikachu = response.payload; // let pikachu = response.payload.payload;
-    // console.log(`its hard to hate ${pikachu}`)
+    // let predata = await fetch(`http://localhost:5000/fill_cont?query=${test_query}`)
+    // let data = await predata.json()
+    // console.log('data')
+    // console.log(data)    
+    let urlbank = await allurl()
+    let allsettingsurl = urlbank.allDBsettingsURL
+    let pre_allsettings = await fetch(allsettingsurl)
+    
+    let allsettings = await pre_allsettings.json()
+    console.log('allsettings')
+    console.log(allsettings)
 
-    // const hopefullyfuji = await GET_WATER_BOTTLE()
-    // console.log(`just reaching into the water cooler for a fiji and picked out a ${hopefullyfuji}`)
   }
 
   const test2 = async () => {
-    let predata = await fetch(`http://localhost:5000/fill_cont?query={allUsers{id,username,email,password,age}}`)
+    // let predata = await fetch(`http://localhost:5000/fill_cont?query={ENV}`)
+    let predata = await fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,REACT_APP_API}}`)
+    
+    // let predata = await fetch(`http://localhost:5000/fill_cont?query={allUsers{id,username,email,password,age}}`)
     // let predata = await fetch(`http://localhost:5000/fill_cont?query={seesettings{weight}}`)
     let data = await predata.json()
     console.log('data')
@@ -54,7 +59,6 @@ export default function HomeTS () {
   useEffect( () => {
     (async() => {
       global_var = await store.getState() // reassign the value of global_var. Cant put global_var in a function because we need access to it.
-
     })()
 
   }, [])
