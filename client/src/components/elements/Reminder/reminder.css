@@ -1,0 +1,56 @@
+.btn {
+  font-family: 'Open Sans Condensed', sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  transition-duration: 1s;
+  border: none;
+}
+
+.btn:focus {
+}
+.btn:hover {
+  font-size: 20px;
+  border: 1px solid #dedede;
+}
+
+.btn:disabled {
+}
+
+
+
+@media only screen and (max-width: 600px) {
+  .btn {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    transition-duration: 1s;
+    border: none;
+    width: 50vw !important;
+  }
+
+  .timeline-display {
+    font-size: 1.5rem;
+    position: relative;
+  }
+
+  .timeline-hover {
+    position: relative;
+    font-size: 1.5rem;
+    width: fit-content;
+    left: 20%;
+  }
+
+  .timeline-text {
+    position: relative;
+    font-size: 1.5rem;
+  }
+
+  .btn:hover {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    transition-duration: 1s;
+    border: none;
+    transition-duration: 1s;
+  }
+}
