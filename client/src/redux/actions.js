@@ -5,14 +5,33 @@ const setPokemon = (newPokemon) => {
     }
 }
 
-const GET_WATER_BOTTLE = () => {
+const GET_WATER_BOTTLE = async () => {
     let water = ['aquafina', 'dasani', 'fuji', 'polandspring'];
-    let randomwater = water[Math.floor(Math.random() * water.length)]
+    let randomwater = await water[Math.floor(Math.random() * water.length)]
     return {
         type: "GET_WATER_BOTTLE",
         payload: randomwater
     }
 }
+const SET_API_URL = async (url) => {
+    
+}
+
+const TOGGLE_SETTINGS = async (setting) => {
+    if (setting === undefined || !setting ) {
+        return {
+            type: "TOGGLE_SETTINGS",
+            payload: true
+        }
+    } else {
+        return {
+            type: "TOGGLE_SETTINGS",
+            payload: setting === false ? true : false
+        }
+    }
+}
+
+// settings: action.payload ? action.payload === false ? true : false : true 
 
 const slowpoke = () => {
     // console.log('slowpoke')
