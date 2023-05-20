@@ -33,7 +33,8 @@ const fill_cont_reducer = (state = initialState, action) => {
     case "TOGGLE_SETTINGS":
         return {
           ...state,
-          settings: action.payload === false ? true : false 
+          settings: action.payload ? action.payload === false ? true : false : true 
+          // settings: action.payload === false ? true : false 
         }
         default:
           return state;
