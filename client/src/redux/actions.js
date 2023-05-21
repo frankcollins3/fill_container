@@ -41,7 +41,8 @@ const slowpoke = () => {
 const actionObject = {
     setPokemon: setPokemon,
     slowpoke: slowpoke,
-    GET_WATER_BOTTLE: GET_WATER_BOTTLE
+    GET_WATER_BOTTLE: GET_WATER_BOTTLE,
+    TOGGLE_SETTINGS: TOGGLE_SETTINGS
 }
 
 export default actionObject
