@@ -16,20 +16,22 @@ const GET_WATER_BOTTLE = async () => {
 const SET_API_URL = async (url) => {
     
 }
+    let count = 0;
+    const TOGGLE_SETTINGS = async (setting) => {
+        count++
 
-const TOGGLE_SETTINGS = async (setting) => {
-    if (setting === undefined || !setting ) {
-        return {
-            type: "TOGGLE_SETTINGS",
-            payload: true
-        }
-    } else {
-        return {
-            type: "TOGGLE_SETTINGS",
-            payload: setting === false ? true : false
+        if (setting === undefined || !setting ) {
+            return {
+                type: "TOGGLE_SETTINGS",
+                payload: true
+            }
+        } else {
+            return {
+                type: "TOGGLE_SETTINGS",
+                payload: count % 2 === 0 ? false : true 
+            }
         }
     }
-}
 
 // settings: action.payload ? action.payload === false ? true : false : true 
 
