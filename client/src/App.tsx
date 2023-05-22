@@ -1,66 +1,86 @@
-import React from "react";
-import "./home.css"
-import {useState, useEffect} from 'react'
-import actionObject from "../../../redux/actions"
-import store from "../../../redux/store"
-// client/src/redux/actions.js
+import './App.css';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import React from "react"
+import {useState, useEffect} from 'react';
+import {connect} from "react-redux"
+import $ from 'jquery'
+import dotenv from "dotenv"
+// import {GoogleAuth} from "google-auth-library"
 
-const GraphQLcheck = () => {
-  console.log('lemme see');
+
+
+// * components from src/components ---?
+import Navbar from './components/elements/Navbar/Navbar'
+import Dashboard from './components/elements/Dashboard/Dashboard'
+import Credits from './components/elements/Credits/Credits'
+import Settings from './components/elements/Settings/Settings'
+import HomeTS from './components/webpage/home/homeTS'
+
+import {GoogleLogin} from 'react-google-login'
+const clientId = '569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com'
+
+const onSuccess = (res:any) => {
+  console.log(`Login success: ${res.profileObj}`)
 }
 
+const onFailure = (res:any) => {
+  console.log("hey guys guess we fucked up somehow")
+}
 
+function App() {
 
-let myname:string = "me";
+  if (typeof window === 'undefined') {
+    // dotenv.config()
+  } else {
+    $('*').css('cursor', `url('/water_img/mouse_droplet.png'), auto`)
+    $('*').on('mouseenter', (event:any) => {
+      $(event.target).css('cursor', `normal`)
+  })
+}
 
-// let jackass = ['steveo, knoxville, weeman, bam, preston, dunn']
-let icecream = ['vanilla', 'chocolate', 'strawberry', 'rumraisin', 'cookiedough']
-let vanilla:string = icecream[0];
-let chocolate:string = icecream[1];
-let strawberry:string = icecream[2];
-let rumraisin:string = icecream[3];
-let cookiedough:string = icecream[4];
+  const renderApp = () => {
+      return (
+        <div className="main">
 
-export default function HomeTS () {
-
-  let global_var:any;
-  let setPokemon = actionObject.setPokemon
-  let GET_WATER_BOTTLE = actionObject.GET_WATER_BOTTLE
-  let pokemon;
-
-  const test = async () => {
-    // let query = `{allbooks{name}}`
-    // let predata = await fetch(`http://localhost:5000/fill_cont?query=${query}`)
-    // let data = await predata.json()
-    // console.log('data')
-    // console.log(data)
-    console.log('global_var')
-    console.log(global_var)
-
-    let response = await setPokemon({ payload: "pikachu" }).payload;
-    let pikachu = response.payload; // let pikachu = response.payload.payload;
-    console.log(`I think I'm gonna go just to see ${pikachu}`)
-
-    const hopefullyfuji = await GET_WATER_BOTTLE()
-    console.log('hopefullyfuji')
-    console.log(hopefullyfuji)
-    
-    
-
+        
+    <Router>
+    <Routes>
+    <Route path={'/'} element={ < HomeTS /> } />
+    <Route path={'/settings'} element={ < Settings /> } />
+    <Route path={'/dashboard'} element={ < Dashboard /> } />
+    </Routes>
+    </Router>  
+      </div>
+      )
   }
 
-  useEffect( () => {
-    (async() => {
-      global_var = await store.getState()
-
-    })()
-
-  }, [])
-
   return (
-    <div id="Page_1">
-      <button onClick={GraphQLcheck}></button>
-      <button onClick={test} id="Btn_Test"> </button>
+    <div className="App">
+      <div className="navbar">
+        {/* <h1> were up here for now </h1> */}
+        <GoogleLogin  
+        onSuccess={onSuccess}
+        onFailure={onFailure}
+        clientId={clientId}
+        buttonText=""
+        cookiePolicy={'single_host_origin'}
+        isSignedIn={true}
+        >
+        
+
+        </GoogleLogin>
+        <Navbar />
+      </div>
+        {renderApp()}
+      <div className="credits">
+        <Credits />
+      </div>
     </div>
-  )
+  );
+
+
+
+
 }
+
+export default App;
