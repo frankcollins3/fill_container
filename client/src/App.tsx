@@ -7,8 +7,6 @@ import $ from 'jquery'
 import dotenv from "dotenv"
 // import {GoogleAuth} from "google-auth-library"
 
-
-
 // * components from src/components ---?
 import Navbar from './components/elements/Navbar/Navbar'
 import Dashboard from './components/elements/Dashboard/Dashboard'
@@ -16,18 +14,35 @@ import Credits from './components/elements/Credits/Credits'
 import Settings from './components/elements/Settings/Settings'
 import HomeTS from './components/webpage/home/homeTS'
 
-import {GoogleLogin} from 'react-google-login'
+import {GoogleLogin, GoogleLogout} from 'react-google-login'
+import {gapi} from 'gapi-script'
 const clientId = '569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com'
 
-const onSuccess = (res:any) => {
-  console.log(`Login success: ${res.profileObj}`)
+function App() {
+
+  useEffect( () => {
+    function start() {
+      gapi.client.init({
+        clientId: clientId,
+        scope: ""
+      })
+    };
+    gapi.load('client:auth2', start);  
+  }, [])
+
+
+
+  const onSuccess = (res:any) => {
+  // console.log(`Login success: ${res.profileObj}`)
+  console.log("success")
+  console.log('res')
+  console.log(res)
 }
 
 const onFailure = (res:any) => {
-  console.log("hey guys guess we fucked up somehow")
+  // console.log("that didnt work")
+  console.log("hey failure")
 }
-
-function App() {
 
   if (typeof window === 'undefined') {
     // dotenv.config()
@@ -62,13 +77,14 @@ function App() {
         onSuccess={onSuccess}
         onFailure={onFailure}
         clientId={clientId}
-        buttonText=""
+        buttonText="text"
         cookiePolicy={'single_host_origin'}
         isSignedIn={true}
-        >
+        />
+        <GoogleLogout clientId={clientId}/>
         
 
-        </GoogleLogin>
+
         <Navbar />
       </div>
         {renderApp()}
