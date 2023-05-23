@@ -16,11 +16,12 @@ import HomeTS from './components/webpage/home/homeTS'
 // <GoogleLogin> and googleAPI components and variables.
 import {GoogleLogin, GoogleLogout} from 'react-google-login'
 import {gapi} from 'gapi-script'
-const clientId = '569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com'
+
 
 function App() {
 
   // const [googler, setGoogler] = useState(null)
+  let clientId:string = ''
   
   const heyguys = {
     hey: 'hi',
@@ -35,13 +36,32 @@ function App() {
 
   // useEffect to invoke the googleapi. without this the <GoogleLogin> button fails with a 400 error.
   useEffect( () => {
-    function start() {
-      gapi.client.init({
-        clientId: clientId,
-        scope: ""
+    (async() => {
+      // fetch(`http://localhost:5000/fill_cont?query={ENV}`)
+      fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,REACT_APP_API,REACT_APP_NODE_ENV,REACT_APP_GOOGLE_ID}}`)
+      .then( (env) => {
+        console.log('env from useEffect')
+        console.log(env)
+      })      
+      fetch(`http://localhost:5000/fill_cont?query={clientId}`)
+      .then( (predata:any) => {
+        if (predata) {
+          return predata.json()
+        } else { return }        
+        // } else { throw new Error("no please") }        
       })
-    };
-    gapi.load('client:auth2', start);  
+
+
+      
+
+      function start() {
+        gapi.client.init({
+          // clientId: clientId ,
+          scope: ""
+        })
+      };
+      gapi.load('client:auth2', start);  
+    })()
   }, [])
 
 
@@ -87,15 +107,25 @@ const test =  () => {
 }
 
 const test2 = async () => {
-    const pre_server_clientId = await fetch(`http://localhost:5000/fill_cont?query={clientId}`)
-    const ServerPromise = new Promise( (resolve, reject) => {
-      resolve(pre_server_clientId.json())
-      reject(console.log("error encountered"))      
-    })
-    ServerPromise
-    .then( (clientId:any) => {
+  // const pre_server_clientId = await fetch(`http://localhost:5000/fill_cont?query={clientId}`)
+  // const server_clientId = await pre_server_clientId.json()
 
-    })
+  // let pre_env = await fetch(`http://localhost:5000/fill_cont?query={ENV}`)
+  // let env = await pre_env.json()
+  // console.log('env')
+  // console.log(env)
+  
+  // const pre_server_clientId = await fetch(`http://localhost:5000/fill_cont?query={clientId}`)
+  // const ServerPromise = new Promise( (resolve, reject) => {
+  //   const server_clientId = pre_server_clientId.json()
+  //     resolve(server_clientId)
+  //     // resolve(pre_server_clientId.json())
+  //     reject(console.log("error encountered"))      
+  //   })
+  //   ServerPromise
+  //   .then( (clientId:any) => {
+
+  //   })
     
     // const server_clientId = await pre_server_clientId.json()
     // console.log('server_clientId')
