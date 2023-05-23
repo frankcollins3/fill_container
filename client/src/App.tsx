@@ -70,12 +70,9 @@ const test =  () => {
       setGoogleUser(heyguys),
       console.log(setGoogleUser)
     ]
-    
     resolve(promises[0])
-
     reject("hey whats the big idea here")
-    // resolve(setGoogler(heyguys))
-    
+    // resolve(setGoogler(heyguys))    
   });
   testPromise
   .then( (iwill) => {    
@@ -91,9 +88,18 @@ const test =  () => {
 
 const test2 = async () => {
     const pre_server_clientId = await fetch(`http://localhost:5000/fill_cont?query={clientId}`)
-    const server_clientId = pre_server_clientId
-    console.log('server_clientId')
-    console.log(server_clientId)
+    const ServerPromise = new Promise( (resolve, reject) => {
+      resolve(pre_server_clientId.json())
+      reject(console.log("error encountered"))      
+    })
+    ServerPromise
+    .then( (clientId:any) => {
+
+    })
+    
+    // const server_clientId = await pre_server_clientId.json()
+    // console.log('server_clientId')
+    // console.log(server_clientId)
 }
 
   const renderApp = () => {
