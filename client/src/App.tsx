@@ -46,10 +46,7 @@ function App() {
 
 
   const onSuccess = (res:any) => {
-  // console.log(`Login success: ${res.profileObj}`)
-  console.log("success")
-  console.log('res')
-  console.log(res.profileObj)
+  console.log()
 }
 
 const onFailure = (res:any) => {
@@ -92,6 +89,13 @@ const test =  () => {
   })
 }
 
+const test2 = async () => {
+    const pre_server_clientId = await fetch(`http://localhost:5000/fill_cont?query={clientId}`)
+    const server_clientId = pre_server_clientId
+    console.log('server_clientId')
+    console.log(server_clientId)
+}
+
   const renderApp = () => {
       return (
         <div className="main">
@@ -121,7 +125,8 @@ const test =  () => {
         cookiePolicy={'single_host_origin'}
         isSignedIn={true}
         />
-        <button onClick={test}></button>
+        <button style={{ backgroundColor: 'maroon', color: 'olive'}} onClick={test}>test</button>
+        <button style={{ backgroundColor: 'orange', color: 'maroon'}} onClick={test2}>test2</button>
         {/* <GoogleLogout clientId={clientId}/> */}
         
 
