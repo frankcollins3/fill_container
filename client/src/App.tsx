@@ -21,13 +21,14 @@ import {gapi} from 'gapi-script'
 function App() {
 
   // const [googler, setGoogler] = useState(null)
-  let clientId:string = ''
+  let env:any;
+  let clientId = ''
+  let API:string = ''
   
   const heyguys = {
     hey: 'hi',
     guys: 'guys'
   }
-
   
   const [googleUser, setGoogleUser] = useState<any>({})
   const GoogleUserContext = createContext<any>({})
@@ -36,32 +37,76 @@ function App() {
 
   // useEffect to invoke the googleapi. without this the <GoogleLogin> button fails with a 400 error.
   useEffect( () => {
-    (async() => {
+    (async() => {  
       // fetch(`http://localhost:5000/fill_cont?query={ENV}`)
-      fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,REACT_APP_API,REACT_APP_NODE_ENV,REACT_APP_GOOGLE_ID}}`)
-      .then( (env) => {
-        console.log('env from useEffect')
-        console.log(env)
-      })      
-      fetch(`http://localhost:5000/fill_cont?query={clientId}`)
-      .then( (predata:any) => {
-        if (predata) {
-          return predata.json()
-        } else { return }        
-        // } else { throw new Error("no please") }        
-      })
 
-
+// * * CHANGE LOCALHOST FOR PRODUCTION! * * func accesses GraphQL: client/index.js RootQueryType -> ENV { resolve: {process.env}}
+      const fetchAndReassignGlobals = () => {
+        fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,REACT_APP_API,REACT_APP_NODE_ENV,REACT_APP_GOOGLE_ID}}`)
+        .then(async(processenv:any) => {
+          let envdata = await processenv.json()
+          env = envdata.data.ENV[0]
+          clientId = env.REACT_APP_GOOGLE_ID
+          const preAPI = env.REACT_APP_API
+          const splitAPI = preAPI.split("***")
+          const api = env.REACT_APP_NODE_ENV === 'development' ?  splitAPI[0] : splitAPI[1]
+          console.log('splitAPI')
+          console.log(splitAPI)
+  
+          console.log('api')
+          console.log(api)
+          
+          console.log('env')
+          console.log(env)            
+          
+          console.log('clientId')
+          console.log(clientId)
+        })      
+      }
+      // fetchAndReassignGlobals()
       
-
+      const reassignGlobalGoogleId = () => {
+        fetch(`${API}/fill_cont?query={clientId}`)
+        .then(async(predata:any) => {
+          if (predata) {
+            let data = await predata.json()
+            console.log('data')
+            console.log(data)
+          } else { return } // } else { throw new Error("no please") }        
+        })
+      }
+          
       function start() {
         gapi.client.init({
           // clientId: clientId ,
+          clientId: clientId, 
           scope: ""
         })
       };
-      gapi.load('client:auth2', start);  
+    const loadgoogle = () => { gapi.load('client:auth2', start) }
+      
+      const promises = [
+        fetchAndReassignGlobals,
+        reassignGlobalGoogleId,
+        // loadgoogle
+      ]
+
+      let promise_array:any[] = [fetchAndReassignGlobals()]
+
+      let ServerPromise = new Promise( (resolve, reject) => {
+        resolve(fetchAndReassignGlobals())
+
+        reject(console.log('ServerPromise'))
+      })
+      ServerPromise
+      .then( () => {
+        reassignGlobalGoogleId()
+        loadgoogle()
+      })
+      
     })()
+
+
   }, [])
 
 
@@ -107,6 +152,11 @@ const test =  () => {
 }
 
 const test2 = async () => {
+  console.log('env')
+  console.log(env)
+
+  console.log('API')
+  console.log(API)
   // const pre_server_clientId = await fetch(`http://localhost:5000/fill_cont?query={clientId}`)
   // const server_clientId = await pre_server_clientId.json()
 
