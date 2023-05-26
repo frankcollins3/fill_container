@@ -5,7 +5,11 @@ import {useState, useEffect, useContext, createContext } from 'react';
 import {connect} from "react-redux"
 import $ from 'jquery'
 import dotenv from "dotenv"
+
+// utility functions
 import WaterRequest from './utility/WaterRequest'
+import CSS from './utility/CSS'
+import EVENT from './utility/EVENT'
 
 // * components from src/components ---?
 import Navbar from './components/elements/Navbar/Navbar'
@@ -136,13 +140,14 @@ function App() {
 
 const onFailure = (res:any) => { console.log("hey failure") }
 
-  if (typeof window === 'undefined') {
-    // dotenv.config()
-  } else {
-    $('*').css('cursor', `url('/water_img/mouse_droplet.png'), auto`)
-    $('*').on('mouseenter', (event:any) => {
-      $(event.target).css('cursor', `normal`)
-  })
+  if (typeof window !== 'undefined') {
+    let eventassertions = [ {property: 'cursor', value: `normal`}]
+    CSS($('*'), 'cursor', `url('/water_img/mouse_droplet.png')`)   
+    EVENT($('*'), 'mouseenter', eventassertions) 
+    //   $('*').on('mouseenter', (event:any) => {
+    //   CSS(target, 'cursor', 'normal')
+    // })
+    // let eventassertions = [CSS(target, 'cursor', normal)]
 }
 
 const test =  () => {
@@ -169,20 +174,7 @@ const test =  () => {
 }
 
 const test2 = async () => {
-  console.log('env')
-  console.log(env)
-
-  console.log('API')
-  console.log(API)
-  
-  console.log("hey how are you guys from test2");
-
-  console.log('urlbank')  
-  console.log(urlbank)  
   let allDBsettings:string = urlbank.allDBsettingsURL
-  console.log(allDBsettings)
-  console.log(allDBsettings)
-
 
   let h20 = await WaterRequest(allDBsettings, { headers: 'headers' })
   console.log('h20')
