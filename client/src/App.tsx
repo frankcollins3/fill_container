@@ -5,6 +5,7 @@ import {useState, useEffect, useContext, createContext } from 'react';
 import {connect} from "react-redux"
 import $ from 'jquery'
 import dotenv from "dotenv"
+import WaterRequest from './utils.js'
 
 // * components from src/components ---?
 import Navbar from './components/elements/Navbar/Navbar'
@@ -20,15 +21,15 @@ import {gapi} from 'gapi-script'
 // redux / global state management 
 import store from './redux/store'
 import actionObject from './redux/actions'
-
 import allurl from './utility/allurl'
+
 
 function App() {
 
   // const [googler, setGoogler] = useState(null)
   let env:any;
   // let clientId = ''
-  let clientId:string = '';  
+  let clientId:string;
   let API:string = ''
   let GLOBAL_STORE;
   
@@ -47,8 +48,8 @@ function App() {
       console.log(urlbank)
       GLOBAL_STORE = await store.getState()
       API = urlbank.API      
+      env = urlbank.ENVdata.data.ENV      
       
-      let env = urlbank.ENVdata.data.ENV      
       clientId = env.GOOGLE_ID
       console.log('env')
       console.log(env)
@@ -66,7 +67,7 @@ function App() {
         })
       };
     const loadgoogle = () => { gapi.load('client:auth2', start) }
-
+    loadgoogle()
     })()
   }, [])
 
@@ -172,29 +173,12 @@ const test2 = async () => {
 
   console.log('API')
   console.log(API)
-  // const pre_server_clientId = await fetch(`http://localhost:5000/fill_cont?query={clientId}`)
-  // const server_clientId = await pre_server_clientId.json()
-
-  // let pre_env = await fetch(`http://localhost:5000/fill_cont?query={ENV}`)
-  // let env = await pre_env.json()
-  // console.log('env')
-  // console.log(env)
   
-  // const pre_server_clientId = await fetch(`http://localhost:5000/fill_cont?query={clientId}`)
-  // const ServerPromise = new Promise( (resolve, reject) => {
-  //   const server_clientId = pre_server_clientId.json()
-  //     resolve(server_clientId)
-  //     // resolve(pre_server_clientId.json())
-  //     reject(console.log("error encountered"))      
-  //   })
-  //   ServerPromise
-  //   .then( (clientId:any) => {
+  console.log("hey how are you guys from test2");
 
-  //   })
-    
-    // const server_clientId = await pre_server_clientId.json()
-    // console.log('server_clientId')
-    // console.log(server_clientId)
+  let h20 = await WaterRequest('testurl', { headers: 'headers' })
+  console.log('h20')
+  console.log(h20)
 }
 
   const renderApp = () => {
@@ -217,6 +201,21 @@ const test2 = async () => {
 
     <div className="App">
       <div className="navbar">
+        
+        <GoogleLogin  
+        onSuccess={onSuccess}
+        onFailure={onFailure}
+        clientId='569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com'
+        // clientId={clientId.length > 3 ? clientId : ''}
+        // clientId={GOOGLE_clientId}
+        buttonText="text"
+        cookiePolicy={'single_host_origin'}
+        // isSignedIn={true}
+        />
+
+      {/* <div className="navbar">
+        {clientId.length
+        ?
         <GoogleLogin  
         onSuccess={onSuccess}
         onFailure={onFailure}
@@ -226,6 +225,10 @@ const test2 = async () => {
         cookiePolicy={'single_host_origin'}
         // isSignedIn={true}
         />
+        :
+        <pre></pre>
+        } */}
+
         <button style={{ backgroundColor: 'maroon', color: 'olive'}} onClick={test}>test</button>
         <button style={{ backgroundColor: 'orange', color: 'maroon'}} onClick={test2}>test2</button>
         {/* <GoogleLogout clientId={clientId}/> */}
