@@ -12,7 +12,7 @@ import CSS from './utility/CSS'
 import EVENT from './utility/EVENT'
 
 // * components from src/components ---?
-import Navbar from './components/elements/Navbar/Navbar'
+import Navbar from './components/elements/Navbar'
 import Dashboard from './components/elements/Dashboard/Dashboard'
 import Credits from './components/elements/Credits/Credits'
 import Settings from './components/elements/Settings/Settings'
@@ -38,26 +38,17 @@ function App() {
   let GLOBAL_STORE;
   let urlbank:any;
   
-  const heyguys = {
-    hey: 'hi',
-    guys: 'guys'
-  }
-  
   const [googleUser, setGoogleUser] = useState<any>({})
   const GoogleUserContext = createContext<any>({})
 
   useEffect( () => {
     (async() => {
       urlbank = await allurl()
-      console.log('urlbank')
-      console.log(urlbank)
       GLOBAL_STORE = await store.getState()
       API = urlbank.API      
       env = urlbank.ENVdata.data.ENV      
       
       clientId = env.GOOGLE_ID
-      console.log('env')
-      console.log(env)
       // let data = await pre_env.json()
       // console.log('data')
       // console.log(data)
@@ -132,7 +123,6 @@ function App() {
 
 
   const onSuccess = (res:any) =>  {
-     console.log('Promise success') 
      console.log('res')
      console.log(res)
      console.log(res.profileObj)
@@ -143,43 +133,22 @@ const onFailure = (res:any) => { console.log("hey failure") }
   if (typeof window !== 'undefined') {
     let eventassertions = [ {property: 'cursor', value: `normal`}]
     CSS($('*'), 'cursor', `url('/water_img/mouse_droplet.png')`)   
-    EVENT($('*'), 'mouseenter', eventassertions) 
-    //   $('*').on('mouseenter', (event:any) => {
-    //   CSS(target, 'cursor', 'normal')
-    // })
+    // EVENT($('*'), 'mouseenter', eventassertions) 
+      $('*').on('mouseenter', (event:any) => { CSS($(event.target), 'cursor', 'normal') })
     // let eventassertions = [CSS(target, 'cursor', normal)]
-}
+  }
+  
+  const test = async () => {
+    console.log('test one');
+  }
 
-const test =  () => {
-  // this promise resolves as the SetState() for [googleUser, setGoogleUser] It is to set the <GoogleUserProvider> that wraps the {App}
-  let testPromise = new Promise( (resolve, reject) => {
-    let promises = [
-      setGoogleUser(heyguys),
-      console.log(setGoogleUser)
-    ]
-    resolve(promises[0])
-    reject("hey whats the big idea here")
-    // resolve(setGoogler(heyguys))    
-  });
-  testPromise
-  .then( (iwill) => {    
-    let collins:string = googleUser.familyName 
-    console.log('collins')
-    console.log(collins)
-  })
-  .catch( (icant) => {
-    console.log('icant')
-    console.log(icant)
-  })
-}
+  const test2 = async () => {
+    let allDBsettings:string = urlbank.allDBsettingsURL
 
-const test2 = async () => {
-  let allDBsettings:string = urlbank.allDBsettingsURL
-
-  let h20 = await WaterRequest(allDBsettings, { headers: 'headers' })
-  console.log('h20')
-  console.log(h20)
-}
+    let h20 = await WaterRequest(allDBsettings, { headers: 'headers' })
+    console.log('h20')
+    console.log(h20)
+  }
 
   const renderApp = () => {
       return (
@@ -242,10 +211,6 @@ const test2 = async () => {
     </div>
     // </GoogleUserContext.Provider>
   );
-
-
-
-
 }
 
 export default App;
