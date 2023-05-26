@@ -33,6 +33,13 @@ const SET_API_URL = async (url) => {
         }
     }
 
+const SET_LOGIN_TYPE = async (loginmethod) => {
+    return {
+        type: "SET_LOGIN_TYPE",
+        payload: loginmethod
+    }
+}
+
 // settings: action.payload ? action.payload === false ? true : false : true 
 
 const slowpoke = () => {
@@ -44,7 +51,8 @@ const actionObject = {
     setPokemon: setPokemon,
     slowpoke: slowpoke,
     GET_WATER_BOTTLE: GET_WATER_BOTTLE,
-    TOGGLE_SETTINGS: TOGGLE_SETTINGS
+    TOGGLE_SETTINGS: TOGGLE_SETTINGS,
+    SET_LOGIN_TYPE: SET_LOGIN_TYPE
 }
 
 export default actionObject
