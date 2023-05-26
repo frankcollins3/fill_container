@@ -5,7 +5,7 @@ import {useState, useEffect, useContext, createContext } from 'react';
 import {connect} from "react-redux"
 import $ from 'jquery'
 import dotenv from "dotenv"
-import WaterRequest from './utils.js'
+import WaterRequest from './utility/WaterRequest'
 
 // * components from src/components ---?
 import Navbar from './components/elements/Navbar/Navbar'
@@ -32,6 +32,7 @@ function App() {
   let clientId:string;
   let API:string = ''
   let GLOBAL_STORE;
+  let urlbank:any;
   
   const heyguys = {
     hey: 'hi',
@@ -43,7 +44,7 @@ function App() {
 
   useEffect( () => {
     (async() => {
-      let urlbank = await allurl()
+      urlbank = await allurl()
       console.log('urlbank')
       console.log(urlbank)
       GLOBAL_STORE = await store.getState()
@@ -176,7 +177,11 @@ const test2 = async () => {
   
   console.log("hey how are you guys from test2");
 
-  let h20 = await WaterRequest('testurl', { headers: 'headers' })
+  console.log('urlbank')  
+  console.log(urlbank)  
+
+
+  let h20 = await WaterRequest('https://pokeapi.co/api/v2/pokemon', { headers: 'headers' })
   console.log('h20')
   console.log(h20)
 }
