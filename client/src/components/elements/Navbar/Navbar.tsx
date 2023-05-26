@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import './navbar.css';
 import { animated, useSpring } from 'react-spring';
 import $ from 'jquery'
 import CSS from '../../../utility/CSS'
+import LogInOutGoogle from '../LogInOutGoogle/LogInOutGoogle'
 // import $ from 'jquery'
 
 // import Profile from '../Profile';
@@ -14,29 +16,19 @@ export default function Navbar() {
   // let msgbottleJQ = $('.msg-bottle')
 
   let navbardropletJQ:any;
+  let navbardropletID:string
   let msgbottleJQ:any;
+  let msgbottleID:string
+  let bothElemById:any
   
-
-
-
-  
-
   // * *  gather id and join them.   // let navbarID = navbardropletJQ.id * * 
   // let msgbottleID = msgbottleJQ.id
   // let bothelem = [navbarID, msgbottleID].join()
   
-  if (typeof window === 'undefined') {
-    // dotenv.config()
-  } else {
-    // $('*').css('cursor', `url('/water_img/mouse_droplet.png'), auto`)
-    CSS($('*'), 'cursor', `url('/water_img/mouse_droplet.png'), auto`)
-    $('*').on('mouseenter', (event:any) => {
-      let target = $(event.target)
-      // target.css('cursor', `normal`)
-      CSS(target, 'cursor', 'normal')
-  })
-  // CSS($(bothelem), 'border', '10px solid hotpink')
-}
+  if (typeof window !== 'undefined') {
+    CSS($('*'), 'cursor', `url('/water_img/mouse_droplet.png')`)   
+      $('*').on('mouseenter', (event:any) => { CSS($(event.target), 'cursor', 'normal') })
+  }
 
 // console.log('bothelem')
 // console.log(bothelem)
@@ -78,49 +70,68 @@ export default function Navbar() {
   // };
 
   useEffect( () => {
-    navbardropletJQ = $('.navbar-droplet')
-    msgbottleJQ = $('.msg-bottle')
+    navbardropletJQ = $('#navbar-droplet')[0]
+    navbardropletID = navbardropletJQ.id
+    msgbottleJQ = $('#msg-bottle')[0]
+    msgbottleID = msgbottleJQ.id
+    bothElemById = [navbardropletID,msgbottleID].join(" ")
+
   }, [])
 
 const homeclick = () => { window.location.href = "/"}
   const statclick = () => {  window.location.href = "/dashboard" }
+  const settingsclick = () => {  window.location.href = "/settings" }
 
   const test = () => {
     console.log('hey');
+
+    bothElemById = [navbardropletID, msgbottleID].join(" ")
+    let bothElem = [navbardropletID, msgbottleID].join(" ")
   
+
+    $([navbardropletID,msgbottleID].join(" ")).css('.border', '5px solid limegreen')
+    // $(bothElemById).css('.border', '5px solid limegreen')
+
+    // $('#msg-bottle').css('border', '7px solid orange')
+    // $('#navbar-droplet').css('border', '7px solid hotpink')
+    
     console.log('navbardropletJQ')
     console.log(navbardropletJQ)
+    console.log(navbardropletID)
 
     console.log('msgbottleJQ')
     console.log(msgbottleJQ)
+    console.log(msgbottleID)
 
-
-    let droplet = $('.navbar-droplet')
-    let msgbottle = $('.msg-bottle')
+    let droplet = $('#navbar-droplet')
+    let msgbottle = $('#msg-bottle')
     console.log('droplet')
     console.log(droplet)
-
     console.log('msgbottle')
     console.log(msgbottle)
-
-
   }
+
+    const testuser = { username: 'test', email: 'test', password: 'test', age: 'test' }
 
   return (
     <div className="navbar-container">
     <div className="logo">
-    <img className="navbar-droplet" src="/water_img/small_droplet.png" />
-    <img className="msg-bottle"  src="/water_img/msg-bottle.png" />
-    <button onClick={test} ></button>
+    <img style={{ border: 'none'}} className={bothElemById} id="navbar-droplet" src="/water_img/small_droplet.png" />
+    <img style={{ border: 'none'}} className={bothElemById} id="msg-bottle"  src="/water_img/msg-bottle.png" />
+
     </div>
+
+    <img src="/water_img/panda.png"/>
       
       <div className="logo">
         {/* <Boop rotation={10} timing={150}> */}
           <img onClick={homeclick} src="/water_img/home.png" />
           <img onClick={statclick} src="/water_img/statistics.png" />
-          <img  src="/water_img/settings.png" />
+          <img onClick={settingsclick} src="/water_img/settings.png" />
           
-          <img src="/water_img/exit.png" />
+          <LogInOutGoogle user={testuser}/>
+          {/* <img src="/water_img/exit.png" /> */}
+          
  
         {/* </Boop> */}
       </div>
