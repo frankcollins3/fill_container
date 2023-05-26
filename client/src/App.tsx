@@ -179,9 +179,12 @@ const test2 = async () => {
 
   console.log('urlbank')  
   console.log(urlbank)  
+  let allDBsettings:string = urlbank.allDBsettingsURL
+  console.log(allDBsettings)
+  console.log(allDBsettings)
 
 
-  let h20 = await WaterRequest('https://pokeapi.co/api/v2/pokemon', { headers: 'headers' })
+  let h20 = await WaterRequest(allDBsettings, { headers: 'headers' })
   console.log('h20')
   console.log(h20)
 }
