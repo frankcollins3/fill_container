@@ -25,23 +25,24 @@ import {gapi} from 'gapi-script'
 
 // redux / global state management 
 import store from './redux/store'
-import { toggleSettings } from './redux/actions'
+import { TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE } from './redux/actions'
 
-function App(props:any) {
+function App( props:any ) {
 
-  let togglesettingsprops = props.togglesettings  
-  const settings = props.settings
-  console.log('settings from App.tsx')
-  console.log(settings)
+  const { 
+    HYDRO_SETTINGS, LOG_IN_OUT_TYPE,
+    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE 
+  } = props    // object destructuring props haven't done this before.
+
 
   // const [googler, setGoogler] = useState(null)
   let env:any;
   // let clientId = ''
   let clientId:string;
   let API:string = ''
-  let GLOBAL_STORE;
+  let GLOBAL_STORE;     // I dont need the GLOBAL_STORE anymore it comes in from connect but just leaving things to remember the original strucutre.
   let urlbank:any;
-  // let TOGGLE_SETTINGS = actionObject.TOGGLE_SETTINGS
+
   
   const [googleUser, setGoogleUser] = useState<any>({})
   const GoogleUserContext = createContext<any>({})
@@ -50,6 +51,14 @@ function App(props:any) {
     (async() => {
       urlbank = await allurl()
       GLOBAL_STORE = await store.getState()
+
+      let {HYDRO_DATA, HYDRO_SETTINGS } = await store.getState()
+      console.log('HYDRO_DATA')
+      console.log(HYDRO_DATA)
+
+      console.log('HYDRO_SETTINGS')
+      console.log(HYDRO_SETTINGS)
+
       API = urlbank.API      
       env = urlbank.ENVdata.data.ENV   
             
@@ -83,7 +92,9 @@ const onFailure = (res:any) => { console.log("hey failure") }
   }
   
   const test = async () => {
-    togglesettingsprops()
+    console.log(await store.getState())
+    await TOGGLE_HYDRO_SETTINGS()
+    console.log(await store.getState())
   };
 
   const test2 = async () => {
@@ -131,24 +142,29 @@ const onFailure = (res:any) => { console.log("hey failure") }
         {renderApp()}
       <div className="credits">
         <Credits />
-      <p style={{ textAlign: 'center' }}> settings: { settings ? 'on' : 'off' } </p>
+      <p style={{ textAlign: 'center' }}> settings: { HYDRO_SETTINGS ? 'on' : 'off' } </p>
       </div>
     </div>
     // </GoogleUserContext.Provider>
   );
 }
 
+//  state variables that will be manipulated by the actions dispatch object that are sent to props from mapDispatchToProps below.
 const mapStateToProps = (state:any) => ({
-    water: state.water,
     API_URL: state.API_URL,
-    settings: state.settings,
-    LOGIN_TYPE: state.LOGIN_TYPE,
     ENV: state.ENV,
-    USER: state.USER
+    USER: state.USER,
+    
+    // regular app props
+    LOG_IN_OUT_TYPE: state.LOG_IN_OUT_TYPE,
+    HYDRO_SETTINGS: state.HYDRO_SETTINGS,
 });
 
+// these are the actions being mapped to props
 const mapDispatchToProps = (dispatch:any) => ({
-  togglesettings: () => dispatch(toggleSettings())
+  TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
+  SET_LOG_IN_OUT_TYPE: () => dispatch(SET_LOG_IN_OUT_TYPE()),
+
 })
 
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
