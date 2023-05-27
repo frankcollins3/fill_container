@@ -5,7 +5,23 @@ const initialState = {
   pokemon: 'test-pikachu',
   water: 'empty',
   API_URL: '',
-  settings: false
+  settings: false,
+  LOGIN_TYPE: 'TEST_LOGIN_TYPE',
+  ENV: {
+    DATABASE_URL: 'TEST_URL',
+    API: 'TEST_API',
+    NODE_ENV: 'TEST_NODE_ENV',
+    GOOGLE_ID: 'TEST_GOOGLE_ID',
+  },
+  USER: {
+    USERNAME: 'testusername',
+    EMAIL: 'testemail',
+    PASSWORD: "testpassword",
+    AGE: 'testage',
+    GOOGLE_ID: 'noneyet'
+  }
+  // how to send an object through redux. 
+
 };
 
 // Define the reducer function
@@ -34,7 +50,11 @@ const fill_cont_reducer = (state = initialState, action) => {
         return {
           ...state,
           settings: action.payload ? action.payload === false ? true : false : true 
-          // settings: action.payload === false ? true : false 
+        }
+    case "SET_LOGIN_TYPE":
+        return {
+          ...state,
+          LOGIN_TYPE: action.payload
         }
         default:
           return state;
