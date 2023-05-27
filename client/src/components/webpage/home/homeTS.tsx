@@ -1,3 +1,4 @@
+
 import React from "react";
 import "./home.css"
 import {useState, useEffect} from 'react'
@@ -5,6 +6,7 @@ import actionObject from "../../../redux/actions"
 import store from "../../../redux/store"
 import allurl from '../../../utility/allurl'
 import objResJson from '../../../utility/objResJson'
+import { connect } from 'react-redux'
 import $ from 'jquery'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
@@ -13,11 +15,6 @@ import Display from '../../../components/elements/Display'
 import Settings from '../../../components/elements/Settings'
 import Schedule from '../../../components/elements/Schedule'
 
-
-
-
-
-
 const GraphQLcheck = () => {
   console.log('lemme see');
 }
@@ -25,7 +22,9 @@ const GraphQLcheck = () => {
 let myname:string = "me";
 let url:string; // 
 
-export default function HomeTS () {
+ function HomeTS (props:any) {
+  console.log('props')
+  console.log(props)
 
   let global_var:any;
   let setPokemon = actionObject.setPokemon
@@ -117,4 +116,16 @@ const test = async () => {
 }
 
 return <div className="home-container"> {renderHome()} </div>
+
 }
+
+const mapStateToProps = (state: any) => ({
+  water: state.water,
+  API_URL: state.API_URL,
+  settings: state.settings,
+  LOGIN_TYPE: state.LOGIN_TYPE,
+  ENV: state.ENV,
+  USER: state.USER
+});
+
+export default connect(mapStateToProps)(HomeTS);
