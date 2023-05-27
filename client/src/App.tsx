@@ -11,6 +11,7 @@ import WaterRequest from './utility/WaterRequest'
 import CSS from './utility/CSS'
 import EVENT from './utility/EVENT'
 import allurl from './utility/allurl'
+import setCursor from './utility/setCursor'
 
 // * components from src/components *
 import Navbar from './components/elements/Navbar'
@@ -28,6 +29,7 @@ import store from './redux/store'
 import { TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE } from './redux/actions'
 
 function App( props:any ) {
+  setCursor()
 
   const { 
     HYDRO_SETTINGS, LOG_IN_OUT_TYPE,
@@ -41,9 +43,9 @@ function App( props:any ) {
   let clientId:string;
   let API:string = ''
   let GLOBAL_STORE;     // I dont need the GLOBAL_STORE anymore it comes in from connect but just leaving things to remember the original strucutre.
+  // let globalstate = { HYDRO_SETTINGS, HYDRO_DATA };
   let urlbank:any;
 
-  
   const [googleUser, setGoogleUser] = useState<any>({})
   const GoogleUserContext = createContext<any>({})
 
@@ -51,13 +53,8 @@ function App( props:any ) {
     (async() => {
       urlbank = await allurl()
       GLOBAL_STORE = await store.getState()
+      // let {HYDRO_DATA, HYDRO_SETTINGS } = await store.getState()
 
-      let {HYDRO_DATA, HYDRO_SETTINGS } = await store.getState()
-      console.log('HYDRO_DATA')
-      console.log(HYDRO_DATA)
-
-      console.log('HYDRO_SETTINGS')
-      console.log(HYDRO_SETTINGS)
 
       API = urlbank.API      
       env = urlbank.ENVdata.data.ENV   
@@ -75,26 +72,11 @@ function App( props:any ) {
     })()
   }, [])
 
-  const onSuccess = (res:any) =>  {
-     console.log('res')
-     console.log(res)
-     console.log(res.profileObj)
-    }
-
-const onFailure = (res:any) => { console.log("hey failure") }
-
-  if (typeof window !== 'undefined') {
-    let eventassertions = [ {property: 'cursor', value: `normal`}]
-    CSS($('*'), 'cursor', `url('/water_img/mouse_droplet.png')`)   
-    // EVENT($('*'), 'mouseenter', eventassertions) 
-      $('*').on('mouseenter', (event:any) => { CSS($(event.target), 'cursor', 'normal') })
-    // let eventassertions = [CSS(target, 'cursor', normal)]
-  }
+  const onSuccess = (res:any) =>  { console.log(res.profileObj) }
+  const onFailure = (res:any) => { console.log("hey failure") }
   
   const test = async () => {
-    console.log(await store.getState())
     await TOGGLE_HYDRO_SETTINGS()
-    console.log(await store.getState())
   };
 
   const test2 = async () => {
