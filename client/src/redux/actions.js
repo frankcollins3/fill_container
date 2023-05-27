@@ -13,9 +13,9 @@ const GET_WATER_BOTTLE = async () => {
         payload: randomwater
     }
 }
-const SET_API_URL = async (url) => {
-    
-}
+
+const SET_API_URL = async (url) => {  }
+
     let count = 0;
     const TOGGLE_SETTINGS = async (setting) => {
         count++
