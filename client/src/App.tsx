@@ -10,6 +10,7 @@ import dotenv from "dotenv"
 import WaterRequest from './utility/WaterRequest'
 import CSS from './utility/CSS'
 import EVENT from './utility/EVENT'
+import allurl from './utility/allurl'
 
 // * components from src/components *
 import Navbar from './components/elements/Navbar'
@@ -24,13 +25,14 @@ import {gapi} from 'gapi-script'
 
 // redux / global state management 
 import store from './redux/store'
-import actionObject from './redux/actions'
-import allurl from './utility/allurl'
+import { toggleSettings } from './redux/actions'
 
-function App() {
+function App(props:any) {
 
-  console.log('actionObject')
-  console.log(actionObject)
+  let togglesettingsprops = props.togglesettings  
+  const settings = props.settings
+  console.log('settings from App.tsx')
+  console.log(settings)
 
   // const [googler, setGoogler] = useState(null)
   let env:any;
@@ -39,6 +41,7 @@ function App() {
   let API:string = ''
   let GLOBAL_STORE;
   let urlbank:any;
+  // let TOGGLE_SETTINGS = actionObject.TOGGLE_SETTINGS
   
   const [googleUser, setGoogleUser] = useState<any>({})
   const GoogleUserContext = createContext<any>({})
@@ -48,8 +51,8 @@ function App() {
       urlbank = await allurl()
       GLOBAL_STORE = await store.getState()
       API = urlbank.API      
-      env = urlbank.ENVdata.data.ENV      
-      
+      env = urlbank.ENVdata.data.ENV   
+            
       clientId = env.GOOGLE_ID
             function start() {
         gapi.client.init({
@@ -79,11 +82,14 @@ const onFailure = (res:any) => { console.log("hey failure") }
     // let eventassertions = [CSS(target, 'cursor', normal)]
   }
   
-  const test = async () => {  console.log('test one'); }
+  const test = async () => {
+    togglesettingsprops()
+  };
 
   const test2 = async () => {
-    let allDBsettings:string = urlbank.allDBsettingsURL
-    let h20 = await WaterRequest(allDBsettings, { headers: 'headers' })
+    // let allDBsettings:string = urlbank.allDBsettingsURL
+    // let h20 = await WaterRequest(allDBsettings, { headers: 'headers' })
+    console.log(await store.getState())    
   }
 
   const renderApp = () => {
@@ -125,6 +131,7 @@ const onFailure = (res:any) => { console.log("hey failure") }
         {renderApp()}
       <div className="credits">
         <Credits />
+      <p style={{ textAlign: 'center' }}> settings: { settings ? 'on' : 'off' } </p>
       </div>
     </div>
     // </GoogleUserContext.Provider>
@@ -136,10 +143,15 @@ const mapStateToProps = (state:any) => ({
     API_URL: state.API_URL,
     settings: state.settings,
     LOGIN_TYPE: state.LOGIN_TYPE,
-    ENV: state.ENV
+    ENV: state.ENV,
+    USER: state.USER
 });
 
-const ConnectedApp = connect(mapStateToProps)(App);
+const mapDispatchToProps = (dispatch:any) => ({
+  togglesettings: () => dispatch(toggleSettings())
+})
+
+const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
 
 const Root = () => (
   <Provider store={store}>
