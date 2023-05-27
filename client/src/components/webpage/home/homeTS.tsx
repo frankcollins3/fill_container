@@ -7,9 +7,15 @@ import allurl from '../../../utility/allurl'
 import objResJson from '../../../utility/objResJson'
 import $ from 'jquery'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+
+// * components from src/components ---?
 import Display from '../../../components/elements/Display'
 import Settings from '../../../components/elements/Settings'
 import Schedule from '../../../components/elements/Schedule'
+
+
+
+
 
 
 const GraphQLcheck = () => {
@@ -17,22 +23,23 @@ const GraphQLcheck = () => {
 }
 
 let myname:string = "me";
-
-// let jackass = ['steveo, knoxville, weeman, bam, preston, dunn']
-let icecream = ['vanilla', 'chocolate', 'strawberry', 'rumraisin', 'cookiedough']
-let vanilla:string = icecream[0];
-let chocolate:string = icecream[1];
-let strawberry:string = icecream[2];
-let rumraisin:string = icecream[3];
-let cookiedough:string = icecream[4];
+let url:string; // 
 
 export default function HomeTS () {
 
   let global_var:any;
   let setPokemon = actionObject.setPokemon
   let GET_WATER_BOTTLE = actionObject.GET_WATER_BOTTLE
+  let TOGGLE_SETTINGS = actionObject.TOGGLE_SETTINGS
   let pokemon;
   $('*').css('cursor', `url('/water_img/mouse_droplet.png'), auto`)
+  
+  useEffect( () => {
+    url = window.location.href
+    // console.log('url')
+    // console.log(url)
+    // console.log(`location from main ${window.location.href}`)
+  })
 
 const test = async () => {
     // let query = `{allbooks{name}}`
@@ -52,14 +59,23 @@ const test = async () => {
     console.log('allsettings over here')
     console.log(allsettings)
 
+
+
   }
 
   const test2 = async () => {
     // let predata = await fetch(`http://localhost:5000/fill_cont?query={ENV}`)
-    let predata = await fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,REACT_APP_API}}`)  
+    let predata = await fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,API}}`)  
     let data = await objResJson(predata)
     console.log('data over here')
     console.log(data)
+
+    let reduxresponse = await TOGGLE_SETTINGS(undefined);
+    let settingsBoolean:boolean = reduxresponse.payload
+    console.log('settingsBoolean')
+    console.log(settingsBoolean)
+
+
     // console.log('data')
     // console.log(data)
   }
@@ -80,11 +96,25 @@ const test = async () => {
       <div id="Page_1">
       {/* <button onClick={GraphQLcheck}></button> */}
       {/* <button className="BorderBlueBtm_1" onClick={test} id="Btn_Test"> </button>
-      <button className="BorderBlueBtm_2" style={ {height: '200px', width: '200px'}} onClick={test2} id="Btn_Test"> </button> */}
-      {/* <Settings/> */}
+       <button className="BorderBlueBtm_2" style={ {height: '200px', width: '200px'}} onClick={test2} id="Btn_Test"> </button> */}
+       {/* <button className="BorderBlueBtm_2" style={ {height: '200px', width: '200px'}} onClick={test2} id="Btn_Test"> </button>  */}
+       <div className="primary">
+        <p> primary </p>       
+       </div>
+
+      { url === "http://localhost:3000/settings"
+      ?
+      <div className="panel">
+        <p> panel </p>
+       <Settings/> 
+        </div>
+       :
+       <pre></pre>
+      }
+    
     </div>
   )
 }
 
-return <div className="main-container"> {renderHome()} </div>
+return <div className="home-container"> {renderHome()} </div>
 }
