@@ -1,19 +1,26 @@
-
+import { connect } from 'react-redux'
 import React, { useState, useEffect } from 'react';
 import './navbar.css';
 import { animated, useSpring } from 'react-spring';
 import $ from 'jquery'
 import CSS from '../../../utility/CSS'
 import LogInOutGoogle from '../LogInOutGoogle/LogInOutGoogle'
+import store from '../../../redux/store'
+import actionsObject from '../../../redux/actionsJS'
 // import $ from 'jquery'
 
 // import Profile from '../Profile';
 
 
-export default function Navbar() {
+ function Navbar(props:any) {
+
+  console.log('props')
+  console.log(props)
 
   // let navbardropletJQ = $('.navbar-droplet')
   // let msgbottleJQ = $('.msg-bottle')
+
+  const [loginType, setLoginType] = useState("")
 
   let navbardropletJQ:any;
   let navbardropletID:string
@@ -21,17 +28,13 @@ export default function Navbar() {
   let msgbottleID:string
   let bothElemById:any
   
-  // * *  gather id and join them.   // let navbarID = navbardropletJQ.id * * 
-  // let msgbottleID = msgbottleJQ.id
-  // let bothelem = [navbarID, msgbottleID].join()
+  let TOGGLE_SETTINGS = actionsObject.TOGGLE_SETTINGS
+
   
   if (typeof window !== 'undefined') {
     CSS($('*'), 'cursor', `url('/water_img/mouse_droplet.png')`)   
       $('*').on('mouseenter', (event:any) => { CSS($(event.target), 'cursor', 'normal') })
   }
-
-// console.log('bothelem')
-// console.log(bothelem)
 
 //   const Boop = ({ rotation, timing, children }) => {
     const [isBooped, setIsBooped] = useState(false);
@@ -82,52 +85,37 @@ const homeclick = () => { window.location.href = "/"}
   const statclick = () => {  window.location.href = "/dashboard" }
   const settingsclick = () => {  window.location.href = "/settings" }
 
-  const test = () => {
-    console.log('hey');
+  const test = async () => {
+      // let navsettings = await TOGGLE_SETTINGS()
+      // console.log('navsettings')
+      // console.log(navsettings.payload)
+      console.log(await store.getState())
 
-    bothElemById = [navbardropletID, msgbottleID].join(" ")
-    let bothElem = [navbardropletID, msgbottleID].join(" ")
-  
-
-    $([navbardropletID,msgbottleID].join(" ")).css('.border', '5px solid limegreen')
-    // $(bothElemById).css('.border', '5px solid limegreen')
-
-    // $('#msg-bottle').css('border', '7px solid orange')
-    // $('#navbar-droplet').css('border', '7px solid hotpink')
-    
-    console.log('navbardropletJQ')
-    console.log(navbardropletJQ)
-    console.log(navbardropletID)
-
-    console.log('msgbottleJQ')
-    console.log(msgbottleJQ)
-    console.log(msgbottleID)
-
-    let droplet = $('#navbar-droplet')
-    let msgbottle = $('#msg-bottle')
-    console.log('droplet')
-    console.log(droplet)
-    console.log('msgbottle')
-    console.log(msgbottle)
+      console.log('props')
+      console.log(props)
   }
 
-    const testuser = { username: 'test', email: 'test', password: 'test', age: 'test' }
+    const testuser = { username: 'test', email: 'test', password: 'test', age: 'test', GOOGLE_ID: 'GOOGLE_ID' }
 
   return (
     <div className="navbar-container">
     <div className="logo">
-    <img style={{ border: 'none'}} className={bothElemById} id="navbar-droplet" src="/water_img/small_droplet.png" />
-    <img style={{ border: 'none'}} className={bothElemById} id="msg-bottle"  src="/water_img/msg-bottle.png" />
-
+    <img style={{ border: 'none' }} className={bothElemById} id="navbar-droplet" src="/water_img/small_droplet.png" />
+    <img style={{ border: 'none' }} className={bothElemById} id="msg-bottle"  src="/water_img/msg-bottle.png" />
+    <button onClick={test} style={{backgroundColor: 'limegreen', border: '1px dashed hotpink' }}> </button>
     </div>
 
-    <img src="/water_img/panda.png"/>
+    <div className="middle-navbar">
+    {/* <img style={{ display: loginType === "login" ? "" : "none" }} src="/water_img/panda.png"/> */}
+    <img  src="/water_img/panda.png"/>
+    </div>
       
       <div className="logo">
         {/* <Boop rotation={10} timing={150}> */}
           <img onClick={homeclick} src="/water_img/home.png" />
           <img onClick={statclick} src="/water_img/statistics.png" />
           <img onClick={settingsclick} src="/water_img/settings.png" />
+
           
           <LogInOutGoogle user={testuser}/>
           {/* <img src="/water_img/exit.png" /> */}
@@ -140,3 +128,14 @@ const homeclick = () => { window.location.href = "/"}
     </div>
   );
 }
+
+const mapStateToProps = (state: any) => ({
+  water: state.water,
+  API_URL: state.API_URL,
+  settings: state.settings,
+  LOGIN_TYPE: state.LOGIN_TYPE,
+  ENV: state.ENV,
+  USER: state.USER
+});
+
+export default connect(mapStateToProps)(Navbar);
