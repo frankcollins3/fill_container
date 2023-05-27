@@ -1,4 +1,4 @@
-const setPokemon = (newPokemon:string) => {
+const setPokemon = (newPokemon) => {
     return {
         type: "SET_POKEMON",
         payload: newPokemon
@@ -13,14 +13,15 @@ const GET_WATER_BOTTLE = async () => {
         payload: randomwater
     }
 }
-const SET_API_URL = async (url:string) => {
+const SET_API_URL = async (url) => {
     
 }
+
     let count = 0;
-    const TOGGLE_SETTINGS = async (setting:boolean|null|undefined) => {
+   export const TOGGLE_SETTINGS = async (setting) => {
         count++
 
-        if (setting === undefined || setting === null || !setting ) {
+        if (setting === undefined || !setting ) {
             return {
                 type: "TOGGLE_SETTINGS",
                 payload: true
@@ -33,7 +34,7 @@ const SET_API_URL = async (url:string) => {
         }
     }
 
-const SET_LOGIN_TYPE = async (loginmethod:string) => {
+const SET_LOGIN_TYPE = async (loginmethod) => {
     return {
         type: "SET_LOGIN_TYPE",
         payload: loginmethod
