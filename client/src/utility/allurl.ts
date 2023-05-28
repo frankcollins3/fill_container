@@ -1,3 +1,4 @@
+// URL bank for APP-API 
 export default async function allurl () { 
 // This func fetches GQL endpoint to get process.env.api. Then returns concatenated url strings data calls appwide.   
     let pre_envdata = await fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,API,NODE_ENV,GOOGLE_ID}}`)
@@ -5,18 +6,13 @@ export default async function allurl () {
     let env_data = await pre_envdata.json()
     let data = env_data.data.ENV
     
-    let env = data.API
-    let dev_and_prod = env.split('***')
-
-    console.log('env_data')
-    console.log(env_data)
+    let preAPI = data.API
+    let dev_and_prod = preAPI.split('***')
 
     let env_dev:string = dev_and_prod[0]
     let env_prod:string = dev_and_prod[1]
 
-    let NODE_ENV = data.NODE_ENV
-    console.log('NODE_ENV')
-    console.log(NODE_ENV)
+    let NODE_ENV = data.NODE_ENV    
 
     let allDBsettingsURL;
     let API = NODE_ENV === 'development' ? env_dev : env_prod
@@ -27,15 +23,16 @@ export default async function allurl () {
         API: '',    
         allDBsettingsURL: '',
         allUsersURL: '',
-        ENVdata: env_data
+        ENVdata: env_data,
+        data: '',
     }
 
     const applyAPI = () => {
         if (NODE_ENV === 'development') {
-            console.log('NODE_ENV equals deployment')
             urlObject.API = API;
-            urlObject.allDBsettingsURL = `${API}fill_cont?query={allDBsettings{id,age,height,weight,reminder,activity,start_time,end_time,users_id}}`;
+            urlObject.allDBsettingsURL = `${API}fill_cont?query={allDBsettings(users_id: 1){id,age,height,weight,reminder,activity,start_time,end_time,users_id}}`;
             urlObject.allUsersURL = `${API}fill_cont?query={allUsers{id,username,password,email,age}}`
+            urlObject.data = `${API}fill_cont?query={data(users_id:1){google_id,access_token,refresh_token,expiry_date,users_id}}`
         } else {
             // let test_query = `{allDBsettings{id,age,height,weight,reminder,activity,start_time,end_time,users_id}}`
         }
@@ -51,5 +48,5 @@ export default async function allurl () {
     return UrlObjectPromise.then(() => {
         return urlObject
     })    
-    
 }
+// I considered exporting it as a type safe createContext() read only string storage but strings exported as object seems fine.   
