@@ -160,123 +160,67 @@ const SettingsType = new GraphQLObjectType({
 
       const GraphQLDate = new GraphQLScalarType({
         name: 'Date',
-        description: 'Serialize String into Date() format for PostgresDB',
+        description: 'Date custom scalar type',
         parseValue(value) {
+          // Convert incoming date string to Date object
           return new Date(value);
         },
-        serialize(value)  {
-          return value.toISOstring()
-        }
-      })
-      
+        serialize(value) {
+          // Convert outgoing Date object to ISO 8601 string
+          return value.toISOString();
+        },
+        parseLiteral(ast) {
+          if (ast.kind === Kind.STRING) {
+            // Parse date string literal to Date object
+            return new Date(ast.value);
+          }
+          return null;
+        },
+      });
       
       // google_id, access_token, refresh_tokenm, expiry_date, users_id
       const DataType = new GraphQLObjectType({
         name: 'Data',
         description: 'Data:',
         fields: () => ({
+          // id: { type: GraphLQInt }, // psql id. not sure if it's needed but its not NONNULLED so can be ommitted.
           google_id: { type: GraphQLString },
-          access_token: { type: GraphQLString },
-          refresh_token: { type: GraphQLString },
-          expiry_date: { type: GraphQLString },
+          date: { type: new GraphQLNonNull(GraphQLDate) },
+          progress: { type: GraphQLInt },
+          weekday: { type: GraphQLString },
+          status: { type: GraphQLString },
           users_id: { type: GraphQLInt}       
         })
       })
+
+      // id | google_id |        date         | progress | weekday  | status | users_id 
+      // ----+-----------+---------------------+----------+----------+--------+----------
+      //   1 |           | 2023-01-25 00:00:00 |        1 | thursday | {}     |        1
       
       const EnvType = new GraphQLObjectType({            
         name: 'ENV',
         description: "Env Variables",
         fields: () => ({      
           DATABASE_URL: { type: new GraphQLNonNull(GraphQLString) },          
-          REACT_APP_API: { type: new GraphQLNonNull(GraphQLString) },
-          REACT_APP_NODE_ENV: { type: GraphQLString },
-          REACT_APP_GOOGLE_ID: { type: GraphQLString },
+          API: { type: new GraphQLNonNull(GraphQLString) },
+          NODE_ENV: { type: GraphQLString },
+          GOOGLE_ID: { type: GraphQLString },
           // id: { type: GraphQLInt }        
         })})
-  
-
 
 const RootQueryType = new GraphQLObjectType({
   name: 'Query',
   description: 'Root Query',
   fields: () => ({
-    book: {
-      type: BookType,
-      description: 'A Single Book',
-      args: {
-        id: { type: GraphQLInt }
-      },
-      resolve: (parent, args) => books.find(book => book.id === args.id)
-    },
-    allbooks: {
-      type: new GraphQLList(BookType),
-      description: 'List of All Books',
-      resolve: () => books
-    },
-    allAPIpokemon: {
-        type: new GraphQLList(PokemonType),
-        description: 'List of Pokemon',
-        resolve: async () => {
-            // let allpokemon = await allPokemonAPI()
-            let bucket = []
-    let pokemon = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=151`)
-    // let pokemon = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=151`)
-        let data = pokemon.data.results
-        await data.forEach(data => bucket.push({name: data.name, poke_id: bucket.length + 1 }))
-        if (bucket) { return bucket }            
-        }
-    },
-    allDBpokemon: {
-        type: new GraphQLList(PokemonType),
-        // type: GraphQLString,
-        description: 'hit the route please',
-        resolve: async () => {
-
-           let bucket = [];
-           let pokemon = await prisma.pokemon.findMany()
-           pokemon.forEach( (pokemon) => { 
-             let obj = { name: pokemon.name, poke_id: pokemon.id }
-             bucket.push(obj);
-            })
-            return bucket;                   
-        }
-    },    
-    allDataAllPokemon: {
-      type: PokemonType,
-      // type: new GraphQLList(PokemonType),
-      description: 'retrieve pokeAPI.co/pokemon data-> types, abilities, other data excluded from main pokeAPI.co/ endpoint ',// dont want either args: NonNull..  user can either enter a name or ID. if name as args and exlude NonNull ID from args. error from NonNull.
-      args: {
-        name: { type: GraphQLString },
-        id: { type: GraphQLInt }
-      },
-      resolve: async(parent, args) => {
-        let mydata = await nameOrIdForData(args.name||args.id);
-        
-        if (mydata) {
-        // if (mydata && typeof mydata === 'object') {
-          let obj = { 
-            name: mydata.name, 
-            poke_id: mydata.id, 
-            type: mydata.types ? mydata.types[0].type.name : "no type", 
-            moves: mydata.moves ? mydata.moves[0].move.name : "no moves", 
-            abilities: mydata.abilities ? mydata.abilities[0].ability.name : "no abilities",
-            image: mydata.sprites ? mydata.sprites.front_default : "no sprite images"
-          }
-          return obj
-
-        } else { return "nothing"}        
-      }
-    },
     puppeteer: {
       type: new GraphQLList(GraphQLString),    
       description: 'Invoke Puppeteer',
       resolve: async () => {
-    
           let promises = [
             puppeteer.launch({headless: false}).then(async(browser) => {            
               // puppeteer.launch({headless: true}).then(async(browser) => {            
                   const page = await browser.newPage();
-                  await page.goto('file:///Users/medium/Desktop/alert.html');
+                  await page.goto('file:///Users/medium/Desktop/alert.html');  
 
                   return await page.evaluate(async() => {
                     // const tree = document.valuetree;
@@ -300,19 +244,6 @@ const RootQueryType = new GraphQLObjectType({
               return await Promise.all(promises)      
       }
     },    
-    authors: {
-      type: new GraphQLList(AuthorType),
-      description: 'List of All Authors',
-      resolve: () => authors
-    },
-    author: {
-      type: AuthorType,
-      description: 'A Single Author',
-      args: {
-        id: { type: GraphQLInt }
-      },
-      resolve: (parent, args) => authors.find(author => author.id === args.id)
-    },
     ENV: {      
       type: EnvType,
       description: 'List of Env Variables',
@@ -325,7 +256,7 @@ const RootQueryType = new GraphQLObjectType({
         let GOOGLE_ID = env.REACT_APP_GOOGLE_ID
         // let server = process.env.NODE_ENV === 'development' ? dev : prod
         let serverStringForSplit = `${dev}***${prod}`
-        let obj = { DATABASE_URL: db_url, REACT_APP_API: serverStringForSplit, REACT_APP_NODE_ENV: NODE_ENV, REACT_APP_GOOGLE_ID: GOOGLE_ID }
+        let obj = { DATABASE_URL: db_url, API: serverStringForSplit, NODE_ENV: NODE_ENV, GOOGLE_ID: GOOGLE_ID }
         return obj          
       }
     }, 
@@ -357,6 +288,37 @@ const RootQueryType = new GraphQLObjectType({
       // let server_google_clientId = process.env.REACT_APP_GOOGLE_ID
       return server_google_clientId || "hey you guys"
     }
+  },
+  data: {
+    
+    type: DataType,
+    description: 'Data from Postgres a psql table column named data',
+    args: {
+      users_id: { type: GraphQLInt }
+    },
+    resolve: async ( parent, args ) => {
+        if (typeof args.users_id === 'number') {
+          let data = await prisma.data.findMany()          
+          let google_id_1 = data[0].google_id
+
+          console.log('data')
+          console.log(data)
+
+let testdata = { google_id: google_id_1, access_token: 'graphql_access_token', refresh_token: "graphql_refresh_token", expiry_date: 'graphql_expiry_date', users_id: 0  }
+          return testdata
+// google_id: { type: GraphQLString }, access_token: { type: GraphQLString }, refresh_token: { type: GraphQLString }, expiry_date: { type: GraphQLString }, users_id: { type: GraphQLInt}     
+        }
+    },
+
+    // this route will organize all the data routes into 1 query separable by argument specified in object key along with other data to be handled by route as parameter.
+
+    // async function getData(req, res) {
+    //   const userGID = req.headers['x-wapp-user'];
+    //   const userData = await User.findOne({ google_id: userGID, }, { settings: true, schedule: true, _id: false, }).catch(() => null);
+    //   if (!userData) { console.log('error getting all user data'); }
+    //   res.status(200).json(userData);
+    // }
+    
   }
   }) 
 })
