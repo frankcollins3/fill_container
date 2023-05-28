@@ -1,11 +1,15 @@
 import React from 'react';
 
-export default async function waterIntakeWeightFormula (weight:number|undefined|null) {
-        // if (weight) {
-        //     let waterIntake:number = weight * (2 / 3);
-        //     return waterIntake;
-        // } else {
-        //     return 100
-        // }
-        return weight ? weight * (2 / 3) : 100
+export default async function waterIntakeWeightFormula(weight: number | undefined | null | string) {
+  let parsedWeight: number | undefined;
+
+  if (typeof weight === 'string') {
+    parsedWeight = parseInt(weight);
+  } else if (typeof weight === 'number') {
+    parsedWeight = weight;
+  } else {
+    parsedWeight = undefined;
+  }
+
+  return parsedWeight ? parsedWeight * (2 / 3) : 100;
 }
