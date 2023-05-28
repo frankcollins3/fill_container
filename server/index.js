@@ -185,17 +185,14 @@ const SettingsType = new GraphQLObjectType({
         fields: () => ({
           // id: { type: GraphLQInt }, // psql id. not sure if it's needed but its not NONNULLED so can be ommitted.
           google_id: { type: GraphQLString },
-          date: { type: new GraphQLNonNull(GraphQLDate) },
+          date: { type: new GraphQLNonNull(GraphQLString) },
+          // date: { type: new GraphQLNonNull(GraphQLDate) },
           progress: { type: GraphQLInt },
           weekday: { type: GraphQLString },
-          status: { type: GraphQLString },
-          users_id: { type: GraphQLInt}       
+          status: { type: new GraphQLList(GraphQLString) },
+          users_id: { type: new GraphQLNonNull(GraphQLInt) }       
         })
       })
-
-      // id | google_id |        date         | progress | weekday  | status | users_id 
-      // ----+-----------+---------------------+----------+----------+--------+----------
-      //   1 |           | 2023-01-25 00:00:00 |        1 | thursday | {}     |        1
       
       const EnvType = new GraphQLObjectType({            
         name: 'ENV',
@@ -304,9 +301,12 @@ const RootQueryType = new GraphQLObjectType({
           console.log('data')
           console.log(data)
 
-let testdata = { google_id: google_id_1, access_token: 'graphql_access_token', refresh_token: "graphql_refresh_token", expiry_date: 'graphql_expiry_date', users_id: 0  }
+let testdata = { google_id: google_id_1, date: '2023-01-25 00:00:00', progress: 0, weekday: 'monday', status: ['hey', 'how', 'are', 'you'], users_id: 0  }
           return testdata
-// google_id: { type: GraphQLString }, access_token: { type: GraphQLString }, refresh_token: { type: GraphQLString }, expiry_date: { type: GraphQLString }, users_id: { type: GraphQLInt}     
+
+          // id | google_id |        date         | progress | weekday  | status | users_id 
+      // ----+-----------+---------------------+----------+----------+--------+----------
+      //   1 |           | 2023-01-25 00:00:00 |        1 | thursday | {}     |        1
         }
     },
 
