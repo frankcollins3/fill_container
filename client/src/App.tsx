@@ -32,17 +32,15 @@ function App( props:any ) {
   setCursor()
 
   const { 
-    HYDRO_SETTINGS, LOG_IN_OUT_TYPE,
-    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE 
+    HYDRO_SETTINGS, LOG_IN_OUT_TYPE,            // state from mapStateToProps above the export app statement.
+    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE      // actions from mapDispatchToProps bottom of App.tsx
   } = props    // object destructuring props haven't done this before.
 
-
-  // const [googler, setGoogler] = useState(null)
   let env:any;
   // let clientId = ''
   let clientId:string;
   let API:string = ''
-  let GLOBAL_STORE;     // I dont need the GLOBAL_STORE anymore it comes in from connect but just leaving things to remember the original strucutre.
+  
   // let globalstate = { HYDRO_SETTINGS, HYDRO_DATA };
   let urlbank:any;
 
@@ -52,9 +50,7 @@ function App( props:any ) {
   useEffect( () => {
     (async() => {
       urlbank = await allurl()
-      GLOBAL_STORE = await store.getState()
       // let {HYDRO_DATA, HYDRO_SETTINGS } = await store.getState()
-
 
       API = urlbank.API      
       env = urlbank.ENVdata.data.ENV   
@@ -76,13 +72,20 @@ function App( props:any ) {
   const onFailure = (res:any) => { console.log("hey failure") }
   
   const test = async () => {
-    await TOGGLE_HYDRO_SETTINGS()
+    // await TOGGLE_HYDRO_SETTINGS()
+    let mydata = await fetch(`${urlbank.data}`)
+    // let mydata = await fetch(`${API}fill_cont?query={data(users_id:1){google_id,access_token,refresh_token,expiry_date,users_id}}`)
+    let data = await mydata.json()
+    console.log('data')
+    console.log(data)
+    // `${API}fill_cont?query={allDBsettings(users_id: 1){id,age,height,weight,reminder,activity,start_time,end_time,users_id}}`;
   };
 
   const test2 = async () => {
     // let allDBsettings:string = urlbank.allDBsettingsURL
     // let h20 = await WaterRequest(allDBsettings, { headers: 'headers' })
-    console.log(await store.getState())    
+    // console.log(await store.getState())   
+    console.log(urlbank) 
   }
 
   const renderApp = () => {
@@ -106,18 +109,12 @@ function App( props:any ) {
       <div className="navbar">
         
         <GoogleLogin  
-        onSuccess={onSuccess}
-        onFailure={onFailure}
+        onSuccess={onSuccess} onFailure={onFailure} buttonText="text" cookiePolicy={'single_host_origin'} isSignedIn={true}
         clientId='569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com'
-        // clientId={clientId.length > 3 ? clientId : ''}
-        // clientId={GOOGLE_clientId}
-        buttonText="text"
-        cookiePolicy={'single_host_origin'}
-        // isSignedIn={true}
+        // clientId={clientId.length > 3 ? clientId : ''}        
         />
         <button style={{ backgroundColor: 'maroon', color: 'olive'}} onClick={test}>test</button>
         <button style={{ backgroundColor: 'orange', color: 'maroon'}} onClick={test2}>test2</button>
-        {/* <GoogleLogout clientId={clientId}/> */}
         
         <Navbar />
       </div>
@@ -131,7 +128,7 @@ function App( props:any ) {
   );
 }
 
-//  state variables that will be manipulated by the actions dispatch object that are sent to props from mapDispatchToProps below.
+//  global redux variables from '/redux/store to be manipulated by the actions dispatch object that are sent to props from mapDispatchToProps below
 const mapStateToProps = (state:any) => ({
     API_URL: state.API_URL,
     ENV: state.ENV,
@@ -142,11 +139,10 @@ const mapStateToProps = (state:any) => ({
     HYDRO_SETTINGS: state.HYDRO_SETTINGS,
 });
 
-// these are the actions being mapped to props
+// global redux actions. these are the state-mutating actions being mapped to props
 const mapDispatchToProps = (dispatch:any) => ({
   TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
   SET_LOG_IN_OUT_TYPE: () => dispatch(SET_LOG_IN_OUT_TYPE()),
-
 })
 
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
@@ -158,5 +154,3 @@ const Root = () => (
 );
 
 export default Root;
-
-// export default connect(null, mapDispatchToProps)(App);
