@@ -5,9 +5,16 @@
   }
   
   .navbar-container img {
+    padding: 0.125em;
     height: 50px;
     width: 50px;
     margin: 0 0.25em;
+    border: 1px dashed #72d3fe;
+    border-radius: 50%;
+  }
+
+  .middle {
+    border: 5px solid green;
   }
   
   @media only screen and (max-width: 600px) {
