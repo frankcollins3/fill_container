@@ -277,6 +277,7 @@ const RootQueryType = new GraphQLObjectType({
     }
   },
   allDBdata: {
+    // type: DataType,
     type: new GraphQLList(DataType),
     description: 'All Data from Postgres and Prisma',
     resolve: async () => {
@@ -290,30 +291,20 @@ const RootQueryType = new GraphQLObjectType({
         })
       }
       const iPromiseIllPush = new Promise( (resolve, reject) => {
-          resolve( loopAndPush() );
+        resolve( loopAndPush() );
+        
+        reject( ['its', 'okay', 'to', 'be', 'rejected'] )
+      })   
 
-          reject( ['its', 'okay', 'to', 'be', 'rejected'] )
-      })      
       return iPromiseIllPush
       .then( () => {
-          return bucket
-          // return data ? bucket : []
+          return bucket.length > 1 ? bucket : [{
+            google_id: 'empty', date: 'empty', progress: 0, weekday: 'empty', status: ['empty', 'empty'], users_id: 0
+          }]
       })
       .catch( (err) => {
         console.log('in the catch block of the Promise execution')
-      })
-
-      // return { id, google_id, data, progress, weekday, {status ? status : ''}, users_id } = alldata
-
-        // id: { type: GraphLQInt }, // psql id. not sure if it's needed but its not NONNULLED so can be ommitted.
-        // google_id: { type: GraphQLString },
-        // date: { type: new GraphQLNonNull(GraphQLString) },
-        // // date: { type: new GraphQLNonNull(GraphQLDate) },
-        // progress: { type: GraphQLInt },
-        // weekday: { type: GraphQLString },
-        // status: { type: new GraphQLList(GraphQLString) },
-        // users_id: { type: new GraphQLNonNull(GraphQLInt) }       
-      
+      })         
     }
   },
   singledata: {    
