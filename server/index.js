@@ -282,12 +282,24 @@ const RootQueryType = new GraphQLObjectType({
     resolve: async () => {
       let alldata = await prisma.data.findMany()
       let bucket = []
+      const loopAndPush = () => {
+        alldata.forEach( (data) => {
+          let d = data;
+          let dataObj = { google_id: d.google_id, date: d.date, progress: d.progress, weekday: d.weekday, status: d.status, users_id: d.users_id }
+          bucket.push(dataObj)
+        })
+      }
+      const iPromiseIllPush = new Promise( (resolve, reject) => {
+          resolve( loopAndPush() );
 
-      
-      alldata.forEach( (data) => {
-        let d = data;
-  let dataObj = { google_id: d.google_id, date: d.date, progress: d.progress, weekday: d.weekday, status: d.status, users_id: d.users_id }
-        bucket.push(dataObj)
+          reject( ['its', 'okay', 'to', 'be', 'rejected'] )
+      })      
+      return iPromiseIllPush
+      .then( (data) => {
+          return data ? bucket : []
+      })
+      .catch( (err) => {
+        console.log('in the catch block of the Promise execution')
       })
 
       // return { id, google_id, data, progress, weekday, {status ? status : ''}, users_id } = alldata
@@ -303,16 +315,6 @@ const RootQueryType = new GraphQLObjectType({
       
     }
   },
-  clientId: {
-    type:  GraphQLString,
-    description: 'Retrieve Google Credentials From .env for Google Oauth2.0',
-    // resolve: () => {( process.env.REACT_APP_GOOGLE_ID )}    
-    resolve: async () => {
-      let server_google_clientId = process.env.REACT_APP_GOOGLE_ID
-      // let server_google_clientId = process.env.REACT_APP_GOOGLE_ID
-      return server_google_clientId || "hey you guys"
-    }
-  },
   singledata: {    
     type: DataType,
     description: 'Data from Postgres a psql table column named data',
@@ -323,14 +325,24 @@ const RootQueryType = new GraphQLObjectType({
       // have to fix this to parse args for the id or the name. robust code: edge cases. 
         if (typeof args.users_id === 'number') {
           let data = await prisma.data.findMany()          
-          let my_data = data.filter(data => data.id = args.users_id)
-          let google_id_1 = data[0].google_id
-          
-let testdata = { google_id: 'teehee', date: '2023-01-25 00:00:00', progress: 0, weekday: 'monday', status: ['hey', 'how', 'are', 'you'], users_id: 0  }
-          return testdata
+          let my_data = data.filter(data => data.users_id === args.users_id)
+          let my = my_data[0]          
+            return { google_id: my.google_id, date: my.date, progress: my.progress, weekday: my.weekday, status: my.status, users_id: my.users_id  }
+        } else {    
+            return { google_id: 'empty', date: 'empty', progress: 'empty', weekday: 'empty', status: 'empty', users_id: 'empty'  }
         }
-    },
-  }
+    }
+  },
+  clientId: {
+    type:  GraphQLString,
+    description: 'Retrieve Google Credentials From .env for Google Oauth2.0',
+    // resolve: () => {( process.env.REACT_APP_GOOGLE_ID )}    
+    resolve: async () => {
+      let server_google_clientId = process.env.REACT_APP_GOOGLE_ID
+      // let server_google_clientId = process.env.REACT_APP_GOOGLE_ID
+      return server_google_clientId || "hey you guys"
+    }
+  },
   }) 
 })
 
