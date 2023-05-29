@@ -295,8 +295,9 @@ const RootQueryType = new GraphQLObjectType({
           reject( ['its', 'okay', 'to', 'be', 'rejected'] )
       })      
       return iPromiseIllPush
-      .then( (data) => {
-          return data ? bucket : []
+      .then( () => {
+          return bucket
+          // return data ? bucket : []
       })
       .catch( (err) => {
         console.log('in the catch block of the Promise execution')
