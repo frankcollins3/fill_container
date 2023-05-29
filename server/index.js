@@ -268,12 +268,39 @@ const RootQueryType = new GraphQLObjectType({
          return { id, weight, height, age, reminder, start_time, end_time, reminder, activity, users_id } = settings 
       }
     },   
-  allUsers: {
+  allDBusers: {
     type: new GraphQLList(UsersType),
     description: 'List of Users from Postgres & Prisma',
     resolve: async () => {
       let allusers = await prisma.users.findMany()
       return { id, username, email, password, age } = allusers
+    }
+  },
+  allDBdata: {
+    type: new GraphQLList(DataType),
+    description: 'All Data from Postgres and Prisma',
+    resolve: async () => {
+      let alldata = await prisma.data.findMany()
+      let bucket = []
+
+      
+      alldata.forEach( (data) => {
+        let d = data;
+  let dataObj = { google_id: d.google_id, date: d.date, progress: d.progress, weekday: d.weekday, status: d.status, users_id: d.users_id }
+        bucket.push(dataObj)
+      })
+
+      // return { id, google_id, data, progress, weekday, {status ? status : ''}, users_id } = alldata
+
+        // id: { type: GraphLQInt }, // psql id. not sure if it's needed but its not NONNULLED so can be ommitted.
+        // google_id: { type: GraphQLString },
+        // date: { type: new GraphQLNonNull(GraphQLString) },
+        // // date: { type: new GraphQLNonNull(GraphQLDate) },
+        // progress: { type: GraphQLInt },
+        // weekday: { type: GraphQLString },
+        // status: { type: new GraphQLList(GraphQLString) },
+        // users_id: { type: new GraphQLNonNull(GraphQLInt) }       
+      
     }
   },
   clientId: {
@@ -286,39 +313,23 @@ const RootQueryType = new GraphQLObjectType({
       return server_google_clientId || "hey you guys"
     }
   },
-  data: {
-    
+  singledata: {    
     type: DataType,
     description: 'Data from Postgres a psql table column named data',
     args: {
       users_id: { type: GraphQLInt }
     },
     resolve: async ( parent, args ) => {
+      // have to fix this to parse args for the id or the name. robust code: edge cases. 
         if (typeof args.users_id === 'number') {
           let data = await prisma.data.findMany()          
+          let my_data = data.filter(data => data.id = args.users_id)
           let google_id_1 = data[0].google_id
-
-          console.log('data')
-          console.log(data)
-
-let testdata = { google_id: google_id_1, date: '2023-01-25 00:00:00', progress: 0, weekday: 'monday', status: ['hey', 'how', 'are', 'you'], users_id: 0  }
+          
+let testdata = { google_id: 'teehee', date: '2023-01-25 00:00:00', progress: 0, weekday: 'monday', status: ['hey', 'how', 'are', 'you'], users_id: 0  }
           return testdata
-
-          // id | google_id |        date         | progress | weekday  | status | users_id 
-      // ----+-----------+---------------------+----------+----------+--------+----------
-      //   1 |           | 2023-01-25 00:00:00 |        1 | thursday | {}     |        1
         }
     },
-
-    // this route will organize all the data routes into 1 query separable by argument specified in object key along with other data to be handled by route as parameter.
-
-    // async function getData(req, res) {
-    //   const userGID = req.headers['x-wapp-user'];
-    //   const userData = await User.findOne({ google_id: userGID, }, { settings: true, schedule: true, _id: false, }).catch(() => null);
-    //   if (!userData) { console.log('error getting all user data'); }
-    //   res.status(200).json(userData);
-    // }
-    
   }
   }) 
 })
