@@ -42,3 +42,7 @@
 .credits-container a:active{
   text-decoration: none;
 }
+
+.credits-container img {
+  border: none;
+}
