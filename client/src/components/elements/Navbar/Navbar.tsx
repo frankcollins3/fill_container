@@ -1,4 +1,4 @@
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import React, { useState, useEffect } from 'react';
 import './navbar.css';
 import { animated, useSpring } from 'react-spring';
@@ -6,16 +6,19 @@ import $ from 'jquery'
 import CSS from '../../../utility/CSS'
 import LogInOutGoogle from '../LogInOutGoogle/LogInOutGoogle'
 import store from '../../../redux/store'
-import actionsObject from '../../../redux/actionsJS'
+
+import { TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE } from '../../../redux/actions'
+
 // import $ from 'jquery'
 
 // import Profile from '../Profile';
-
-
  function Navbar(props:any) {
+  const dispatch = useDispatch()
 
-  console.log('props')
-  console.log(props)
+  const { 
+    HYDRO_SETTINGS, LOG_IN_OUT_TYPE,
+    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE,
+   } = props
 
   // let navbardropletJQ = $('.navbar-droplet')
   // let msgbottleJQ = $('.msg-bottle')
@@ -27,9 +30,6 @@ import actionsObject from '../../../redux/actionsJS'
   let msgbottleJQ:any;
   let msgbottleID:string
   let bothElemById:any
-  
-  let TOGGLE_SETTINGS = actionsObject.TOGGLE_SETTINGS
-
   
   if (typeof window !== 'undefined') {
     CSS($('*'), 'cursor', `url('/water_img/mouse_droplet.png')`)   
@@ -86,13 +86,13 @@ const homeclick = () => { window.location.href = "/"}
   const settingsclick = () => {  window.location.href = "/settings" }
 
   const test = async () => {
-      // let navsettings = await TOGGLE_SETTINGS()
-      // console.log('navsettings')
-      // console.log(navsettings.payload)
-      console.log(await store.getState())
+      console.log('HYDRO_SETTINGS from navbar')
+      console.log(HYDRO_SETTINGS)
 
-      console.log('props')
-      console.log(props)
+      console.log('LOG_IN_OUT_TYPE')
+      console.log(LOG_IN_OUT_TYPE)
+
+      TOGGLE_HYDRO_SETTINGS()
   }
 
     const testuser = { username: 'test', email: 'test', password: 'test', age: 'test', GOOGLE_ID: 'GOOGLE_ID' }
@@ -129,13 +129,32 @@ const homeclick = () => { window.location.href = "/"}
   );
 }
 
-const mapStateToProps = (state: any) => ({
-  water: state.water,
-  API_URL: state.API_URL,
-  settings: state.settings,
-  LOGIN_TYPE: state.LOGIN_TYPE,
-  ENV: state.ENV,
-  USER: state.USER
-});
+const mapStateToProps = (state:any) => ({
+    HYDRO_SETTINGS: state.HYDRO_SETTINGS,
+    HYDRO_DATA: state.HYDRO_DATA,
+    LOG_IN_OUT_TYPE: state.LOG_IN_OUT_TYPE
+})
 
-export default connect(mapStateToProps)(Navbar);
+const mapDispatchToProps = (dispatch:any) => ({
+    TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
+    SET_LOG_IN_OUT_TYPE: () => dispatch(SET_LOG_IN_OUT_TYPE())
+})
+
+const ConnectedNavbar = connect(mapStateToProps, mapDispatchToProps)(Navbar)
+
+export default ConnectedNavbar
+
+// const mapStateToProps = (state: any) => ({
+//   water: state.water,
+//   API_URL: state.API_URL,
+//   settings: state.settings,
+//   LOGIN_TYPE: state.LOGIN_TYPE,
+//   ENV: state.ENV,
+//   USER: state.USER
+// });
+
+// const mapDispatchToProps = (dispatch:any) => ({
+//       togglesettings: (setting:any) => dispatch(TOGGLE_SETTINGS(setting))
+// })
+
+// export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
