@@ -1,8 +1,11 @@
+
+
 .settings-container {
   width: 60%;
   height: 100%;
   margin: 0 auto;
   text-align: center;
+  padding-top: 0.5em;
 }
 
 .settings-container .settings-title {
@@ -37,12 +40,14 @@ form {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #ffffff;
+  background: transparent;
+  padding-left: -3em;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #dedede70;
+  width: 20px;
 }
 
 /* Handle on hover */
