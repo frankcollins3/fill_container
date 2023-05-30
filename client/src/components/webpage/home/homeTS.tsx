@@ -1,10 +1,8 @@
-
 import React from "react";
 import "./home.css"
 import {useState, useEffect} from 'react'
-import actionObject from "../../../redux/actions"
 import store from "../../../redux/store"
-import allurl from '../../../utility/allurl'
+// import allDBurl from '../../../utility/fetch/allDBurl'
 import objResJson from '../../../utility/objResJson'
 import { connect } from 'react-redux'
 import $ from 'jquery'
@@ -15,6 +13,9 @@ import Display from '../../../components/elements/Display'
 import Settings from '../../../components/elements/Settings'
 import Schedule from '../../../components/elements/Schedule'
 
+// redux 
+import { TOGGLE_HYDRO_SETTINGS } from '../../../redux/actions'
+
 const GraphQLcheck = () => {
   console.log('lemme see');
 }
@@ -22,14 +23,14 @@ const GraphQLcheck = () => {
 let myname:string = "me";
 let url:string; // 
 
- function HomeTS (props:any) {
-  console.log('props')
-  console.log(props)
+ function HomeTS (props:any) {  
 
-  let global_var:any;
-  let setPokemon = actionObject.setPokemon
-  let GET_WATER_BOTTLE = actionObject.GET_WATER_BOTTLE
-  let TOGGLE_SETTINGS = actionObject.TOGGLE_SETTINGS
+  const {
+      HYDRO_SETTINGS,
+      TOGGLE_HYDRO_SETTINGS,
+  } = props
+
+  let global_var:any;  
   let pokemon;
   $('*').css('cursor', `url('/water_img/mouse_droplet.png'), auto`)
   
@@ -49,14 +50,17 @@ const test = async () => {
     // let data = await predata.json()
     // console.log('data')
     // console.log(data)    
-    let urlbank = await allurl()
-    let allsettingsurl = urlbank.allDBsettingsURL
+
+    // let urlbank = await allurl()
+    // let allsettingsurl = urlbank.allDBsettingsURL
     
-    let pre_allsettings = await fetch(allsettingsurl)
-    let allsettings = await objResJson(pre_allsettings)
-    // let allsettings = await pre_allsettings.json()
-    console.log('allsettings over here')
-    console.log(allsettings)
+    // let pre_allsettings = await fetch(allsettingsurl)
+    // let allsettings = await objResJson(pre_allsettings)
+    // // let allsettings = await pre_allsettings.json()
+    // console.log('allsettings over here')
+    // console.log(allsettings)
+
+    console.log(await store.getState())
 
 
 
@@ -68,11 +72,6 @@ const test = async () => {
     let data = await objResJson(predata)
     console.log('data over here')
     console.log(data)
-
-    let reduxresponse = await TOGGLE_SETTINGS(undefined);
-    let settingsBoolean:boolean = reduxresponse.payload
-    console.log('settingsBoolean')
-    console.log(settingsBoolean)
 
 
     // console.log('data')
@@ -100,16 +99,19 @@ const test = async () => {
        <div className="primary">
         <p> primary </p>       
        </div>
-
-      { url === "http://localhost:3000/settings"
-      ?
+      
       <div className="panel">
         <p> panel </p>
-       <Settings/> 
+        {
+          HYDRO_SETTINGS
+          ?
+          <Settings/> 
+          :
+          <pre></pre>
+        }
         </div>
        :
        <pre></pre>
-      }
     
     </div>
   )
@@ -119,13 +121,14 @@ return <div className="home-container"> {renderHome()} </div>
 
 }
 
-const mapStateToProps = (state: any) => ({
-  water: state.water,
-  API_URL: state.API_URL,
-  settings: state.settings,
-  LOGIN_TYPE: state.LOGIN_TYPE,
-  ENV: state.ENV,
-  USER: state.USER
+const mapStateToProps = (state:any) => ({
+  HYDRO_SETTINGS: state.HYDRO_SETTINGS,
+  HYDRO_DATA: state.HYDRO_DATA,
+  LOG_IN_OUT_TYPE: state.LOG_IN_OUT_TYPE
 });
+
+const mapDispatchToProps = (dispatch:any) => ({
+  TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS())
+})
 
 export default connect(mapStateToProps)(HomeTS);
