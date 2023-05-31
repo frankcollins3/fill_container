@@ -3,9 +3,11 @@ import React, { useState, useEffect } from 'react';
 import './navbar.css';
 import { animated, useSpring } from 'react-spring';
 import $ from 'jquery'
-import CSS from '../../../utility/CSS'
 import LogInOutGoogle from '../LogInOutGoogle/LogInOutGoogle'
 import store from '../../../redux/store'
+
+import CSS from '../../../utility/CSS'
+import timeoutFunc from '../../../utility/timeoutFunc'
 
 import { TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE } from '../../../redux/actions'
 
@@ -24,6 +26,10 @@ import { TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE } from '../../../redux/actio
   // let msgbottleJQ = $('.msg-bottle')
 
   const [loginType, setLoginType] = useState("")
+  let location = window.location
+  let href:string = location.href;
+  let pathname:string = location.pathname;
+
 
   let navbardropletJQ:any;
   let navbardropletID:string
@@ -83,7 +89,22 @@ import { TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE } from '../../../redux/actio
 
 const homeclick = () => { window.location.href = "/"}
   const statclick = () => {  window.location.href = "/dashboard" }
-  const settingsclick = () => {  window.location.href = "/settings" }
+  const settingsclick = () => {  
+    let noslashregex = /\//
+      let slashlesspathname:string = pathname.replace(noslashregex, '')      
+      console.log('slashlesspathname')
+      console.log(slashlesspathname)
+    if (slashlesspathname === "/dashboard") {
+      window.location.href = "/"
+      const myfunc = () => {
+        TOGGLE_HYDRO_SETTINGS()
+      }
+      
+      window.location.href = "/"
+    }
+    TOGGLE_HYDRO_SETTINGS() 
+
+  }
 
   const test = async () => {
       console.log('HYDRO_SETTINGS from navbar')
@@ -92,7 +113,7 @@ const homeclick = () => { window.location.href = "/"}
       console.log('LOG_IN_OUT_TYPE')
       console.log(LOG_IN_OUT_TYPE)
 
-      TOGGLE_HYDRO_SETTINGS()
+    TOGGLE_HYDRO_SETTINGS()
   }
 
     const testuser = { username: 'test', email: 'test', password: 'test', age: 'test', GOOGLE_ID: 'GOOGLE_ID' }
@@ -107,7 +128,7 @@ const homeclick = () => { window.location.href = "/"}
 
     <div className="middle-navbar">
     {/* <img style={{ display: loginType === "login" ? "" : "none" }} src="/water_img/panda.png"/> */}
-    <img  src="/water_img/panda.png"/>
+    {/* <img  src="/water_img/panda.png"/> */}
     </div>
       
       <div className="logo">
