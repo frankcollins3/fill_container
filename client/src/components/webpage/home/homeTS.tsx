@@ -34,7 +34,15 @@ let url:string; //
     console.log(settingsDuringDashboard)
     if (settingsDuringDashboard === 'yes') {
       console.log('guys its true')
-      timeoutFunc(TOGGLE_HYDRO_SETTINGS(), 2000)
+      const sayhello = () => {
+        console.log("guys hello there")
+      }
+      const functionobject = {
+        functionkey: sayhello
+      }
+
+      functionobject.functionkey()
+      timeoutFunc(TOGGLE_HYDRO_SETTINGS, 1000)
       localStorage.removeItem("settingsDuringDashboard")
     }
 
