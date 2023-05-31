@@ -4,6 +4,7 @@ import {useState, useEffect} from 'react'
 import store from "../../../redux/store"
 // import allDBurl from '../../../utility/fetch/allDBurl'
 import objResJson from '../../../utility/objResJson'
+import timeoutFunc from '../../../utility/timeoutFunc'
 import { connect } from 'react-redux'
 import $ from 'jquery'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
@@ -25,10 +26,21 @@ let url:string; //
 
  function HomeTS (props:any) {  
 
-  const {
-      HYDRO_SETTINGS,
-      TOGGLE_HYDRO_SETTINGS,
-  } = props
+  const { TOGGLE_HYDRO_SETTINGS } = props 
+
+  useEffect( () => {
+    const settingsDuringDashboard = localStorage.getItem('settingsDuringDashboard')
+    console.log('settingsDuringDashboard in the Home.tsx')
+    console.log(settingsDuringDashboard)
+    if (settingsDuringDashboard === 'yes') {
+      console.log('guys its true')
+      timeoutFunc(TOGGLE_HYDRO_SETTINGS(), 2000)
+      localStorage.removeItem("settingsDuringDashboard")
+    }
+
+  })
+
+  const { HYDRO_SETTINGS } = props
 
   let global_var:any;  
   let pokemon;
@@ -101,7 +113,7 @@ const test = async () => {
        </div>
       
       <div className="panel">
-        <p> panel </p>
+        
         {
           HYDRO_SETTINGS
           ?
@@ -110,7 +122,7 @@ const test = async () => {
           <pre></pre>
         }
         </div>
-       :
+       
        <pre></pre>
     
     </div>
@@ -131,4 +143,4 @@ const mapDispatchToProps = (dispatch:any) => ({
   TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS())
 })
 
-export default connect(mapStateToProps)(HomeTS);
+export default connect(mapStateToProps,mapDispatchToProps)(HomeTS);
