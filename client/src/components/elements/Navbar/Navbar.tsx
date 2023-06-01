@@ -89,18 +89,19 @@ import { TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE } from '../../../redux/actio
 
 const homeclick = () => { window.location.href = "/"}
   const statclick = () => {  window.location.href = "/dashboard" }
+  const doorclick = () => { window.location.href = "/loginoutgoogle"}
 
   const settingsclick = () => {  
     let noslashregex = /\//
       let slashlesspathname:string = pathname.replace(noslashregex, '')      
       console.log('slashlesspathname')
       console.log(slashlesspathname)
-    if (slashlesspathname === "dashboard") {
+    if (slashlesspathname === "dashboard" || slashlesspathname === "loginoutgoogle") {
       localStorage.setItem('settingsDuringDashboard', 'yes')
       window.location.href = "/"
     } else {
       TOGGLE_HYDRO_SETTINGS()
-    }
+    } 
   }
 
   const test = async () => {
@@ -135,8 +136,8 @@ const homeclick = () => { window.location.href = "/"}
           <img onClick={settingsclick} src="/water_img/settings.png" />
 
           
-          <LogInOutGoogle user={testuser}/>
-          {/* <img src="/water_img/exit.png" /> */}
+          {/* <LogInOutGoogle user={testuser}/> */}
+          <img onClick={doorclick} src="/water_img/exit.png" />
           
  
         {/* </Boop> */}
