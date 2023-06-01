@@ -59,7 +59,17 @@ import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM } from '../../../redux/action
     let InOutGoogleFunction:any;
 
     const showHideLoginSignupBtn = () => {        
-        TOGGLE_LOGIN_SIGNUP_BTN()        
+        // robust code
+        TOGGLE_LOGIN_SIGNUP_BTN()
+        // if (!LOGIN_SIGNUP_BTN) TOGGLE_LOGIN_SIGNUP_BTN()        
+        // TOGGLE_LOGIN_SIGNUP_BTN()
+        if (DISPLAY_FORM !== "login" || DISPLAY_FORM !== "signup") TOGGLE_SHOW_FORM({payload: ""})
+
+        if (DISPLAY_FORM === "login" || DISPLAY_FORM === "signup" && LOGIN_SIGNUP_BTN) {
+            console.log("weve gottem both at the same time.")
+        }
+        
+
     }
 
     const showform = (event:any) => {
@@ -73,7 +83,26 @@ import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM } from '../../../redux/action
         // else if (targetid === 'signup') {
         //     TOGGLE_SHOW_FORM(targetid)
         // }
+        TOGGLE_LOGIN_SIGNUP_BTN()
         TOGGLE_SHOW_FORM({payload: targetid})
+    }
+
+    const usernameinputhandler = (event:any) => {
+        let value:string = event.target
+        console.log('value')
+        console.log(value)
+    }
+    const passwordinputhandler = () => {}
+    const emailinputhandler = () => {}
+    const ageinputhandler = () => {}
+
+    const deleteValue = (event:any) => {
+            let value:string = event.target.value
+            console.log('event')
+            console.log(event)
+            console.log(event.target)
+            console.log(value)   
+            value = ""        
     }
 
         // const renderLoginOutGoogle = () => {
@@ -91,19 +120,28 @@ import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM } from '../../../redux/action
                         LOGIN_SIGNUP_BTN 
                         ?                        
                         <>                            
-                            <button onClick={showform} id="login" className="Login-Signup-Btn">{DISPLAY_FORM}</button>
-                            <button onClick={showform} id="signup" className="Login-Signup-Btn">bootie</button>                            
+                            <button onClick={showform} id="login" className="Login-Signup-Btn">login</button>
+                            <button onClick={showform} id="signup" className="Login-Signup-Btn">signup</button>                            
                         </>
                         :
                         <pre></pre>   
                     }
                     {
                         DISPLAY_FORM === "login" || DISPLAY_FORM === "signup"
+                        // id          Int @id @default(autoincrement())
+                        // id="username"     String?
+                        // value="username" id="email"        String?
+                        // id= value="email""password"     String?
+                        // id="a value="password"ge"          Int?
+                        // settings  value="age"   settings[]
+                        // data        data[]
                         ?
-                        <>
-                        <button onClick={showform} id="login" className="Login-Signup-Btn">{DISPLAY_FORM}</button>
-                        <button onClick={showform} id="signup" className="Login-Signup-Btn">bootie</button>
-                        </>
+                        <form>
+                            <input onFocus={deleteValue} onChange={usernameinputhandler} id="username" type="text" value="username"></input>
+                            <input onChange={emailinputhandler} id="email" type="text" value="email"></input>
+                            <input onChange={passwordinputhandler} id="password" type="text" value="password"></input>
+                            <input onChange={ageinputhandler} id="age" type="text" value="age"></input>
+                        </form>
                         :
                         <pre></pre>
                     }
