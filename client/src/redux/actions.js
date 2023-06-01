@@ -17,8 +17,16 @@ export const TOGGLE_LOGIN_SIGNUP_BTN = () => {
   }
 }
 
-export const TOGGLE_SHOW_FORM = () => {
+export const TOGGLE_SHOW_FORM = (action) => {
   return {
-    type: "TOGGLE_SHOW_FORM"
+    type: "TOGGLE_SHOW_FORM",
+    payload: action.payload
+  }
+}
+
+export const SET_PASSWORD = (action) => {
+  return {
+    type: "SET_PASSWORD",
+    payload: action.payload
   }
 }
