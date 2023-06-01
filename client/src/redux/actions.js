@@ -1,58 +1,18 @@
-const setPokemon = (newPokemon) => {
+export const TOGGLE_HYDRO_SETTINGS = () => {
     return {
-        type: "SET_POKEMON",
-        payload: newPokemon
-    }
-}
+      type: 'TOGGLE_HYDRO_SETTINGS',
+    };
+  };
 
-const GET_WATER_BOTTLE = async () => {
-    let water = ['aquafina', 'dasani', 'fuji', 'polandspring'];
-    let randomwater = await water[Math.floor(Math.random() * water.length)]
+export const SET_LOG_IN_OUT_TYPE = (action) => {
     return {
-        type: "GET_WATER_BOTTLE",
-        payload: randomwater
+      type: "SET_LOG_IN_OUT_TYPE",
+      payload: action.payload
     }
+};
+
+export const TOGGLE_LOGIN_SIGNUP_BTN = () => {
+  return {
+    type: "TOGGLE_LOGGIN_SIGNUP_BTN"
+  }
 }
-
-const SET_API_URL = async (url) => {  }
-
-    let count = 0;
-    const TOGGLE_SETTINGS = async (setting) => {
-        count++
-
-        if (setting === undefined || !setting ) {
-            return {
-                type: "TOGGLE_SETTINGS",
-                payload: true
-            }
-        } else {
-            return {
-                type: "TOGGLE_SETTINGS",
-                payload: count % 2 === 0 ? false : true 
-            }
-        }
-    }
-
-const SET_LOGIN_TYPE = async (loginmethod) => {
-    return {
-        type: "SET_LOGIN_TYPE",
-        payload: loginmethod
-    }
-}
-
-// settings: action.payload ? action.payload === false ? true : false : true 
-
-const slowpoke = () => {
-    // console.log('slowpoke')
-    return "Slowpoke"
-}
-
-const actionObject = {
-    setPokemon: setPokemon,
-    slowpoke: slowpoke,
-    GET_WATER_BOTTLE: GET_WATER_BOTTLE,
-    TOGGLE_SETTINGS: TOGGLE_SETTINGS,
-    SET_LOGIN_TYPE: SET_LOGIN_TYPE
-}
-
-export default actionObject
