@@ -24,7 +24,10 @@ const initialState = {
     LOG_IN_OUT_TYPE: 'LOGIN',
     LOGIN_SIGNUP_BTN: false,
     DISPLAY_FORM: "",
-    PASSWORD: "testpass",
+    PASSWORD_INPUT: "***",
+    USERNAME_INPUT: "",
+    EMAIL_INPUT: "",
+    AGE_INPUT: ""
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -61,10 +64,29 @@ const initialState = {
           ...state,
           DISPLAY_FORM: action.payload
         }
-      case 'SET_PASSWORD':
+      // this is the state for signup/login inputs so that a password checker can be made for the password input and others.
+      case 'SET_PASSWORD_INPUT':
+      // case 'SET_PASSWORD_INPUT' || 'SET_EMAIL_INPUT' || 'SET_USERNAME_INPUT' || 'SET_AGE_INPUT':
         return {
           ...state,
-          PASSWORD: action.payload
+          PASSWORD_INPUT: action.payload
+        }
+
+      case "SET_USERNAME_INPUT":
+        return {
+          ...state,
+          USERNAME_INPUT: action.payload
+        }
+      case "SET_EMAIL_INPUT":
+        return {
+          ...state,
+          EMAIL_INPUT: action.payload
+        }
+
+      case "SET_AGE_INPUT":
+        return {
+          ...state,
+          AGE_INPUT: action.payload
         }
 
       default:
