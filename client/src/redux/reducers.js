@@ -23,7 +23,7 @@ const initialState = {
     },
     LOG_IN_OUT_TYPE: 'LOGIN',
     LOGIN_SIGNUP_BTN: false,
-    DISPLAY_FORM: false,
+    DISPLAY_FORM: "",
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -58,7 +58,7 @@ const initialState = {
       case 'TOGGLE_SHOW_FORM':
         return {
           ...state,
-          SHOW_FORM: state.LOGIN_SIGNUP_BTN === false ? true : false 
+          SHOW_FORM: action.payload
         }
 
       default:
