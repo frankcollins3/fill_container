@@ -6,8 +6,9 @@ import {gapi} from 'gapi-script'
 import {useState, useEffect} from 'react'
 import allDBurl from '../../../utility/fetch/allDBurl'
 import elemChildrenJQ from '../../../utility/elemChildrenJQ'
+import attributeJQ from '../../../utility/attributeJQ'
 import { connect, useDispatch } from 'react-redux'
-import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM } from '../../../redux/actions'
+import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM , SET_PASSWORD} from '../../../redux/actions'
 import $ from 'jquery'
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
 
@@ -15,8 +16,8 @@ import $ from 'jquery'
  function LogInOutGoogle ( props:any ) {
 
     const { 
-        LOGIN_SIGNUP_BTN, DISPLAY_FORM,
-        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM } = props
+        LOGIN_SIGNUP_BTN, DISPLAY_FORM, PASSWORD,
+        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD } = props
           
 
     const dispatch = useDispatch()
@@ -96,7 +97,12 @@ import $ from 'jquery'
         console.log('value')
         console.log(value)
     }
-    const passwordinputhandler = () => {}
+    const passwordinputhandler = (event:any) => {
+        let value:string = event.target.value
+        $(event.target)
+        SET_PASSWORD(value)
+    }
+
     const emailinputhandler = () => {}
     const ageinputhandler = () => {}
 
@@ -120,8 +126,13 @@ import $ from 'jquery'
     const ghosttext = (event:any) => {
         let target:any = event.target
         let jqtarget:any = $(event.target)
-        let targetId:string = event.target.id        
-        // $(event.target).attr('value', targetId)
+        let targetId:string = event.target.id       
+        if (targetId === 'password') {
+            attributeJQ(target, 'value', PASSWORD)
+        } else {
+            attributeJQ(target, 'value', targetId)         // $(event.target).attr('value', targetId)
+        }
+        // modular function arguments:                  1: target $(event.target)   2: 'value' <input value={}/>        3: targetId: ['username', 'password',]
     }
 
         // const renderLoginOutGoogle = () => {
@@ -146,7 +157,7 @@ import $ from 'jquery'
                         <pre></pre>   
                     }
                     {
-                        DISPLAY_FORM === "login" || DISPLAY_FORM === "signup"
+                        DISPLAY_FORM === "login"
                         // id          Int @id @default(autoincrement())
                         // id="username"     String?
                         // value="username" id="email"        String?
@@ -156,10 +167,28 @@ import $ from 'jquery'
                         // data        data[]
                         ?
                         <form onMouseEnter={formhover}>
-                            <input onMouseEnter={ghosttext} onFocus={deleteValue} onChange={usernameinputhandler} id="username" type="text"></input>
+                            <input onMouseEnter={ghosttext} onChange={usernameinputhandler} id="username" type="text"></input>
                             <input onMouseEnter={ghosttext} onChange={emailinputhandler} id="email" type="text"></input>
                             <input onMouseEnter={ghosttext} onChange={passwordinputhandler} id="password" type="text"></input>
                             <input onMouseEnter={ghosttext} onChange={ageinputhandler} id="age" type="text"  ></input>
+                        </form>
+                        :
+                        <pre></pre>
+                    }
+                    {
+                        DISPLAY_FORM === "signup"
+                        // id          Int @id @default(autoincrement())
+                        // id="username"     String?
+                        // value="username" id="email"        String?
+                        // id= value="email""password"     String?
+                        // id="a value="password"ge"          Int?
+                        // settings  value="age"   settings[]
+                        // data        data[]
+                        ?
+                        <form onMouseEnter={formhover}>
+                            <input onMouseEnter={ghosttext} onChange={usernameinputhandler} id="username" type="text"></input>
+                            <input onMouseEnter={ghosttext} onChange={passwordinputhandler} id="password" type="text"></input>
+                            <button> forgot password? possible empty cup lol </button>
                         </form>
                         :
                         <pre></pre>
@@ -202,12 +231,15 @@ import $ from 'jquery'
 
 const mapStateToProps = (state:any) => ({
     LOGIN_SIGNUP_BTN: state.LOGIN_SIGNUP_BTN,
-    DISPLAY_FORM: state.DISPLAY_FORM
+    DISPLAY_FORM: state.DISPLAY_FORM,
+    PASSWORD: state.PASSWORD
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
     TOGGLE_LOGIN_SIGNUP_BTN: () => dispatch(TOGGLE_LOGIN_SIGNUP_BTN()),
-    TOGGLE_SHOW_FORM: (action:any) => dispatch(TOGGLE_SHOW_FORM(action))
+    TOGGLE_SHOW_FORM: (action:any) => dispatch(TOGGLE_SHOW_FORM(action)),
+    SET_PASSWORD: (action:any) => dispatch(SET_PASSWORD(action))
+
     // TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
 })
 
