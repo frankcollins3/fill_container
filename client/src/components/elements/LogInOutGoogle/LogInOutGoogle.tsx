@@ -5,18 +5,30 @@ import {GoogleLogin, GoogleLogout} from 'react-google-login'
 import {gapi} from 'gapi-script'
 import {useState, useEffect} from 'react'
 import allDBurl from '../../../utility/fetch/allDBurl'
-
+import { connect, useDispatch } from 'react-redux'
+import { TOGGLE_LOGIN_SIGNUP_BTN } from '../../../redux/actions'
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
 
 
-export default function LogInOutGoogle (user:any) {
+ function LogInOutGoogle ( props:any ) {
+
+    const { LOGIN_SIGNUP_BTN, TOGGLE_LOGIN_SIGNUP_BTN } = props
+          
+
+    const dispatch = useDispatch()
+
     let urlbank;
     let api;
     let env;
     let clientId:any;
     let API;
 
-    const onSuccess = (res:any) =>  { console.log(res.profileObj) }
+    const onSuccess = (res:any) =>  { 
+        console.log(res.profileObj) 
+        // create state and handle accessing user 
+
+        // change the form in the middle to be the login user button. 
+    }
     const onFailure = (res:any) => { console.log("hey failure") }
 
     useEffect( () => {
@@ -40,51 +52,37 @@ export default function LogInOutGoogle (user:any) {
         })()
       }, [])
 
-    user = user.user
     // console.log(user.user.GOOGLE_ID)
 
     let InOutGoogleFunction:any;
 
-        // if (!user) {            
-        //     InOutGoogleFunction = () => { 
-        //         console.log("logout functionality needed")
-        //     }
-        // } else {
-        //     if (user.GOOGLE_ID) {
-        //         InOutGoogleFunction = () => {
-        //             console.log("user but no googleID but the user should be able to have a googleId and be able to reject google login")
-        //         }
-        //     } else {
-        //         // login with user. 
-        //         InOutGoogleFunction = () => {
-        //             console.log("no google login")
-        //         }
-        //         // return { username: 'testuser', email: 'testemail', password: 'testpassword', age: 'testage' }
-        //     }
-        // }
+    const showHideLoginSignupBtn = () => {        
+        TOGGLE_LOGIN_SIGNUP_BTN()        
+    }
 
-        return (
-            <div className="login-container">
-                <img src="/water_img/hand.png"/>                
-                {/* // clientId: clientId || '569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com', */}
-                <div className="div-row">
-                    
-                {/* <img src="/water_img/bluegoogle.png"></img> */}
-                {/* <div
-                style={{ 
-                    backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', 
-                    height: '50px', width: '50px', border: '5px solid #dedede73',
-                    zIndex: '2', margin: '1em'
-             }}
-                className="google-incognito-cont"
-                >
-                </div> */}
+        // const renderLoginOutGoogle = () => {
 
+            return (
+                <div className="login-container">
+                <img onClick={showHideLoginSignupBtn} style={{ border: 'none' }} src="/water_img/hand.png"/>                
+                {/* // clientId: clientId || '569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com', */}            
+
+                <div style={{ 
+                    display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', 
+                    height: '200px', width: '200px', marginTop: '1em'                    
+                }}>
+                    <button className="Login-Signup-Btn">Login</button>
+                    <h6> {LOGIN_SIGNUP_BTN ? LOGIN_SIGNUP_BTN : "no way"} </h6>
+                    <button className="Login-Signup-Btn">Signup</button>
+                </div>
+                
                 <div
                 style = {{                     
-                backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', 
-                height: '50px', width: '50px', border: '5px solid #dedede73', zIndex: '2'
-            }}
+                    backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', 
+                    height: '50px', width: '50px', border: '5px solid #dedede73', zIndex: '2'
+                }}
+                
+                
                 className="google-container">
                     {/* <h1> blue text </h1> */}
                 <GoogleLogin
@@ -101,6 +99,26 @@ export default function LogInOutGoogle (user:any) {
 
 
                 </div>
-                </div>
         )
+    // }
+
+    // return ( renderLoginOutGoogle() )
+
+    
 }
+
+
+const mapStateToProps = (state:any) => ({
+    LOGIN_SIGNUP_BTN: state.LOGIN_SIGNUP_BTN
+})
+
+const mapDispatchToProps = (dispatch:any) => ({
+    TOGGLE_LOGIN_SIGNUP_BTN: () => dispatch(TOGGLE_LOGIN_SIGNUP_BTN())
+    // TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
+})
+
+const ConnectedLoginOutGoogle = connect(mapStateToProps, mapDispatchToProps)(LogInOutGoogle)
+
+// const ConnectedLoginOutGoogle = connect(mapStateToProps, mapDispatchToProps)(LogInOutGoogle)
+
+export default ConnectedLoginOutGoogle;     // <Route path={'/loginoutgoogle'} element={ <ConnectedLogInOutGoogle/> } /> route looks like this! not <LogInOutGoogle>
