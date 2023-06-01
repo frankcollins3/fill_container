@@ -13,6 +13,12 @@ export const SET_LOG_IN_OUT_TYPE = (action) => {
 
 export const TOGGLE_LOGIN_SIGNUP_BTN = () => {
   return {
-    type: "TOGGLE_LOGGIN_SIGNUP_BTN"
+    type: "TOGGLE_LOGIN_SIGNUP_BTN"
+  }
+}
+
+export const TOGGLE_SHOW_FORM = () => {
+  return {
+    type: "TOGGLE_SHOW_FORM"
   }
 }
