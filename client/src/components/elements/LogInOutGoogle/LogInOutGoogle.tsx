@@ -5,8 +5,10 @@ import {GoogleLogin, GoogleLogout} from 'react-google-login'
 import {gapi} from 'gapi-script'
 import {useState, useEffect} from 'react'
 import allDBurl from '../../../utility/fetch/allDBurl'
+import elemChildrenJQ from '../../../utility/elemChildrenJQ'
 import { connect, useDispatch } from 'react-redux'
 import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM } from '../../../redux/actions'
+import $ from 'jquery'
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
 
 
@@ -52,6 +54,8 @@ import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM } from '../../../redux/action
         const loadgoogle = () => { gapi.load('client:auth2', start) }
         loadgoogle()
         })()
+
+        
       }, [])
 
     // console.log(user.user.GOOGLE_ID)
@@ -105,6 +109,21 @@ import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM } from '../../../redux/action
             value = ""        
     }
 
+    const formhover = async (event:any) => {
+        let target:any = event.target
+        // let formchildren:any = await elemChildrenJQ(target, 2)
+        let children = $(event.target).children()
+        console.log('children')
+        console.log(children)
+    }
+
+    const ghosttext = (event:any) => {
+        let target:any = event.target
+        let jqtarget:any = $(event.target)
+        let targetId:string = event.target.id        
+        // $(event.target).attr('value', targetId)
+    }
+
         // const renderLoginOutGoogle = () => {
 
             return (
@@ -136,11 +155,11 @@ import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM } from '../../../redux/action
                         // settings  value="age"   settings[]
                         // data        data[]
                         ?
-                        <form>
-                            <input onFocus={deleteValue} onChange={usernameinputhandler} id="username" type="text" value="username"></input>
-                            <input onChange={emailinputhandler} id="email" type="text" value="email"></input>
-                            <input onChange={passwordinputhandler} id="password" type="text" value="password"></input>
-                            <input onChange={ageinputhandler} id="age" type="text" value="age"></input>
+                        <form onMouseEnter={formhover}>
+                            <input onMouseEnter={ghosttext} onFocus={deleteValue} onChange={usernameinputhandler} id="username" type="text"></input>
+                            <input onMouseEnter={ghosttext} onChange={emailinputhandler} id="email" type="text"></input>
+                            <input onMouseEnter={ghosttext} onChange={passwordinputhandler} id="password" type="text"></input>
+                            <input onMouseEnter={ghosttext} onChange={ageinputhandler} id="age" type="text"  ></input>
                         </form>
                         :
                         <pre></pre>
