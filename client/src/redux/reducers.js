@@ -22,7 +22,8 @@ const initialState = {
       users_id: 0
     },
     LOG_IN_OUT_TYPE: 'LOGIN',
-    LOGIN_SIGNUP_BTN: false
+    LOGIN_SIGNUP_BTN: false,
+    DISPLAY_FORM: false,
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -36,7 +37,7 @@ const initialState = {
       case 'SET_HYDRO_DATA':
         return {
           ...state,
-          HYDRO_DATA: { 
+        HYDRO_DATA: { 
             id: action.payload.id, google_id: action.payload.google_id, date: action.payload.date, progress: action.payload.progress,
             weekday: action.payload.weekday, status: action.payload.status, users_id: action.payload.users_id
           }
@@ -50,8 +51,14 @@ const initialState = {
       case 'TOGGLE_LOGIN_SIGNUP_BTN':
         return {
           ...state,
+          // LOGIN_SIGNUP_BTN: state.LOGIN_SIGNUP_BTN === 'LOGIN_SIGNUP_TEST' ? "also test" : "LOGIN_SIGNUP_TEST"
           LOGIN_SIGNUP_BTN: state.LOGIN_SIGNUP_BTN === false ? true : false 
           // LOGIN_SIGNUP_BTN: !state.LOGIN_SIGNUP_BTN
+        }
+      case 'TOGGLE_SHOW_FORM':
+        return {
+          ...state,
+          SHOW_FORM: state.LOGIN_SIGNUP_BTN === false ? true : false 
         }
 
       default:
