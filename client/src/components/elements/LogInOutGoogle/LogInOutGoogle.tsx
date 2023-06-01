@@ -6,13 +6,15 @@ import {gapi} from 'gapi-script'
 import {useState, useEffect} from 'react'
 import allDBurl from '../../../utility/fetch/allDBurl'
 import { connect, useDispatch } from 'react-redux'
-import { TOGGLE_LOGIN_SIGNUP_BTN } from '../../../redux/actions'
+import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM } from '../../../redux/actions'
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
 
 
  function LogInOutGoogle ( props:any ) {
 
-    const { LOGIN_SIGNUP_BTN, TOGGLE_LOGIN_SIGNUP_BTN } = props
+    const { 
+        LOGIN_SIGNUP_BTN, DISPLAY_FORM,
+        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM } = props
           
 
     const dispatch = useDispatch()
@@ -60,6 +62,20 @@ import { TOGGLE_LOGIN_SIGNUP_BTN } from '../../../redux/actions'
         TOGGLE_LOGIN_SIGNUP_BTN()        
     }
 
+    const showform = (event:any) => {
+        console.log('DISPLAY_FORM')
+        console.log(DISPLAY_FORM)
+        let targetid:string = event.target.id
+        // if (targetid === 'login') {
+        //     TOGGLE_LOGIN_SIGNUP_BTN()
+        //     TOGGLE_SHOW_FORM(targetid)
+        // }
+        // else if (targetid === 'signup') {
+        //     TOGGLE_SHOW_FORM(targetid)
+        // }
+        TOGGLE_SHOW_FORM({payload: targetid})
+    }
+
         // const renderLoginOutGoogle = () => {
 
             return (
@@ -71,15 +87,34 @@ import { TOGGLE_LOGIN_SIGNUP_BTN } from '../../../redux/actions'
                     display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', 
                     height: '200px', width: '200px', marginTop: '1em'                    
                 }}>
-                    <button className="Login-Signup-Btn">Login</button>
-                    <h6> {LOGIN_SIGNUP_BTN ? LOGIN_SIGNUP_BTN : "no way"} </h6>
-                    <button className="Login-Signup-Btn">Signup</button>
+                    {
+                        LOGIN_SIGNUP_BTN 
+                        ?                        
+                        <>                            
+                            <button onClick={showform} id="login" className="Login-Signup-Btn">{DISPLAY_FORM}</button>
+                            <button onClick={showform} id="signup" className="Login-Signup-Btn">bootie</button>                            
+                        </>
+                        :
+                        <pre></pre>   
+                    }
+                    {
+                        DISPLAY_FORM === "login" || DISPLAY_FORM === "signup"
+                        ?
+                        <>
+                        <button onClick={showform} id="login" className="Login-Signup-Btn">{DISPLAY_FORM}</button>
+                        <button onClick={showform} id="signup" className="Login-Signup-Btn">bootie</button>
+                        </>
+                        :
+                        <pre></pre>
+                    }
                 </div>
                 
                 <div
                 style = {{                     
                     backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', 
-                    height: '50px', width: '50px', border: '5px solid #dedede73', zIndex: '2'
+                    height: '50px', width: '50px', border: '5px solid #dedede73', zIndex: '2',
+                    transform: LOGIN_SIGNUP_BTN ? 'scale(0.25)' : 'none'
+
                 }}
                 
                 
@@ -109,11 +144,13 @@ import { TOGGLE_LOGIN_SIGNUP_BTN } from '../../../redux/actions'
 
 
 const mapStateToProps = (state:any) => ({
-    LOGIN_SIGNUP_BTN: state.LOGIN_SIGNUP_BTN
+    LOGIN_SIGNUP_BTN: state.LOGIN_SIGNUP_BTN,
+    DISPLAY_FORM: state.DISPLAY_FORM
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
-    TOGGLE_LOGIN_SIGNUP_BTN: () => dispatch(TOGGLE_LOGIN_SIGNUP_BTN())
+    TOGGLE_LOGIN_SIGNUP_BTN: () => dispatch(TOGGLE_LOGIN_SIGNUP_BTN()),
+    TOGGLE_SHOW_FORM: (action:any) => dispatch(TOGGLE_SHOW_FORM(action))
     // TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
 })
 
