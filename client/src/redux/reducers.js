@@ -24,6 +24,7 @@ const initialState = {
     LOG_IN_OUT_TYPE: 'LOGIN',
     LOGIN_SIGNUP_BTN: false,
     DISPLAY_FORM: "",
+    PASSWORD: "testpass",
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -58,7 +59,12 @@ const initialState = {
       case 'TOGGLE_SHOW_FORM':
         return {
           ...state,
-          SHOW_FORM: action.payload
+          DISPLAY_FORM: action.payload
+        }
+      case 'SET_PASSWORD':
+        return {
+          ...state,
+          PASSWORD: action.payload
         }
 
       default:
