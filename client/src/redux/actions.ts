@@ -1,59 +1,79 @@
-const setPokemon = (newPokemon) => {
+export const TOGGLE_HYDRO_SETTINGS = () => { return { type: 'TOGGLE_HYDRO_SETTINGS', } };
+
+export const SET_LOG_IN_OUT_TYPE = (action) => {
     return {
-        type: "SET_POKEMON",
-        payload: newPokemon
+      type: "SET_LOG_IN_OUT_TYPE",
+      payload: action.payload
     }
+};
+
+export const TOGGLE_LOGIN_SIGNUP_BTN = () => { return { type: "TOGGLE_LOGIN_SIGNUP_BTN" } }
+
+export const TOGGLE_SHOW_FORM = (action) => {
+  return {
+    type: "TOGGLE_SHOW_FORM",
+    payload: action.payload
+  }
 }
 
-const GET_WATER_BOTTLE = async () => {
-    let water = ['aquafina', 'dasani', 'fuji', 'polandspring'];
-    let randomwater = await water[Math.floor(Math.random() * water.length)]
-    return {
-        type: "GET_WATER_BOTTLE",
-        payload: randomwater
-    }
-}
-const SET_API_URL = async (url) => {
-    
+export const SET_PASSWORD_INPUT = (action) => {
+  return {
+    type: "SET_PASSWORD_INPUT",
+    payload: action.payload
+  }
 }
 
-    let count = 0;
-   export const TOGGLE_SETTINGS = async (setting) => {
-        count++
-
-        if (setting === undefined || !setting ) {
-            return {
-                type: "TOGGLE_SETTINGS",
-                payload: true
-            }
-        } else {
-            return {
-                type: "TOGGLE_SETTINGS",
-                payload: count % 2 === 0 ? false : true 
-            }
-        }
-    }
-
-const SET_LOGIN_TYPE = async (loginmethod) => {
-    return {
-        type: "SET_LOGIN_TYPE",
-        payload: loginmethod
-    }
+export const SET_USERNAME_INPUT = (action) => {
+  return {
+    type: "SET_USERNAME_INPUT",
+    payload: action.payload
+  }
 }
 
-// settings: action.payload ? action.payload === false ? true : false : true 
-
-const slowpoke = () => {
-    // console.log('slowpoke')
-    return "Slowpoke"
+export const SET_EMAIL_INPUT = (action) => {
+  return {
+    type: "SET_EMAIL_INPUT",
+    payload: action.payload
+  }
 }
 
-const actionObject = {
-    setPokemon: setPokemon,
-    slowpoke: slowpoke,
-    GET_WATER_BOTTLE: GET_WATER_BOTTLE,
-    TOGGLE_SETTINGS: TOGGLE_SETTINGS,
-    SET_LOGIN_TYPE: SET_LOGIN_TYPE
+export const SET_AGE_INPUT = (action) => {
+  return {
+    type: "SET_AGE_INPUT",
+    payload: action.payload
+  }
 }
 
-export default actionObject
+export const TOGGLE_INPUT_FOCUS = (action) => { 
+  return {  
+    type: "TOGGLE_INPUT_FOCUS",
+    payload: action.payload
+  }
+}
+
+export const SET_ALL_USERS = (action) => {
+  return {
+    type: "SET_ALL_USERS",
+    payload: action.payload
+  }
+}
+
+export const SET_ALL_USERNAMES = (action) => {
+  return {
+    type: "SET_ALL_USERNAMES",
+    payload: action.payload
+  }
+}
+
+export const SET_ALL_EMAILS = (action) => {
+  return {
+    type: "SET_ALL_EMAILS",
+    payload: action.payload
+  }
+}
+
+export const PARENT_CONFIRM = (action) => {
+  return {
+    type: "PARENT_CONFIRM"
+  }
+}
