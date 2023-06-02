@@ -43,4 +43,16 @@ export const SET_AGE_INPUT = (action) => {
   }
 }
 
-export const TOGGLE_INPUT_FOCUS = () => { return {  type: "TOGGLE_INPUT_FOCUS" } }
+export const TOGGLE_INPUT_FOCUS = (action) => { 
+  return {  
+    type: "TOGGLE_INPUT_FOCUS",
+    payload: action.payload
+  }
+}
+
+export const SET_ALL_USERS = (action) => {
+  return {
+    type: "SET_ALL_USERS",
+    payload: action.payload
+  }
+}
