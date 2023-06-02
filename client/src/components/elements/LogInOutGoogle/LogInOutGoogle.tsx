@@ -10,6 +10,8 @@ import allDBurl from '../../../utility/fetch/allDBurl'
 import elemChildrenJQ from '../../../utility/elemChildrenJQ'
 import attributeJQ from '../../../utility/attributeJQ'
 import WaterRequest from '../../../utility/WaterRequest'
+import setCursor from '../../../utility/setCursor'
+import CSS from '../../../utility/CSS'
 // import ghostText from '../../../utility/GhostText'
 
 // components
@@ -27,6 +29,16 @@ import $ from 'jquery'
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
 
  function LogInOutGoogle ( props:any ) {
+    setCursor() 
+
+
+    // if (typeof window !== 'undefined') {
+    //     let eventassertions = [ {property: 'cursor', value: `normal`}]
+    //     CSS($('*'), 'cursor', `url('/water_img/mouse_droplet.png')`)   
+    //     // EVENT($('*'), 'mouseenter', eventassertions) 
+    //       $('*').on('mouseenter', (event:any) => { CSS($(event.target), 'cursor', 'normal') })
+    //     // let eventassertions = [CSS(target, 'cursor', normal)]
+    //   }
 
     const { 
         LOGIN_SIGNUP_BTN, DISPLAY_FORM, PASSWORD_INPUT, INPUT_FOCUS, ALL_USERS,
@@ -65,12 +77,15 @@ import $ from 'jquery'
           let allUsers = await WaterRequest(allDBusersURL, options)
           let allUsersData = allUsers.data.allDBusers
           let allUsernames = allUsersData.filter((data:any) => data.hasOwnProperty('username')).map((data:any) => data.username);          
-          console.log('allUsernames from LogInOutGoogle')
-          console.log(allUsernames)
+          let allEmails = allUsersData.filter((data:any) => data.hasOwnProperty('email')).map((data:any) => data.email)
+          console.log('allEmails')
+          console.log(allEmails)
+          
         
         //   SET_ALL_USERS( {payload: allUsersData })
           SET_ALL_USERNAMES( {payload: allUsernames })
-        
+          SET_ALL_EMAILS( { payload: allEmails })
+            
         //   SET_ALL_USERS( {payload: allUsersData })
                 
           clientId = env.GOOGLE_ID
