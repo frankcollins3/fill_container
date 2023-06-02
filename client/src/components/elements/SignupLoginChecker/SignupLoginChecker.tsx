@@ -1,18 +1,40 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import "./signuploginchecker.css"
 
-  function SignupLoginChecker(loginstate:string, props:any) {
+  interface Props {
+    loginstate: string,
+    USERNAME_INPUT: string,
+    PASSWORD_INPUT: string,
+    EMAIL_INPUT: string,
+    AGE_INPUT: string
+  }
+
+  function SignupLoginChecker(props:any) {
     const { 
-        USERNAME_INPUT, PASSWORD_INPUT, EMAIL_INPUT, AGE_INPUT 
-        
+        USERNAME_INPUT, PASSWORD_INPUT, EMAIL_INPUT, AGE_INPUT,
+        loginstate    
     } = props
-
 
 
     const RenderSignupLoginChecker = () => {
         if (loginstate === 'username') {
             return (
-                <p> username </p>
+                // <p style={{ fontSize: '8px', textAlign: 'center' }}> hi </p>
+                <div className="Checker-Container">
+                    <div className="column">
+                    <img className="Checker-Droplet" src="/water_img/bg.png"/>
+                    <p> unique </p>
+                    </div>
+                    <div className="column">
+                    <img className="Checker-Droplet" src="/water_img/bg.png"/>
+                    {/* <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/> */}
+                    <p> length </p>
+                    </div>
+                    {/* <div className="column">
+                    <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/>
+                    </div> */}
+                </div>
             )
         }
         if (loginstate === 'email') {
@@ -30,6 +52,9 @@ import {connect} from 'react-redux'
                 <p> age </p>
             )
         }
+        return (
+            <p style={{ fontSize: '8px', textAlign: 'center' }}> hey well thats really funny </p>
+        )
     }
 
     return <div className="SignupLoginChecker-Container"> {RenderSignupLoginChecker()} </div>
@@ -42,10 +67,6 @@ const mapStateToProps = (state:any) => ({
     EMAIL_INPUT: state.EMAIL_INPUT,
     AGE_INPUT: state.AGE_INPUT
 })
-
-// const mapDispatchToProps = (dispatch:any) => ({
-
-// })
 
 const ConnectedSignupLoginChecker = connect(mapStateToProps)(SignupLoginChecker)
  
