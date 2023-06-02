@@ -30,7 +30,7 @@ import $ from 'jquery'
 
     const { 
         LOGIN_SIGNUP_BTN, DISPLAY_FORM, PASSWORD_INPUT, INPUT_FOCUS, ALL_USERS,
-        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS } = props
+        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES } = props
           
 
     const dispatch = useDispatch()
@@ -64,17 +64,13 @@ import $ from 'jquery'
 
           let allUsers = await WaterRequest(allDBusersURL, options)
           let allUsersData = allUsers.data.allDBusers
-        
-            let allUsernames = allUsersData.filter((data:any) => data.hasOwnProperty('username')).map((data:any) => data.username);
-          console.log('allUsernames')
+          let allUsernames = allUsersData.filter((data:any) => data.hasOwnProperty('username')).map((data:any) => data.username);          
+          console.log('allUsernames from LogInOutGoogle')
           console.log(allUsernames)
-          
-          console.log('allUsers from LogInOutGoogle')
-          console.log(allUsers)
-          console.log('allUsersData')
-          console.log(allUsersData)
-          SET_ALL_USERS( {payload: allUsersData })
+        
+        //   SET_ALL_USERS( {payload: allUsersData })
           SET_ALL_USERNAMES( {payload: allUsernames })
+        
         //   SET_ALL_USERS( {payload: allUsersData })
                 
           clientId = env.GOOGLE_ID
@@ -281,6 +277,7 @@ const mapDispatchToProps = (dispatch:any) => ({
     TOGGLE_SHOW_FORM: (action:any) => dispatch(TOGGLE_SHOW_FORM(action)),
     SET_PASSWORD: (action:any) => dispatch(SET_PASSWORD_INPUT(action)),
     SET_ALL_USERS: (action:any) => dispatch(SET_ALL_USERS(action)),
+    SET_ALL_USERNAMES: (action:any) => dispatch(SET_ALL_USERNAMES(action)),
     SET_ALL_EMAILS: (action:any) => dispatch(SET_ALL_EMAILS(action))
     // TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
 })
