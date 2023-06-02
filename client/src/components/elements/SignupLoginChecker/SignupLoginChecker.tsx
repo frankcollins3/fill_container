@@ -42,7 +42,24 @@ import allDBurl from  "../../../utility/fetch/allDBurl"
         }
         if (loginstate === 'email') {
             return (
-                <p> email </p>
+                // <p style={{ fontSize: '8px', textAlign: 'center' }}> hi </p>
+                <div className="Checker-Container">                
+                    <div className="column">
+                    <img className="Checker-Droplet" src={ EMAIL_INPUT.includes('@') ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
+                    {/* <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/> */}
+                    <p style={{ color: EMAIL_INPUT.includes('@') ? "#73defe" : "#686868" }}> @ </p>
+                    </div>
+                    <div className="column">
+                    <img className="Checker-Droplet" src={ EMAIL_INPUT.includes('@') ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
+                    {/* <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/> */}
+                    <p style={{ color: EMAIL_INPUT.includes('@') ? "#73defe" : "#686868" }}> unique </p>
+                    </div>
+                    <div className="column">
+                    <img className="Checker-Droplet" src={ EMAIL_INPUT.includes('.com') ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
+                    {/* <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/> */}
+                    <p style={{ color: EMAIL_INPUT.includes('.com') ? "#73defe" : "#686868" }}> .com </p>
+                    </div>
+                </div>
             )
         }
         if (loginstate === 'password') {
@@ -70,7 +87,14 @@ import allDBurl from  "../../../utility/fetch/allDBurl"
         }
         if (loginstate === 'age') {
             return (
-                <p> age </p>
+                // <p style={{ fontSize: '8px', textAlign: 'center' }}> hi </p>
+                <div className="Checker-Container">                
+                    <div className="column">
+                    <img className="Checker-Droplet" src={ AGE_INPUT > 10 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
+                    {/* <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/> */}
+                    <p style={{ color: AGE_INPUT > 10 ? "#73defe" : "#686868" }}> age </p>
+                    </div>
+                </div>
             )
         }
         return (
