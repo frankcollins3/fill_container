@@ -22,6 +22,14 @@ export const SET_PASSWORD_INPUT = (action) => {
     payload: action.payload
   }
 }
+
+export const SET_DUMMY_PASSWORD_INPUT = (action) => {
+  return {
+    type: "SET_DUMMY_PASSWORD_INPUT",
+    payload: action.payload
+  }
+}
+
 export const SET_USERNAME_INPUT = (action) => {
   return {
     type: "SET_USERNAME_INPUT",
@@ -70,3 +78,16 @@ export const SET_ALL_EMAILS = (action) => {
     payload: action.payload
   }
 }
+
+export const TOGGLE_PARENT_CONFIRM = (action) => {
+  return {
+    type: "TOGGLE_PARENT_CONFIRM"
+  }
+}
+
+// export const SET_SIGNUP_INPUTS_COMPLETE = (action) => {
+//   return {
+//     type: "SET_SIGNUP_INPUTS_COMPLETE",
+//     payload: action.payload
+//   }
+// }
