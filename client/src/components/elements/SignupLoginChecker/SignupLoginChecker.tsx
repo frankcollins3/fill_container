@@ -125,10 +125,11 @@ import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
             return (
                 <div className="Checker-Container">      
                     <div className="column">
-<img className="Checker-Droplet" src={ AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT > 4 && PARENT_CONFIRM === false  ? "/water_img/panda.png" : "/water_img/mouse_droplet.png"}/>
-<pre style={{ display: AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT > 4 ? "" : "none"}}> Hello Droplet! Please tell a Parent or Guardian You visited Us! </pre>
+<img className="Checker-Droplet" src={ AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT > 0 && PARENT_CONFIRM === false  ? "/water_img/panda.png" : AGE_INPUT.length && AGE_INPUT > 0 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png" }/>
+<pre style={{ display: AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT >= 4 && !PARENT_CONFIRM ? "" : "none"}}
+> Hello Droplet! Please tell a Parent or Guardian You visited Us! </pre>
 
-<input onChange={inputCheckboxHandler} type="checkbox" id="parent-checkbox" style={{ display: AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT > 4 && PARENT_CONFIRM === false ? "" : "none", }} />
+<input onChange={inputCheckboxHandler} type="checkbox" id="parent-checkbox" style={{ display: AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT >= 4 && !PARENT_CONFIRM ? "" : "none", }} />
 <label style={{ display: AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT > 4 && PARENT_CONFIRM === false ? "" : "none", }} htmlFor="parent-checkbox" className="custom-checkbox"></label>
                     {/* <p style={{ color: 'orange' }}> {PARENT_CONFIRM ? "yes" : "no" } </p> */}
                     </div>                    
