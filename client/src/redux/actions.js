@@ -56,3 +56,17 @@ export const SET_ALL_USERS = (action) => {
     payload: action.payload
   }
 }
+
+export const SET_ALL_USERNAMES = (action) => {
+  return {
+    type: "SET_ALL_USERNAMES",
+    payload: action.payload
+  }
+}
+
+export const SET_ALL_EMAILS = (action) => {
+  return {
+    type: "SET_ALL_EMAILS",
+    payload: action.payload
+  }
+}
