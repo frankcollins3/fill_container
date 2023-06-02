@@ -9,6 +9,7 @@ import {useState, useEffect} from 'react'
 import allDBurl from '../../../utility/fetch/allDBurl'
 import elemChildrenJQ from '../../../utility/elemChildrenJQ'
 import attributeJQ from '../../../utility/attributeJQ'
+import WaterRequest from '../../../utility/WaterRequest'
 // import ghostText from '../../../utility/GhostText'
 
 // components
@@ -35,10 +36,12 @@ import $ from 'jquery'
     const dispatch = useDispatch()
 
     let urlbank;
+    let allDBusersURL
     let api;
     let env;
     let clientId:any;
     let API;
+
 
     const onSuccess = (res:any) =>  { 
         console.log(res.profileObj) 
@@ -55,6 +58,13 @@ import $ from 'jquery'
     
           API = urlbank.API      
           env = urlbank.ENVdata.data.ENV   
+          allDBusersURL = urlbank.allDBusersURL
+          
+          let options = { headers: 'AllUsers' }
+
+          let allUsers = await WaterRequest(allDBusersURL, options)
+          console.log('allUsers')
+          console.log(allUsers)
                 
           clientId = env.GOOGLE_ID
                 function start() {
@@ -181,20 +191,22 @@ import $ from 'jquery'
                         // settings  value="age"   settings[]
                         // data        data[]
                         ?
-                        <>
+
+                        <div className="Form-Container">
                         <form onMouseEnter={formhover}>
                             {/* <input onMouseEnter={ghosttext} onChange={usernameinputhandler} id="username" type="text"></input> */}
                          
-                        { INPUT_FOCUS ? INPUT_FOCUS === "username" ? <ConnectedUsernameInput/> : <pre></pre> : <ConnectedUsernameInput/> }                                                     
-                            {/* <input onMouseEnter={ghosttext} onChange={emailinputhandler} id="email" type="text"></input> */}
+                        <ConnectedUsernameInput/>
+                        <ConnectedEmailInput/>
+                        <ConnectedPasswordInput/>
+                        <ConnectedAgeInput/>
+                        {/* { INPUT_FOCUS ? INPUT_FOCUS === "username" ? <ConnectedUsernameInput/> : <pre></pre> : <ConnectedUsernameInput/> }                                                     
                         { INPUT_FOCUS ? INPUT_FOCUS === "email" ? <ConnectedEmailInput/> : <pre> </pre> : <ConnectedEmailInput/> } 
-{/* <input style={{ color: '#72d3fe', fontSize: '28px'}} value={PASSWORD} onMouseEnter={ghosttext} onChange={passwordinputhandler} id="password" type="text"></input> */}
                         { INPUT_FOCUS ? INPUT_FOCUS === "password" ? <ConnectedPasswordInput/> : <pre> </pre> : <ConnectedPasswordInput/> }
-                        { INPUT_FOCUS ? INPUT_FOCUS === "age" ? <ConnectedAgeInput/> : <pre> </pre> : <ConnectedAgeInput/> }
-                            {/* <input onMouseEnter={ghosttext} onChange={ageinputhandler} id="age" type="text"  ></input> */}
+                        { INPUT_FOCUS ? INPUT_FOCUS === "age" ? <ConnectedAgeInput/> : <pre> </pre> : <ConnectedAgeInput/> } */}
                         </form>
-                        { INPUT_FOCUS ? <ConnectedSignupLoginChecker loginstate={INPUT_FOCUS} /> : <pre> </pre> }
-                        </>
+                        { INPUT_FOCUS ? <ConnectedSignupLoginChecker loginstate={INPUT_FOCUS} /> : <pre> </pre> }                        
+                        </div>
                         :
                         <pre></pre>
                     }
