@@ -21,8 +21,6 @@ import ConnectedEmailInput from '../../../components/elements/EmailInput'
 import ConnectedAgeInput from '../../../components/elements/AgeInput'
 import ConnectedSignupLoginChecker from '../../../components/elements/SignupLoginChecker'
 
-
-
 import { connect, useDispatch } from 'react-redux'
 import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS } from '../../../redux/actions'
 import $ from 'jquery'
@@ -30,7 +28,6 @@ import $ from 'jquery'
 
  function LogInOutGoogle ( props:any ) {
     setCursor() 
-
 
     // if (typeof window !== 'undefined') {
     //     let eventassertions = [ {property: 'cursor', value: `normal`}]
@@ -136,18 +133,7 @@ import $ from 'jquery'
         TOGGLE_SHOW_FORM({payload: targetid})
     }
 
-    const usernameinputhandler = (event:any) => {
-        let value:string = event.target
-        console.log('value')
-        console.log(value)
-    }
-    const passwordinputhandler = (event:any) => {
-        let value:string = event.target.value
-        let hashedValue = '*'.repeat(value.length)
-        // let hashedValue = "*".repeat(value.length)
-        $(event.target).attr('value', hashedValue)
-        SET_PASSWORD_INPUT({payload: hashedValue})
-    }
+
 
     const emailinputhandler = () => {}
     const ageinputhandler = () => {}
@@ -163,7 +149,6 @@ import $ from 'jquery'
 
     const formhover = async (event:any) => {
         let target:any = event.target
-        // let formchildren:any = await elemChildrenJQ(target, 2)
         let children = $(event.target).children()
         console.log('children')
         console.log(children)
@@ -173,16 +158,11 @@ import $ from 'jquery'
         let target:any = event.target
         let jqtarget:any = $(event.target)
         let targetId:string = event.target.id       
-        if (targetId === 'password') {
-            // attributeJQ(target, 'value', PASSWORD)
-            
+        if (targetId === 'password') {            
         } else {
             attributeJQ(target, 'value', targetId)         // $(event.target).attr('value', targetId)
-        }
-        // modular function arguments:                  1: target $(event.target)   2: 'value' <input value={}/>        3: targetId: ['username', 'password',]
+        }        
     }
-
-        // const renderLoginOutGoogle = () => {
 
             return (
                 <div className="login-container">
@@ -191,41 +171,28 @@ import $ from 'jquery'
 
                 <div style={{ 
                     display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', 
-                    height: '300px', width: '200px', marginTop: '1em'                    
+                    height: '300px', width: '200px',                 
                 }}>
                     {
                         LOGIN_SIGNUP_BTN 
                         ?                        
                         <>                            
-                            <button onClick={showform} id="login" className="Login-Signup-Btn">login</button>
+                            <button onClick={showform} id="login" className="Login-Signup-Btn"><span>s</span>login<span>s</span></button>
                             <button onClick={showform} id="signup" className="Login-Signup-Btn">signup</button>                            
                         </>
                         :
                         <pre></pre>   
                     }
                     {
-                        DISPLAY_FORM === "login"
-                        // id          Int @id @default(autoincrement())
-                        // id="username"     String?
-                        // value="username" id="email"        String?
-                        // id= value="email""password"     String?
-                        // id="a value="password"ge"          Int?
-                        // settings  value="age"   settings[]
-                        // data        data[]
+                        DISPLAY_FORM === "signup"
                         ?
 
                         <div className="Form-Container">
-                        <form onMouseEnter={formhover}>
-                            {/* <input onMouseEnter={ghosttext} onChange={usernameinputhandler} id="username" type="text"></input> */}
-                         
+                        <form onMouseEnter={formhover}>                         
                         <ConnectedUsernameInput/>
                         <ConnectedEmailInput/>
                         <ConnectedPasswordInput/>
                         <ConnectedAgeInput/>
-                        {/* { INPUT_FOCUS ? INPUT_FOCUS === "username" ? <ConnectedUsernameInput/> : <pre></pre> : <ConnectedUsernameInput/> }                                                     
-                        { INPUT_FOCUS ? INPUT_FOCUS === "email" ? <ConnectedEmailInput/> : <pre> </pre> : <ConnectedEmailInput/> } 
-                        { INPUT_FOCUS ? INPUT_FOCUS === "password" ? <ConnectedPasswordInput/> : <pre> </pre> : <ConnectedPasswordInput/> }
-                        { INPUT_FOCUS ? INPUT_FOCUS === "age" ? <ConnectedAgeInput/> : <pre> </pre> : <ConnectedAgeInput/> } */}
                         </form>
                         { INPUT_FOCUS ? <ConnectedSignupLoginChecker loginstate={INPUT_FOCUS} /> : <pre> </pre> }                        
                         </div>
@@ -233,20 +200,17 @@ import $ from 'jquery'
                         <pre></pre>
                     }
                     {
-                        DISPLAY_FORM === "signup"
-                        // id          Int @id @default(autoincrement())
-                        // id="username"     String?
-                        // value="username" id="email"        String?
-                        // id= value="email""password"     String?
-                        // id="a value="password"ge"          Int?
-                        // settings  value="age"   settings[]
-                        // data        data[]
+                        DISPLAY_FORM === "login"
                         ?
+                        <div className="Form-Container">
+                        <ConnectedEmailInput/>
+                        <ConnectedPasswordInput/>                        
                         <form onMouseEnter={formhover}>
-                            <input onMouseEnter={ghosttext} onChange={usernameinputhandler} id="username" type="text"></input>
-                            <input onMouseEnter={ghosttext} onChange={passwordinputhandler} id="password" type="text"></input>
+                            {/* <input onMouseEnter={ghosttext} onChange={usernameinputhandler} id="username" type="text"></input>
+                            <input onMouseEnter={ghosttext} onChange={passwordinputhandler} id="password" type="text"></input> */}
                             <button> forgot password? possible empty cup lol </button>
                         </form>
+                        </div>
                         :
                         <pre></pre>
                     }
@@ -269,12 +233,7 @@ import $ from 'jquery'
                 </div>
 
                 </div>
-        )
-    // }
-
-    // return ( renderLoginOutGoogle() )
-
-    
+        )    
 }
 
 
