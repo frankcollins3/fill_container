@@ -27,7 +27,8 @@ const initialState = {
     PASSWORD_INPUT: "***",
     USERNAME_INPUT: "",
     EMAIL_INPUT: "",
-    AGE_INPUT: ""
+    AGE_INPUT: "",
+    INPUT_FOCUS: true,
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -88,6 +89,14 @@ const initialState = {
           ...state,
           AGE_INPUT: action.payload
         }
+
+      case "TOGGLE_INPUT_FOCUS":
+        return {
+          ...state,
+          INPUT_FOCUS: state.INPUT_FOCUS ? false : true 
+          // INPUT_FOCUS: !state.INPUT_FOCUS
+        }
+
 
       default:
         return state;
