@@ -32,7 +32,7 @@ const initialState = {
     ALL_USERS: [],
     ALL_USERNAMES: [],
     ALL_EMAILS: [],
-
+    PARENT_CONFIRM: false
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -114,6 +114,11 @@ const initialState = {
         return {
           ...state,
           ALL_EMAILS: action.payload
+        }
+      case "PARENT_CONFIRM":
+        return {
+          ...state,
+          PARENT_CONFIRM: !state.PARENT_CONFIRM
         }
 
 
