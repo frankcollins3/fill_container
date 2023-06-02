@@ -29,7 +29,10 @@ const initialState = {
     EMAIL_INPUT: "",
     AGE_INPUT: "",
     INPUT_FOCUS: "",
-    ALL_USERS: []
+    ALL_USERS: [],
+    ALL_USERNAMES: [],
+    ALL_EMAILS: [],
+
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -101,6 +104,16 @@ const initialState = {
         return {
           ...state,
           ALL_USERS: action.payload
+        }
+      case "SET_ALL_USERNAMES":
+        return {
+          ...state,
+          ALL_USERNAMES: action.payload
+        }
+      case "SET_ALL_EMAILS":
+        return {
+          ...state,
+          ALL_EMAILS: action.payload
         }
 
 
