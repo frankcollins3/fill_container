@@ -22,15 +22,15 @@ import ConnectedSignupLoginChecker from '../../../components/elements/SignupLogi
 
 
 import { connect, useDispatch } from 'react-redux'
-import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT} from '../../../redux/actions'
+import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS } from '../../../redux/actions'
 import $ from 'jquery'
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
 
  function LogInOutGoogle ( props:any ) {
 
     const { 
-        LOGIN_SIGNUP_BTN, DISPLAY_FORM, PASSWORD_INPUT, INPUT_FOCUS,
-        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT } = props
+        LOGIN_SIGNUP_BTN, DISPLAY_FORM, PASSWORD_INPUT, INPUT_FOCUS, ALL_USERS,
+        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS } = props
           
 
     const dispatch = useDispatch()
@@ -63,8 +63,19 @@ import $ from 'jquery'
           let options = { headers: 'AllUsers' }
 
           let allUsers = await WaterRequest(allDBusersURL, options)
-          console.log('allUsers')
+          let allUsersData = allUsers.data.allDBusers
+        
+            let allUsernames = allUsersData.filter((data:any) => data.hasOwnProperty('username')).map((data:any) => data.username);
+          console.log('allUsernames')
+          console.log(allUsernames)
+          
+          console.log('allUsers from LogInOutGoogle')
           console.log(allUsers)
+          console.log('allUsersData')
+          console.log(allUsersData)
+          SET_ALL_USERS( {payload: allUsersData })
+          SET_ALL_USERNAMES( {payload: allUsernames })
+        //   SET_ALL_USERS( {payload: allUsersData })
                 
           clientId = env.GOOGLE_ID
                 function start() {
@@ -260,14 +271,17 @@ const mapStateToProps = (state:any) => ({
     LOGIN_SIGNUP_BTN: state.LOGIN_SIGNUP_BTN,
     DISPLAY_FORM: state.DISPLAY_FORM,
     PASSWORD: state.PASSWORD,
-    INPUT_FOCUS: state.INPUT_FOCUS
+    INPUT_FOCUS: state.INPUT_FOCUS,
+    ALL_USERS: state.ALL_USERS,
+    ALL_EMAILS: state.ALL_EMAILS
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
     TOGGLE_LOGIN_SIGNUP_BTN: () => dispatch(TOGGLE_LOGIN_SIGNUP_BTN()),
     TOGGLE_SHOW_FORM: (action:any) => dispatch(TOGGLE_SHOW_FORM(action)),
     SET_PASSWORD: (action:any) => dispatch(SET_PASSWORD_INPUT(action)),
-
+    SET_ALL_USERS: (action:any) => dispatch(SET_ALL_USERS(action)),
+    SET_ALL_EMAILS: (action:any) => dispatch(SET_ALL_EMAILS(action))
     // TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
 })
 
