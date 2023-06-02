@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Moon+Dance&family=Poppins:ital,wght@1,100&display=swap');
+
+
 img {
     height: 50px;
     width: 50px;
@@ -7,15 +9,16 @@ img {
     border-radius: 50%;
   }
 
-.login-container {  
+.login-container { 
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     flex-direction: column;
     min-height: 50vh;
     min-width: 50vw;
     background-color: #dedede70;
     border: 1px dashed #72d3fe;
+    padding: 2em;
 }
 
 .google-container {
@@ -25,7 +28,7 @@ img {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-top: 1em;
+  /* margin-top: 1em; */
 }
 
 .google-container > :first-child {
@@ -33,13 +36,14 @@ img {
 }
 
 .Login-Signup-Btn {
-  height: 50px;
+  height: 2em;
   width: 5em;
-  border-radius: 40%;
-  border: 1px dashed #72d3fe;
+  /* border-radius: 40%; */
+  border: none;
+  border-bottom: 3px dashed #72d3fe;
   margin: 0 1.275em;
   font-family: 'Moon Dance', cursive;
-  font-size: 22px;
+  font-size: 32px;
   background-color: #dedede70;
 /* font-weight: bolder; */
   color: silver;
@@ -54,9 +58,17 @@ img {
 }
 
 input {
+  height: 2vw;
+  width: 12vw;
   background-color: #dedede70;
-  border: 1px dashed #72d3fe;
+  border: 1px dashed #dedede70;
   color: silver;
   text-align: center;
-  margin-top: 0.25em;
+  /* margin-top: 0.75em; */
 }
+
+input:focus {
+  border: 1px dashed #72d3fe;
+}
+
+span { color: transparent; }
