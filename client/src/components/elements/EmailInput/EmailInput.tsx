@@ -6,14 +6,18 @@ import attributeJQ from '../../../utility/attributeJQ'
 import ghostText from '../../../utility/ghostText'
 import inputHandler from '../../../utility/inputHandler'
 
-import {SET_EMAIL_INPUT} from '../../../redux/actions'
+import { SET_EMAIL_INPUT, TOGGLE_INPUT_FOCUS } from '../../../redux/actions'
 
  function EmailInput (props:any) {
     
-    const {EMAIL_INPUT, SET_EMAIL_INPUT} = props
+    const { EMAIL_INPUT, SET_EMAIL_INPUT, TOGGLE_INPUT_FOCUS } = props
     
     const emailinputhandler = (event:any) => {        
         inputHandler(event, SET_EMAIL_INPUT)
+    }
+
+    const inputfocus = () => {
+        TOGGLE_INPUT_FOCUS( { payload: 'email' })
     }
 
     const ghosttext = (event:any) => {
@@ -25,7 +29,7 @@ import {SET_EMAIL_INPUT} from '../../../redux/actions'
 
     const renderEmailInput = () => {
         return (
-        <input value={EMAIL_INPUT} onMouseEnter={ghosttext} onChange={emailinputhandler} id="email" type="text"></input> 
+        <input value={EMAIL_INPUT} onFocus={inputfocus} onMouseEnter={ghosttext} onChange={emailinputhandler} id="email" type="text"></input> 
         )
     }
 
@@ -34,11 +38,13 @@ import {SET_EMAIL_INPUT} from '../../../redux/actions'
 }
 
 const mapStateToProps = (state:any) => ({
-    EMAIL_INPUT: state.EMAIL_INPUT
+    EMAIL_INPUT: state.EMAIL_INPUT,
+    ALL_EMAILS: state.ALL_EMAILS
 })
 
 const mapDispatchToProps =(dispatch:any) => ({
-    SET_EMAIL_INPUT: (action:any) => dispatch(SET_EMAIL_INPUT(action))
+    SET_EMAIL_INPUT: (action:any) => dispatch(SET_EMAIL_INPUT(action)),
+    TOGGLE_INPUT_FOCUS: (action:any) => dispatch(TOGGLE_INPUT_FOCUS(action))
 })
 
 const ConnectedEmailInput = connect(mapStateToProps, mapDispatchToProps)(EmailInput)
