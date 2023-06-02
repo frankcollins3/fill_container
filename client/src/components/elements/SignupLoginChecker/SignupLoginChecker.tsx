@@ -4,6 +4,9 @@ import {useState, useEffect} from 'react'
 import "./signuploginchecker.css"
 import allDBurl from  "../../../utility/fetch/allDBurl"
 import RegexBank from "../../../utility/RegexBank"
+import {AgeArray} from "../../../utility/UtilityValues"
+
+import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
 
   interface Props {
     loginstate: string,
@@ -12,24 +15,39 @@ import RegexBank from "../../../utility/RegexBank"
     EMAIL_INPUT: string,
     AGE_INPUT: string,
     // ALL_USERS: any,
-    ALL_USERNAMES: any // I think one needs an :any type to have access to [array-based-indexing] even with the variable type to be specified as array
+    ALL_USERNAMES: any, // I think one needs an :any type to have access to [array-based-indexing] even with the variable type to be specified as array
+    PARENT_CONFIRM: boolean,
+    TOGGLE_PARENT_CONFIRM: any,
+    ALL_USERS: [],
+    ALL_EMAILS: []
   }
 
-  function SignupLoginChecker(props:any) {
+  function SignupLoginChecker(props: any) {
 
     const { 
-        USERNAME_INPUT, PASSWORD_INPUT, EMAIL_INPUT, AGE_INPUT, ALL_USERS, ALL_USERNAMES, ALL_EMAILS,
-        loginstate    
+        USERNAME_INPUT, PASSWORD_INPUT, EMAIL_INPUT, AGE_INPUT, ALL_USERS, ALL_USERNAMES, ALL_EMAILS, PARENT_CONFIRM,       // redux state
+        TOGGLE_PARENT_CONFIRM,      // redux actions
+        loginstate                  // component props declared at render from /LoginOutGoogle
     } = props
+
+    console.log('loginstate')
+    console.log(loginstate)
 
     let usernameLength:number = USERNAME_INPUT.length
     let RegexMenu;
 
     useEffect( () => {
-        ( () => {
-            RegexMenu = RegexBank
+        (async () => {
+            RegexMenu = await RegexBank()
         })()      
     }, [])
+
+    const inputCheckboxHandler = (event:any) => {        
+        let checked:boolean = event.target.checked        
+        // checked ? TOGGLE_PARENT_CONFIRM() : []      // issue #90 void function.    
+        // if (checked) TOGGLE_PARENT_CONFIRM()
+        return
+    }
 
     const RenderSignupLoginChecker = () => {
         if (loginstate === 'username') {            
@@ -50,16 +68,7 @@ import RegexBank from "../../../utility/RegexBank"
             )
         }
         if (loginstate === 'email') {
-
-            (async () => {
-                // RegexMenu = await RegexBank(EMAIL_INPUT, "stringAfterPeriod")
-                console.log('EMAIL_INPUT')
-                console.log(EMAIL_INPUT)
-                let stringAfterPeriod = await RegexBank(EMAIL_INPUT, "stringAfterPeriod")
-                console.log('stringAfterPeriod')
-                console.log(stringAfterPeriod)                                
-            })()
-
+        
             return (
                 // <p style={{ fontSize: '8px', textAlign: 'center' }}> hi </p>
                 <div className="Checker-Container">                
@@ -79,9 +88,8 @@ import RegexBank from "../../../utility/RegexBank"
             )
         }
         if (loginstate === 'password') {
-            (async() => {
-
-            })()
+            
+            
             return (
                 // <p style={{ fontSize: '8px', textAlign: 'center' }}> hi </p>
                 <div className="Checker-Container">
@@ -92,8 +100,9 @@ import RegexBank from "../../../utility/RegexBank"
                     </div>
                     <div className="column">
                     <img className="Checker-Droplet" src={usernameLength > 6 && usernameLength < 30 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
-                    {/* <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/> */}
+
                     <p style={{ color: usernameLength > 6 && usernameLength < 30 ? "#73defe" : "#686868" }}> number </p>
+                    {/* <p style={{ color: usernameLength > 6 && usernameLength < 30 ? "#73defe" : "#686868" }}> number </p> */}
                     </div>
                     <div className="column">
                     <img className="Checker-Droplet" src={usernameLength > 6 && usernameLength < 30 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
@@ -104,15 +113,21 @@ import RegexBank from "../../../utility/RegexBank"
                 </div>
             )
         }
-        if (loginstate === 'age') {
+        if (loginstate === 'age') {        
+            let check = AgeArray.includes(parseInt(AGE_INPUT))
+            
             return (
-                // <p style={{ fontSize: '8px', textAlign: 'center' }}> hi </p>
-                <div className="Checker-Container">                
+                <div className="Checker-Container">      
                     <div className="column">
-                    <img className="Checker-Droplet" src={ AGE_INPUT > 10 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
-                    {/* <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/> */}
-                    <p style={{ color: AGE_INPUT > 10 ? "#73defe" : "#686868" }}> age </p>
-                    </div>
+<img className="Checker-Droplet" src={ AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT > 4 && !PARENT_CONFIRM ? "/water_img/panda.png" : "/water_img/mouse_droplet.png"}/>
+<pre style={{ display: AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT > 4 ? "" : "none"}}> Hello Droplet! Please tell a Parent or Guardian You visited Us! </pre>
+
+<input onChange={inputCheckboxHandler} type="checkbox" id="parent-checkbox" style={{ 
+    display: AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT > 4 ? "" : "none",
+    backgroundColor: 'red'
+    }} />
+    <label htmlFor="parent-checkbox" className="custom-checkbox"></label>
+                    </div>                    
                 </div>
             )
         }
@@ -131,7 +146,12 @@ const mapStateToProps = (state:any) => ({
     AGE_INPUT: state.AGE_INPUT,
     ALL_USERS: state.ALL_USERS,
     ALL_USERNAMES: state.ALL_USERNAMES,
-    ALL_EMAILS: state.ALL_EMAILS
+    ALL_EMAILS: state.ALL_EMAILS,
+    PARENT_CONFIRM: state.PARENT_CONFIRM
+})
+
+const mapDispatchToProps = (dispatch:any) => ({
+    TOGGLE_PARENT_CONFIRM: () => dispatch(TOGGLE_PARENT_CONFIRM())
 })
 
 const ConnectedSignupLoginChecker = connect(mapStateToProps)(SignupLoginChecker)
