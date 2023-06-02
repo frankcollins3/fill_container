@@ -43,8 +43,14 @@ import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
     }, [])
 
     const inputCheckboxHandler = (event:any) => {        
+        console.log('PARENT_CONFIRM')
+        console.log(PARENT_CONFIRM)
         let checked:boolean = event.target.checked        
         // checked ? TOGGLE_PARENT_CONFIRM() : []      // issue #90 void function.    
+        TOGGLE_PARENT_CONFIRM()
+        if (checked) {
+            console.log(`checked: ${checked}`)
+        }        
         // if (checked) TOGGLE_PARENT_CONFIRM()
         return
     }
@@ -119,14 +125,12 @@ import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
             return (
                 <div className="Checker-Container">      
                     <div className="column">
-<img className="Checker-Droplet" src={ AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT > 4 && !PARENT_CONFIRM ? "/water_img/panda.png" : "/water_img/mouse_droplet.png"}/>
+<img className="Checker-Droplet" src={ AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT > 4 && PARENT_CONFIRM === false  ? "/water_img/panda.png" : "/water_img/mouse_droplet.png"}/>
 <pre style={{ display: AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT > 4 ? "" : "none"}}> Hello Droplet! Please tell a Parent or Guardian You visited Us! </pre>
 
-<input onChange={inputCheckboxHandler} type="checkbox" id="parent-checkbox" style={{ 
-    display: AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT > 4 ? "" : "none",
-    backgroundColor: 'red'
-    }} />
-    <label htmlFor="parent-checkbox" className="custom-checkbox"></label>
+<input onChange={inputCheckboxHandler} type="checkbox" id="parent-checkbox" style={{ display: AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT > 4 && PARENT_CONFIRM === false ? "" : "none", }} />
+<label style={{ display: AgeArray.includes(parseInt(AGE_INPUT)) && AGE_INPUT > 4 && PARENT_CONFIRM === false ? "" : "none", }} htmlFor="parent-checkbox" className="custom-checkbox"></label>
+                    {/* <p style={{ color: 'orange' }}> {PARENT_CONFIRM ? "yes" : "no" } </p> */}
                     </div>                    
                 </div>
             )
@@ -154,6 +158,6 @@ const mapDispatchToProps = (dispatch:any) => ({
     TOGGLE_PARENT_CONFIRM: () => dispatch(TOGGLE_PARENT_CONFIRM())
 })
 
-const ConnectedSignupLoginChecker = connect(mapStateToProps)(SignupLoginChecker)
+const ConnectedSignupLoginChecker = connect(mapStateToProps,mapDispatchToProps)(SignupLoginChecker)
  
 export default ConnectedSignupLoginChecker
