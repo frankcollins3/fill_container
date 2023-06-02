@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import "./signuploginchecker.css"
+import allDBurl from  "../../../utility/fetch/allDBurl"
 
   interface Props {
     loginstate: string,
@@ -16,6 +17,7 @@ import "./signuploginchecker.css"
         loginstate    
     } = props
 
+    let usernameLength:number = USERNAME_INPUT.length
 
     const RenderSignupLoginChecker = () => {
         if (loginstate === 'username') {
@@ -24,12 +26,13 @@ import "./signuploginchecker.css"
                 <div className="Checker-Container">
                     <div className="column">
                     <img className="Checker-Droplet" src="/water_img/bg.png"/>
-                    <p> unique </p>
+                    {/* <img className="Checker-Droplet" src="/water_img/bg.png"/> */}
+                    <p style={{ color: '#686868' }}> unique </p>
                     </div>
                     <div className="column">
-                    <img className="Checker-Droplet" src="/water_img/bg.png"/>
+                    <img className="Checker-Droplet" src={usernameLength > 6 && usernameLength < 30 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
                     {/* <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/> */}
-                    <p> length </p>
+                    <p style={{ color: usernameLength > 6 && usernameLength < 30 ? "#73defe" : "#686868" }}> length </p>
                     </div>
                     {/* <div className="column">
                     <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/>
@@ -44,7 +47,25 @@ import "./signuploginchecker.css"
         }
         if (loginstate === 'password') {
             return (
-                <p> password </p>
+                // <p style={{ fontSize: '8px', textAlign: 'center' }}> hi </p>
+                <div className="Checker-Container">
+                    <div className="column">
+                    <img className="Checker-Droplet" src="/water_img/bg.png"/>
+                    {/* <img className="Checker-Droplet" src="/water_img/bg.png"/> */}
+                    <p style={{ color: '#686868' }}> special </p>
+                    </div>
+                    <div className="column">
+                    <img className="Checker-Droplet" src={usernameLength > 6 && usernameLength < 30 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
+                    {/* <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/> */}
+                    <p style={{ color: usernameLength > 6 && usernameLength < 30 ? "#73defe" : "#686868" }}> number </p>
+                    </div>
+                    <div className="column">
+                    <img className="Checker-Droplet" src={usernameLength > 6 && usernameLength < 30 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
+                    {/* <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/> */}
+                    <p style={{ color: usernameLength > 6 && usernameLength < 30 ? "#73defe" : "#686868" }}> CAPS </p>
+                    </div>
+        
+                </div>
             )
         }
         if (loginstate === 'age') {
