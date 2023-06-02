@@ -150,7 +150,7 @@ const SettingsType = new GraphQLObjectType({
       name: 'Users',
       description: "Users Properties:",
       fields: () => ({      
-        id: { type: new GraphQLNonNull(GraphQLInt) },
+        id: { type: (GraphQLInt) },     // { type: new GraphQLNonNull(GraphQLInt)}
         username: { type: GraphQLString },
         password: { type: GraphQLString },
         email: { type: GraphQLString },
