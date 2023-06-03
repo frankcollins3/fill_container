@@ -5,6 +5,7 @@ import "./signuploginchecker.css"
 import allDBurl from  "../../../utility/fetch/allDBurl"
 import RegexBank from "../../../utility/RegexBank"
 import {AgeArray} from "../../../utility/UtilityValues"
+import {ALPHABET} from "../../../utility/UtilityValues"
 
 import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
 
@@ -32,6 +33,8 @@ import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
 
     console.log('loginstate')
     console.log(loginstate)
+
+
 
     let usernameLength:number = USERNAME_INPUT.length
     let RegexMenu;
@@ -106,7 +109,8 @@ import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
                     <div className="column">
                     <img className="Checker-Droplet" src={usernameLength > 6 && usernameLength < 30 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
                     {/* <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/> */}
-                    <p style={{ color: usernameLength > 6 && usernameLength < 30 ? "#73defe" : "#686868" }}> CAPS </p>
+                    <p style={{ color: /[A-Z]/.test(PASSWORD_INPUT) ? "#73defe" : "#686868" }}> CAPS </p>
+                    {/* <p style={{ color: PASSWORD_INPUT.replace(/[\/A-Z]/g, '')  ? "#73defe" : "#686868" }}> CAPS </p> */}
                     </div>                    
                     <div className="column">
                     <img className="Checker-Droplet" src={usernameLength > 6 && usernameLength < 30 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
