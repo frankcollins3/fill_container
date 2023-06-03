@@ -81,6 +81,9 @@ import $ from 'jquery'
           $('.submit-faucet').on('mouseenter', (event) => {
             CSS($('*'), 'cursor', `url('/water_img/mouseWaterCup.png'), auto`)           
           })
+          $('.submit-faucet').on('mouseleave', (event) => {
+            CSS($('*'), 'cursor', `url('/water_img/mouse_droplet.png'), auto`)           
+          })
           
         
         //   SET_ALL_USERS( {payload: allUsersData })
