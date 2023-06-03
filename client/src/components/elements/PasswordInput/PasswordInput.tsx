@@ -19,7 +19,9 @@ function PasswordInput (props:any) {
 
      const [passwordState, setPasswordState] = useState("")
      const [dummyState, setDummyState] = useState("")
-     const [inputState, setInputState] = useState<any>()
+     const [cleanInputState, setCleanInputState] = useState("")
+     const [dirtyInputState, setDirtyInputState] = useState("")
+    //  const [inputState, setInputState] = useState<any>()
 
     let { 
          TOGGLE_INPUT_FOCUS, PASSWORD_INPUT, DUMMY_PASSWORD_INPUT,
@@ -29,17 +31,55 @@ function PasswordInput (props:any) {
         // const {USERNAME_INPUT, SET_USERNAME_INPUT} = props
 
         useEffect( () => {
-            setDummyState("*".repeat(dummyState.length))
-        }, [dummyState])
+            console.log('inputState useEffect')
+            // setDummyState("*".repeat(dummyState.length))
+        }, [])
         
         const passwordinputhandler = async (evt: React.ChangeEvent<HTMLInputElement>) => {
             let target = evt.target
-            let value:any = evt.target.value  // cant use string because we'll be looping over it 
+            let value:any = target.value  // cant use string because we'll be looping over it 
+            // setPasswordState(value)
+            SET_PASSWORD_INPUT({payload: value})
+
+            const inputPromise = new Promise( (resolve, reject) => {
+                resolve( [
+                    setCleanInputState(value),
+                    setDirtyInputState(value)
+                ])
+                
+                reject(console.log("come on whats goign on"))
+            })
+
+            const statePromise = new Promise( (resolve, reject) => {
+                resolve([
+                    SET_PASSWORD_INPUT({payload: cleanInputState}),
+                    setDummyState("*".repeat(dirtyInputState.length))
+                ])
+            })
+
+            inputPromise
+            .then( () => {
+                console.log('inside inputPormise')
+                statePromise
+                .then( () => {
+                    console.log('cleanInputState all promises')
+                    console.log(cleanInputState)
+                    console.log('dirtyInputState all promises')
+                    console.log(dirtyInputState)                    
+                })
+            })
+
+
+            // SET_PASSWORD_INPUT({payload: cleanInputState})
+            // setDummyState(dirtyInputState)
             
-            for (const char of value) {                
-                let c = value[char]
-                setInputState([inputState, c])
-            }
+            // setInputState(value)
+            
+            // for (const char of value) {                
+            //     let c = value[char]
+            //     setInputState([inputState, c])
+            // }
+
             // let duplicateValue:string = await duplicateString(evt.target.value)
             // let value;
             // let dummyArray = [duplicateValue, value]
@@ -87,7 +127,7 @@ function PasswordInput (props:any) {
     const renderPasswordInput = () => {
         return (
         <>
-<input id="password" type="text" style={{ color: '#72d3fe', fontSize: '20px'}} onFocus={inputfocus} value={inputState} onMouseEnter={ghosttext} // "*".repeat(DUMMY_PASSWORD_INPUT.length)
+<input id="password" type="text" style={{ color: '#72d3fe', fontSize: '20px'}} onFocus={inputfocus} value={dummyState} onMouseEnter={ghosttext} // "*".repeat(DUMMY_PASSWORD_INPUT.length)
 // <input id="password" type="text" style={{ color: '#72d3fe', fontSize: '20px'}} onFocus={inputfocus} value={DUMMY_PASSWORD_INPUT} onMouseEnter={ghosttext} // "*".repeat(DUMMY_PASSWORD_INPUT.length)
 onChange={(event) => {
     passwordinputhandler(event);
