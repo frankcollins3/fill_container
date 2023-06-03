@@ -77,6 +77,10 @@ import $ from 'jquery'
           let allEmails = allUsersData.filter((data:any) => data.hasOwnProperty('email')).map((data:any) => data.email)
           console.log('allEmails')
           console.log(allEmails)
+
+          $('.submit-faucet').on('mouseenter', (event) => {
+            CSS($('*'), 'cursor', `url('/water_img/mouseWaterCup.png'), auto`)           
+          })
           
         
         //   SET_ALL_USERS( {payload: allUsersData })
@@ -168,7 +172,7 @@ import $ from 'jquery'
                 <div className="login-container">
                 <img onClick={showHideLoginSignupBtn} style={{ border: 'none' }} src="/water_img/hand.png"/>                
                 {/* // clientId: clientId || '569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com', */}            
-
+                <img style={{ transform: 'scale(0.50)' }} className="submit-faucet" src="/water_img/faucet.png"/>
                 <div style={{ 
                     display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', 
                     height: '300px', width: '200px',                 
@@ -194,7 +198,7 @@ import $ from 'jquery'
                         <ConnectedPasswordInput/>
                         <ConnectedAgeInput/>
                         </form>
-                        { INPUT_FOCUS ? <ConnectedSignupLoginChecker loginstate={INPUT_FOCUS} /> : <pre> </pre> }                        
+                        { INPUT_FOCUS ? <ConnectedSignupLoginChecker loginstate={INPUT_FOCUS} /> : <pre> </pre> }                                                
                         </div>
                         :
                         <pre></pre>
@@ -217,7 +221,10 @@ import $ from 'jquery'
                 </div>
                 
                 <div
-    style = {{ backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '50px', width: '50px', border: '5px solid #dedede73', zIndex: '2', transform: LOGIN_SIGNUP_BTN ? 'scale(0.25)' : 'none' }}
+    style = {{ 
+        backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '50px', width: '50px', border: '5px solid #dedede73', zIndex: '2', 
+        transform: 'scale(0.25)', // transform: LOGIN_SIGNUP_BTN ? 'scale(0.25)' : 'none' 
+}}
                 className="google-container">
                     {/* <h1> blue text </h1> */}
                 <GoogleLogin
