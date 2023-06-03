@@ -37,73 +37,12 @@ function PasswordInput (props:any) {
         
         const passwordinputhandler = async (evt: React.ChangeEvent<HTMLInputElement>) => {
             let target = evt.target
-            let value:any = target.value  // cant use string because we'll be looping over it 
-            // setPasswordState(value)
-            SET_PASSWORD_INPUT({payload: value})
-
-            const inputPromise = new Promise( (resolve, reject) => {
-                resolve( [
-                    setCleanInputState(value),
-                    setDirtyInputState(value)
-                ])
-                
-                reject(console.log("come on whats goign on"))
-            })
-
+            let value:any = target.value  // cant use string because we'll be looping over it     
             const statePromise = new Promise( (resolve, reject) => {
-                resolve([
-                    SET_PASSWORD_INPUT({payload: cleanInputState}),
-                    setDummyState("*".repeat(dirtyInputState.length))
-                ])
-            })
-
-            inputPromise
-            .then( () => {
-                console.log('inside inputPormise')
-                statePromise
-                .then( () => {
-                    console.log('cleanInputState all promises')
-                    console.log(cleanInputState)
-                    console.log('dirtyInputState all promises')
-                    console.log(dirtyInputState)                    
-                })
-            })
-
-
-            // SET_PASSWORD_INPUT({payload: cleanInputState})
-            // setDummyState(dirtyInputState)
-            
-            // setInputState(value)
-            
-            // for (const char of value) {                
-            //     let c = value[char]
-            //     setInputState([inputState, c])
-            // }
-
-            // let duplicateValue:string = await duplicateString(evt.target.value)
-            // let value;
-            // let dummyArray = [duplicateValue, value]
-            // value = dummyArray[0]
-            // console.log('duplicateValue')
-            // console.log(duplicateValue)
-            // SET_PASSWORD_INPUT( {payload: evt.target.value })
+                resolve([ SET_PASSWORD_INPUT({payload: value}) ])
+            })            
+            return value ? statePromise : []               
         };
-        
-        const passwordinputhandler2 = async (event: React.ChangeEvent<HTMLInputElement>) => {
-
-                // let value:string = event.target.value.toUpperCase()
-                // console.log('PASSWORD_INPUT')
-                // console.log(PASSWORD_INPUT)
-
-                // console.log('DUMMY_PASSWORD_INPUT')
-                // console.log(DUMMY_PASSWORD_INPUT)
-            
-                // const uniqueChars = new Set(dummyState.split(''));
-                // uniqueChars.add(value);
-                // setDummyState(value);
-            //   SET_DUMMY_PASSWORD_INPUT({payload: value })
-          };
-
 
     const ghosttext = (event:any) => {
         let target:any = event.target
@@ -127,12 +66,9 @@ function PasswordInput (props:any) {
     const renderPasswordInput = () => {
         return (
         <>
-<input id="password" type="text" style={{ color: '#72d3fe', fontSize: '20px'}} onFocus={inputfocus} value={dummyState} onMouseEnter={ghosttext} // "*".repeat(DUMMY_PASSWORD_INPUT.length)
+<input id="password" type="password" style={{ color: '#72d3fe', fontSize: '20px'}} onFocus={inputfocus} value={PASSWORD_INPUT} onMouseEnter={ghosttext} // "*".repeat(DUMMY_PASSWORD_INPUT.length)
 // <input id="password" type="text" style={{ color: '#72d3fe', fontSize: '20px'}} onFocus={inputfocus} value={DUMMY_PASSWORD_INPUT} onMouseEnter={ghosttext} // "*".repeat(DUMMY_PASSWORD_INPUT.length)
-onChange={(event) => {
-    passwordinputhandler(event);
-    passwordinputhandler2(event);
-}}>
+onChange={(event) => { passwordinputhandler(event); }}>
 
 </input> 
 <p style={{ textAlign: 'center' }}> : {PASSWORD_INPUT || 'no pw'} </p>
