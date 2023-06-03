@@ -25,6 +25,7 @@ const initialState = {
     LOGIN_SIGNUP_BTN: false,
     DISPLAY_FORM: "",
     PASSWORD_INPUT: "***",
+    DUMMY_PASSWORD_INPUT: "***",
     USERNAME_INPUT: "",
     EMAIL_INPUT: "",
     AGE_INPUT: "",
@@ -32,7 +33,7 @@ const initialState = {
     ALL_USERS: [],
     ALL_USERNAMES: [],
     ALL_EMAILS: [],
-    PARENT_CONFIRM: false
+    PARENT_CONFIRM: false,
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -76,6 +77,14 @@ const initialState = {
           ...state,
           PASSWORD_INPUT: action.payload
         }
+      
+      case 'SET_DUMMY_PASSWORD_INPUT':
+        return {
+          ...state,
+          DUMMY_PASSWORD_INPUT: "*"
+          // DUMMY_PASSWORD_INPUT: `${state.DUMMY_PASSWORD_INPUT}`
+          // DUMMY_PASSWORD_INPUT: "*".repeat(action.payload.length)
+        }
 
       case "SET_USERNAME_INPUT":
         return {
@@ -115,10 +124,11 @@ const initialState = {
           ...state,
           ALL_EMAILS: action.payload
         }
-      case "PARENT_CONFIRM":
+      case "TOGGLE_PARENT_CONFIRM":
         return {
           ...state,
           PARENT_CONFIRM: !state.PARENT_CONFIRM
+          // PARENT_CONFIRM: state.PARENT_CONFIRM === true ? false : true
         }
 
 
