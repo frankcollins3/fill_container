@@ -37,7 +37,7 @@ import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
 
 
     let usernameLength:number = USERNAME_INPUT.length
-    let RegexMenu;
+    let RegexMenu:any;
 
     useEffect( () => {
         (async () => {
@@ -45,7 +45,8 @@ import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
         })()      
     }, [])
 
-    const inputCheckboxHandler = (event:any) => {        
+    const inputCheckboxHandler = (event:any) => {    
+
         console.log('PARENT_CONFIRM')
         console.log(PARENT_CONFIRM)
         let checked:boolean = event.target.checked        
@@ -104,7 +105,10 @@ import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
                     <div className="column">
                     <img className="Checker-Droplet" src="/water_img/bg.png"/>
                     {/* <img className="Checker-Droplet" src="/water_img/bg.png"/> */}
-                    <p style={{ color: '#686868' }}> special </p>
+                    <p style={{ color: /[\!@#$%^&*\(\)]/.test(PASSWORD_INPUT) ? "#73defe" : "#686868" }}> special </p>
+                    {/* .replace(/%20|\s|[^a-zA-Z0-9]/g, '') */}
+
+                    {/* <p style={{ color: /[!@#$%^&*()]/.test(PASSWORD_INPUT) ? "#73defe" : "686868" }}> special </p> */}
                     </div>
                     <div className="column">
                     <img className="Checker-Droplet" src={usernameLength > 6 && usernameLength < 30 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
@@ -115,8 +119,8 @@ import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
                     <div className="column">
                     <img className="Checker-Droplet" src={usernameLength > 6 && usernameLength < 30 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
 
-                    <p style={{ color: usernameLength > 6 && usernameLength < 30 ? "#73defe" : "#686868" }}> number </p>
-                    {/* <p style={{ color: usernameLength > 6 && usernameLength < 30 ? "#73defe" : "#686868" }}> number </p> */}
+                    <p style={{ color: /[0-9]/.test(PASSWORD_INPUT) ? "#73defe" : "#686868" }}> number </p>
+                    {/* <p style={{ color: RegexBank.hasNums.test(parseInt(PASSWORD_INPUT)) ? "#73defe" : "#686868" }}> number </p> */}                    
                     </div>
                 </div>
             )
