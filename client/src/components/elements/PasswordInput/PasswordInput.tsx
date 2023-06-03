@@ -1,17 +1,21 @@
 import React from 'react'
 import "./password.css"
 import {connect, useDispatch} from 'react-redux'
+import {useState} from 'react'
 import $ from 'jquery'
 import attributeJQ from '../../../utility/attributeJQ'
 import ghostText from '../../../utility/ghostText'
 import inputHandler from '../../../utility/inputHandler'
 import inputFocusToggleRedux from '../../../utility/inputFocusToggleRedux'
+import halfAssHash from '../../../utility/halfAssHash'
 
 import ConnectedSignupLoginChecker from '../../../components/elements/SignupLoginChecker'
 
 import {SET_PASSWORD_INPUT, SET_DUMMY_PASSWORD_INPUT, TOGGLE_INPUT_FOCUS} from '../../../redux/actions'
 
-function AgeInput (props:any) {
+function PasswordInput (props:any) {
+
+    const [dummyPassword, setDummyPassword] = useState('')
     //  function UsernameInput (props:any) {
 
     let { 
@@ -22,56 +26,53 @@ function AgeInput (props:any) {
         // const {USERNAME_INPUT, SET_USERNAME_INPUT} = props
 
         const inputhandlerCB = (inputHandlerObj: any) => {
-            let value: string = inputHandlerObj.target.value;
+            console.log('inputHandlerObj')
+            console.log(inputHandlerObj)
+            // let value: string = inputHandlerObj.target.value;
+            setDummyPassword(inputHandlerObj.target.value)    
+
             console.log('inputhandlerCB FUNCTION');
-            console.log(value);
+            console.log('dummyPassword')
+            console.log(dummyPassword)
           };
 
-          const passwordinputhandler = async (event:any) => {            
-            let originalValue:string = event.target.value
-
-            const clonedEvent = { ...event }
-            let cloneValue:string = clonedEvent.target.value
-
-            const PasswordPromise = new Promise( (resolve, reject) => {
-                resolve(
-                    SET_PASSWORD_INPUT({payload: cloneValue})
-                )
-                reject( console.log('SET_PASSWORD_INPUT failed!'))
-            })
-
-            PasswordPromise
-            .then( () => {
-                const DummyPasswordPromise = new Promise( (resolve, reject) => {
-                    resolve(SET_DUMMY_PASSWORD_INPUT({payload: originalValue}))
-                    reject(console.log("DUMMY_PASSWORD_REJECTED!"))
-                })
-                DummyPasswordPromise
-                .then( () => {
-                    console.log("if you're here you care.")
-                    console.log('PASSWORD_INPUT in promise')
-                    console.log(PASSWORD_INPUT)
-                    console.log('DUMMY_PASSWORD_INPUT in promise')
-                    console.log(DUMMY_PASSWORD_INPUT)
-                })
-            })
+          
+          const passwordinputhandler = () => {
+            // PASSWORD_INPUT && DUMMY_PASSWORD_INPUT
             
-        }
-          
-        //   const passwordinputhandler = (event: any) => {
-        //     const clonedEvent = { ...event }; // Make a copy of the event object
-        //     inputhandlerCB(clonedEvent);
-        //     let value: string = clonedEvent.target.value;
-        //     let duplicate:string = value;
-          
-        //     let hashedValue: string = '*'.repeat(duplicate.length);
-        //     SET_PASSWORD_INPUT({ payload: value });
-          
-        //     // Use jQuery to update the value of the input field with asterisks
-        //     $(event.target).val(hashedValue);
-          
-        //     SET_DUMMY_PASSWORD_INPUT({ payload: hashedValue });
-        //   };
+          }
+
+          const passwordinputhandler2 = () => {            
+            let preinput = $('#password')
+            // $('#password')[0].attributes[2].nodeValue
+            let inputelem = preinput
+            let elemValue:string|undefined|null = preinput[0].attributes[2].nodeValue
+            console.log('inputelem')
+            console.log(inputelem)
+            // let elemValue:string = inputelem
+
+            // SET_PASSWORD_INPUT({payload: onChangeValue})           
+          }
+
+        //   const prepasswordinputhandler = (event:any) => {
+        //         setDummyPassword(event.target.value)
+        //         let eventValueLength:number = event.target.value.length
+        //         console.log('event.target.value')
+        //         const clone_1 = {...event}
+        //         const clone_2 = {...event} 
+        //         let clone2value:string = clone_2.target.value    
+        //         console.log('clone2value')
+        //         console.log(clone2value)
+
+        //         // let hashedCharacter = halfAssHash("*", clone_1.target.value)
+        //         // console.log('hashedCharacter')
+        //         // console.log(hashedCharacter)
+        //         SET_PASSWORD_INPUT({payload: clone_1.target.value })
+        //         SET_DUMMY_PASSWORD_INPUT({ payload: clone_2.target.value })
+        //         // SET_DUMMY_PASSWORD_INPUT({payload: "*".repeat(clone2value.length)})
+        //         console.log('PASSWORD_INPUT')
+        //         console.log(PASSWORD_INPUT)                                 
+        //   }
           
 
     const ghosttext = (event:any) => {
@@ -95,7 +96,18 @@ function AgeInput (props:any) {
                                                                                     
     const renderPasswordInput = () => {
         return (
-<input style={{ color: '#72d3fe', fontSize: '20px'}} onFocus={inputfocus} value={DUMMY_PASSWORD_INPUT} onMouseEnter={ghosttext} onChange={passwordinputhandler} id="password" type="text"></input> 
+        <>
+<input id="password" type="text" style={{ color: '#72d3fe', fontSize: '20px'}} onFocus={inputfocus} value={DUMMY_PASSWORD_INPUT} onMouseEnter={ghosttext}
+// onChange={prepasswordinputhandler} 
+onChange={() => {
+    passwordinputhandler();
+    passwordinputhandler2();
+}}>
+
+</input> 
+<p style={{ textAlign: 'center' }}> "PASSWORD_INPUT": {PASSWORD_INPUT || 'no pw'} </p>
+<p style={{ textAlign: 'center' }}> "dummyPassword " {dummyPassword || 'no pw' } </p>
+    </>
         )
     }
 
@@ -116,6 +128,6 @@ const mapDispatchToProps =(dispatch:any) => ({
     TOGGLE_INPUT_FOCUS: (action:any) => dispatch(TOGGLE_INPUT_FOCUS(action))
 })
 
-const ConnectedUsernameInput = connect(mapStateToProps, mapDispatchToProps)(AgeInput)
+const ConnectedUsernameInput = connect(mapStateToProps, mapDispatchToProps)(PasswordInput)
 
 export default ConnectedUsernameInput
