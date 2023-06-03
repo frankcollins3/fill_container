@@ -16,6 +16,7 @@ import {SET_PASSWORD_INPUT, SET_DUMMY_PASSWORD_INPUT, TOGGLE_INPUT_FOCUS} from '
 function PasswordInput (props:any) {
 
     const [dummyPassword, setDummyPassword] = useState('')
+    const [inputFocus, setInputFocus] = useState(false)
     //  function UsernameInput (props:any) {
 
     let { 
@@ -37,18 +38,24 @@ function PasswordInput (props:any) {
           };
 
           
-          const passwordinputhandler = () => {
-            // PASSWORD_INPUT && DUMMY_PASSWORD_INPUT
-            
-          }
+          const passwordinputhandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+            // Access event properties here
+          };
+          
+          const passwordinputhandler2 = (event: React.ChangeEvent<HTMLInputElement>) => {
+            // Access event properties here
+          };
 
-          const passwordinputhandler2 = () => {            
+          const passwordinputhandler3 = () => {            
             let preinput = $('#password')
             // $('#password')[0].attributes[2].nodeValue
             let inputelem = preinput
             let elemValue:string|undefined|null = preinput[0].attributes[2].nodeValue
             console.log('inputelem')
             console.log(inputelem)
+
+            console.log('elemValue')
+            console.log(elemValue)
             // let elemValue:string = inputelem
 
             // SET_PASSWORD_INPUT({payload: onChangeValue})           
@@ -99,9 +106,9 @@ function PasswordInput (props:any) {
         <>
 <input id="password" type="text" style={{ color: '#72d3fe', fontSize: '20px'}} onFocus={inputfocus} value={DUMMY_PASSWORD_INPUT} onMouseEnter={ghosttext}
 // onChange={prepasswordinputhandler} 
-onChange={() => {
-    passwordinputhandler();
-    passwordinputhandler2();
+onChange={(event) => {
+    passwordinputhandler(event);
+    passwordinputhandler2(event);
 }}>
 
 </input> 
