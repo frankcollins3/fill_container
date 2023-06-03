@@ -73,8 +73,8 @@ import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
                 </div>
             )
         }
-        if (loginstate === 'email') {
-        
+
+        if (loginstate === 'email') {        
             return (
                 // <p style={{ fontSize: '8px', textAlign: 'center' }}> hi </p>
                 <div className="Checker-Container">                
@@ -88,14 +88,13 @@ import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
     EMAIL_INPUT.replace(/^.*\.(.*)$/, '$1') === "com" || EMAIL_INPUT.replace(/^.*\.(.*)$/, '$1') === "net" || EMAIL_INPUT.replace(/^.*\.(.*)$/, '$1') === "org"
  ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
                     {/* <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/> */}
-                    <p style={{ color: EMAIL_INPUT.includes('.com') || EMAIL_INPUT.includes('.net') || EMAIL_INPUT.includes('.org') ? "#73defe" : "#686868" }}> .com </p>
+                    <p style={{ color: EMAIL_INPUT.includes('.com') || EMAIL_INPUT.includes('.net') || EMAIL_INPUT.includes('.org') ? "#73defe" : "#686868" }}> { EMAIL_INPUT.includes('.') ? EMAIL_INPUT.split('.')[1].length === 3 ? `.${EMAIL_INPUT.split('.')[1]}` : ".com" : ".com" } </p>
                     </div>
                 </div>
             )
         }
-        if (loginstate === 'password') {
-            
-            
+
+        if (loginstate === 'password') {                        
             return (
                 // <p style={{ fontSize: '8px', textAlign: 'center' }}> hi </p>
                 <div className="Checker-Container">
@@ -106,22 +105,21 @@ import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
                     </div>
                     <div className="column">
                     <img className="Checker-Droplet" src={usernameLength > 6 && usernameLength < 30 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
+                    {/* <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/> */}
+                    <p style={{ color: usernameLength > 6 && usernameLength < 30 ? "#73defe" : "#686868" }}> CAPS </p>
+                    </div>                    
+                    <div className="column">
+                    <img className="Checker-Droplet" src={usernameLength > 6 && usernameLength < 30 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
 
                     <p style={{ color: usernameLength > 6 && usernameLength < 30 ? "#73defe" : "#686868" }}> number </p>
                     {/* <p style={{ color: usernameLength > 6 && usernameLength < 30 ? "#73defe" : "#686868" }}> number </p> */}
                     </div>
-                    <div className="column">
-                    <img className="Checker-Droplet" src={usernameLength > 6 && usernameLength < 30 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
-                    {/* <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/> */}
-                    <p style={{ color: usernameLength > 6 && usernameLength < 30 ? "#73defe" : "#686868" }}> CAPS </p>
-                    </div>
-                    
                 </div>
             )
         }
+
         if (loginstate === 'age') {        
-            let check = AgeArray.includes(parseInt(AGE_INPUT))
-            
+            let check = AgeArray.includes(parseInt(AGE_INPUT))            
             return (
                 <div className="Checker-Container">      
                     <div className="column">
