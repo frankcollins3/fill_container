@@ -20,12 +20,59 @@ function AgeInput (props:any) {
         } = props;
 
         // const {USERNAME_INPUT, SET_USERNAME_INPUT} = props
-    
-    const passwordinputhandler= (event:any) => {
-        console.log('event from usernameinputhandler')
-        console.log(event)
-        inputHandler(event, SET_PASSWORD_INPUT)
-    }
+
+        const inputhandlerCB = (inputHandlerObj: any) => {
+            let value: string = inputHandlerObj.target.value;
+            console.log('inputhandlerCB FUNCTION');
+            console.log(value);
+          };
+
+          const passwordinputhandler = async (event:any) => {            
+            let originalValue:string = event.target.value
+
+            const clonedEvent = { ...event }
+            let cloneValue:string = clonedEvent.target.value
+
+            const PasswordPromise = new Promise( (resolve, reject) => {
+                resolve(
+                    SET_PASSWORD_INPUT({payload: cloneValue})
+                )
+                reject( console.log('SET_PASSWORD_INPUT failed!'))
+            })
+
+            PasswordPromise
+            .then( () => {
+                const DummyPasswordPromise = new Promise( (resolve, reject) => {
+                    resolve(SET_DUMMY_PASSWORD_INPUT({payload: originalValue}))
+                    reject(console.log("DUMMY_PASSWORD_REJECTED!"))
+                })
+                DummyPasswordPromise
+                .then( () => {
+                    console.log("if you're here you care.")
+                    console.log('PASSWORD_INPUT in promise')
+                    console.log(PASSWORD_INPUT)
+                    console.log('DUMMY_PASSWORD_INPUT in promise')
+                    console.log(DUMMY_PASSWORD_INPUT)
+                })
+            })
+            
+        }
+          
+        //   const passwordinputhandler = (event: any) => {
+        //     const clonedEvent = { ...event }; // Make a copy of the event object
+        //     inputhandlerCB(clonedEvent);
+        //     let value: string = clonedEvent.target.value;
+        //     let duplicate:string = value;
+          
+        //     let hashedValue: string = '*'.repeat(duplicate.length);
+        //     SET_PASSWORD_INPUT({ payload: value });
+          
+        //     // Use jQuery to update the value of the input field with asterisks
+        //     $(event.target).val(hashedValue);
+          
+        //     SET_DUMMY_PASSWORD_INPUT({ payload: hashedValue });
+        //   };
+          
 
     const ghosttext = (event:any) => {
         let target:any = event.target
@@ -41,14 +88,14 @@ function AgeInput (props:any) {
     }
     
     const inputfocus = async () => {
-         SET_PASSWORD_INPUT( { payload: ''})
+         SET_DUMMY_PASSWORD_INPUT( { payload: ''})
          TOGGLE_INPUT_FOCUS( { payload: 'password'} ) 
         }
 
                                                                                     
     const renderPasswordInput = () => {
         return (
-<input style={{ color: '#72d3fe', fontSize: '20px'}} onFocus={inputfocus} value={PASSWORD_INPUT} onMouseEnter={ghosttext} onChange={passwordinputhandler} id="password" type="text"></input> 
+<input style={{ color: '#72d3fe', fontSize: '20px'}} onFocus={inputfocus} value={DUMMY_PASSWORD_INPUT} onMouseEnter={ghosttext} onChange={passwordinputhandler} id="password" type="text"></input> 
         )
     }
 
