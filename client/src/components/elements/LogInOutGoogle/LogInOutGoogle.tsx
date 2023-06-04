@@ -22,7 +22,7 @@ import ConnectedAgeInput from '../../../components/elements/AgeInput'
 import ConnectedSignupLoginChecker from '../../../components/elements/SignupLoginChecker'
 
 import { connect, useDispatch } from 'react-redux'
-import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN } from '../../../redux/actions'
+import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER } from '../../../redux/actions'
 import $ from 'jquery'
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
 
@@ -30,8 +30,10 @@ import $ from 'jquery'
     setCursor() 
 
     const { 
-        LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_INPUT, EMAIL_INPUT, PASSWORD_INPUT, AGE_INPUT, PARENT_CONFIRM, SUBMIT_INPUT_DATA, TOGGLE_SUBMIT_INPUT_DATA, GOOGLE_LINK_ACCT_SCREEN,
-        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, TOGGLE_GOOGLE_LINK_ACCT_SCREEN } = props
+        LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_INPUT, EMAIL_INPUT, PASSWORD_INPUT, AGE_INPUT, PARENT_CONFIRM, SUBMIT_INPUT_DATA, TOGGLE_SUBMIT_INPUT_DATA, GOOGLE_LINK_ACCT_SCREEN, CURRENT_USER,
+        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER } = props
+
+    const googleLinkBtnClass = ["row", "google-link-btn"].join(" ");
           
 
     const dispatch = useDispatch()
@@ -230,11 +232,14 @@ import $ from 'jquery'
         inputCheckingPromise
         .then( () => {
             if (username_good === true && email_good === true && password_good === true && age_good === true) {
+                // CREATE USER DONE OVER HERE! GraphQL + new Promise() & fetch() to save to postgres DB && SET_CURRENT_USER to save the user to redux state so components can do ---> CURRENT_USER ? ternary rendering. 
                 // if (username_good && email_good && password_good && age_good) {
                 console.log("all_good")
 
                 // this hides the form and hand.png && googleButton.png and proceeds to ask user if they want to link their google account.
                 TOGGLE_SUBMIT_INPUT_DATA()
+                // let CURRENT_USER_OBJECT = { id: 0, username: USERNAME_INPUT, email: EMAIL_INPUT, age: AGE_INPUT }
+                SET_CURRENT_USER( {payload: {id: 0, username: USERNAME_INPUT, email: EMAIL_INPUT, age: AGE_INPUT }})
                 // this toggle google acct screen button changes the navbar elements to be [ G o o gl e ] letters. 
                 // TOGGLE_GOOGLE_LINK_ACCT_SCREEN()
 
@@ -342,6 +347,7 @@ import $ from 'jquery'
                 {
                     SUBMIT_INPUT_DATA                     
                     ?
+                    <div className="column">
                     <div className="row">
 <h1> <span id="bluespan"> Welcome! </span> Would you like to link with <span id="gspan">G</span> <span id="red_o_span">o</span><span id="yellow_o_span">o</span><span id="lil_g_span">g</span><span id="l_span">l</span> <span id="e_span">e</span>:</h1>
                         <div className="google-container" style = {{ backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '200px', width: '200px', border: '5px solid #dedede73', zIndex: '2',transform: 'scale(0.25)' }}>
@@ -359,6 +365,11 @@ import $ from 'jquery'
                 <p style={{ color: "silver", fontSize: '22px'}}> ? </p>
                 </div>
                     </div>
+                <div id="google-link-btn" className={googleLinkBtnClass}>
+                <img src="/water_img/close.png"/>
+                <img src="/water_img/confirmation.png"/>
+                </div>
+                </div>
                     // row that includes the google button.
                     :
                     <div> </div>
@@ -402,7 +413,8 @@ const mapStateToProps = (state:any) => ({
     ALL_USERNAMES: state.ALL_USERNAMES,
     ALL_EMAILS: state.ALL_EMAILS,
     SUBMIT_INPUT_DATA: state.SUBMIT_INPUT_DATA,
-    GOOGLE_LINK_ACCT_SCREEN: state.GOOGLE_LINK_ACCT_SCREEN
+    GOOGLE_LINK_ACCT_SCREEN: state.GOOGLE_LINK_ACCT_SCREEN,
+    CURRENT_USER: state.CURRENT_USER
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
@@ -413,7 +425,8 @@ const mapDispatchToProps = (dispatch:any) => ({
     SET_ALL_USERNAMES: (action:any) => dispatch(SET_ALL_USERNAMES(action)),
     SET_ALL_EMAILS: (action:any) => dispatch(SET_ALL_EMAILS(action)),
     TOGGLE_SUBMIT_INPUT_DATA: () => dispatch(TOGGLE_SUBMIT_INPUT_DATA()),
-    TOGGLE_GOOGLE_LINK_ACCT_SCREEN: () => dispatch(TOGGLE_GOOGLE_LINK_ACCT_SCREEN())
+    TOGGLE_GOOGLE_LINK_ACCT_SCREEN: () => dispatch(TOGGLE_GOOGLE_LINK_ACCT_SCREEN()),
+    SET_CURRENT_USER: (action:any) => dispatch(SET_CURRENT_USER(action))
     // TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
 })
 
