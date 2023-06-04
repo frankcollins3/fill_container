@@ -28,6 +28,14 @@ export const SET_USERNAME_INPUT = (action) => {
   }
 }
 
+export const SET_GOOGLEID_INPUT = (action) => {
+  // let payload = action.payload ? payload : ''
+  return {
+    type: "SET_GOOGLEID_INPUT",
+    payload: action.payload // payload: payload || action.payload
+  }
+}
+
 //    /PasswordInput.tsx ------->    const passwordinputhandler = (event:any) => { inputHandler(event, SET_PASSWORD_INPUT) }        ---------> utility/inputHandler SET_PASSWORD_INPUT 
 export const SET_PASSWORD_INPUT = (action) => {
   return {
@@ -35,7 +43,6 @@ export const SET_PASSWORD_INPUT = (action) => {
     payload: action.payload
   }
 }
-
 
 //    /PasswordInput.tsx && [ issue #95 ]     forgot about <input type={"password"} this was a simple hasher for decoy state so that password would be hashed in GraphQL. DummyState was "hashed" client side to show on input.
 export const SET_DUMMY_PASSWORD_INPUT = (action) => {
@@ -96,6 +103,7 @@ export const SET_ALL_EMAILS = (action) => {
 //  /SignupLoginChecker.tsx  ------------>       if (loginstate === 'age') { } this checkbox, if the age is less than 10, allows user to use app -------------->    "/water_img/panda.png"
 export const TOGGLE_PARENT_CONFIRM = () => { return { type: "TOGGLE_PARENT_CONFIRM" } }
 
+// LogInOutGoogle.tsx -->  inputCheckingPromise .then( () => { if (username_good === true && email_good === true && password_good === true && age_good === true) } -----> signup data validated now data ready to submit
 export const TOGGLE_SUBMIT_INPUT_DATA = () => { return { type: "TOGGLE_SUBMIT_INPUT_DATA" } }
 
 export const TOGGLE_GOOGLE_LINK_ACCT_SCREEN = () => { return { type: "TOGGLE_GOOGLE_LINK_ACCT_SCREEN" } }
@@ -108,7 +116,11 @@ export const SET_CURRENT_USER = (action) => {
   }
 }
 
-export const TOGGLE_NO_LINK_GOOGLE_BTN_HOVER = () => { return { type: "NO_LINK_GOOGLE_BTN_HOVER "}}
+export const TOGGLE_NO_LINK_GOOGLE_BTN_HOVER = () => { return { type: "TOGGLE_NO_LINK_GOOGLE_BTN_HOVER" } }
+export const TOGGLE_YES_LINK_GOOGLE_BTN_HOVER = () => { return { type: "TOGGLE_YES_LINK_GOOGLE_BTN_HOVER" } }
+
+export const TOGGLE_LINK_GOOGLE_BTN_CLICK = () => { return { type: "TOGGLE_LINK_GOOGLE_BTN_CLICK" }}
+export const NO_LINK_GOOGLE_CLICK  = () => { return { type: "NO_LINK_GOOGLE_CLICK" } }
 
 // export const SET_SIGNUP_INPUTS_COMPLETE = (action) => {
 //   return {
