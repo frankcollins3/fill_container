@@ -9,6 +9,7 @@ datasource db {
 
 model users {
   id        Int      @id @default(autoincrement())
+  googleId  String?
   username  String?
   email     String?
   password  String?
