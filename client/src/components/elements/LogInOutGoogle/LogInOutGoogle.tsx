@@ -22,7 +22,7 @@ import ConnectedAgeInput from '../../../components/elements/AgeInput'
 import ConnectedSignupLoginChecker from '../../../components/elements/SignupLoginChecker'
 
 import { connect, useDispatch } from 'react-redux'
-import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS } from '../../../redux/actions'
+import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN } from '../../../redux/actions'
 import $ from 'jquery'
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
 
@@ -30,8 +30,8 @@ import $ from 'jquery'
     setCursor() 
 
     const { 
-        LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_INPUT, EMAIL_INPUT, PASSWORD_INPUT, AGE_INPUT, PARENT_CONFIRM, SUBMIT_INPUT_DATA, TOGGLE_SUBMIT_INPUT_DATA,
-        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES } = props
+        LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_INPUT, EMAIL_INPUT, PASSWORD_INPUT, AGE_INPUT, PARENT_CONFIRM, SUBMIT_INPUT_DATA, TOGGLE_SUBMIT_INPUT_DATA, GOOGLE_LINK_ACCT_SCREEN,
+        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, TOGGLE_GOOGLE_LINK_ACCT_SCREEN } = props
           
 
     const dispatch = useDispatch()
@@ -226,12 +226,18 @@ import $ from 'jquery'
             reject(console.log('hey weve got a problem my friend'))
         })
 
+        // this promise checks that the inputs are validated as they are described in signupLoginChecker.tsx for ternary rendering.
         inputCheckingPromise
         .then( () => {
             if (username_good === true && email_good === true && password_good === true && age_good === true) {
                 // if (username_good && email_good && password_good && age_good) {
                 console.log("all_good")
+
+                // this hides the form and hand.png && googleButton.png and proceeds to ask user if they want to link their google account.
                 TOGGLE_SUBMIT_INPUT_DATA()
+                // this toggle google acct screen button changes the navbar elements to be [ G o o gl e ] letters. 
+                // TOGGLE_GOOGLE_LINK_ACCT_SCREEN()
+
             //     console.log("all_good")
             } else {
                 console.log("NOT_ALL_GOOD!")
@@ -274,9 +280,9 @@ import $ from 'jquery'
 
             return (
                 <div className="login-container">
-                <img onClick={showHideLoginSignupBtn} style={{ border: 'none' }} src="/water_img/hand.png"/>                
+                <img onClick={showHideLoginSignupBtn} style={{ border: 'none', display: SUBMIT_INPUT_DATA ? "none" : "" }} src="/water_img/hand.png"/>                
                 {/* // clientId: clientId || '569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com', */}            
-                <img onClick={submitFaucetClick} style={{ transform: 'scale(0.50)' }} className="submit-faucet" src="/water_img/faucet.png"/>
+    <img onClick={submitFaucetClick} style={{ transform: 'scale(0.50)', display: SUBMIT_INPUT_DATA ? "none" : "" }} className="submit-faucet" src={"/water_img/faucet.png"}/>
 
                 {
                     SUBMIT_INPUT_DATA === false
@@ -332,7 +338,36 @@ import $ from 'jquery'
                 :
                 <pre></pre>
                 }
-                
+
+                {
+                    SUBMIT_INPUT_DATA                     
+                    ?
+                    <div className="row">
+<h1> <span id="bluespan"> Welcome! </span> Would you like to link with <span id="gspan">G</span> <span id="red_o_span">o</span><span id="yellow_o_span">o</span><span id="lil_g_span">g</span><span id="l_span">l</span> <span id="e_span">e</span>:</h1>
+                        <div className="google-container" style = {{ backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '200px', width: '200px', border: '5px solid #dedede73', zIndex: '2',transform: 'scale(0.25)' }}>
+                    {/* <h1> blue text </h1> */}        
+                 <GoogleLogin
+                className="Google-Button"
+                clientId={'569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com'}
+                onSuccess={onSuccess}
+                onFailure={onFailure}
+                isSignedIn={true}
+                cookiePolicy={'single_host_origin'}
+                buttonText=""
+                >
+                </GoogleLogin> 
+                <p style={{ color: "silver", fontSize: '22px'}}> ? </p>
+                </div>
+                    </div>
+                    // row that includes the google button.
+                    :
+                    <div> </div>
+                }
+                {
+                    SUBMIT_INPUT_DATA 
+                    ?
+                    <div></div>
+                :
 <div className="google-container" style = {{ backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '50px', width: '50px', border: '5px solid #dedede73', zIndex: '2',transform: 'scale(0.25)' }}>
                     {/* <h1> blue text </h1> */}
 
@@ -347,6 +382,7 @@ import $ from 'jquery'
                 >
                 </GoogleLogin> */}            
                 </div>
+                }
 
                 </div>
         )    
@@ -365,7 +401,8 @@ const mapStateToProps = (state:any) => ({
     ALL_USERS: state.ALL_USERS,
     ALL_USERNAMES: state.ALL_USERNAMES,
     ALL_EMAILS: state.ALL_EMAILS,
-    SUBMIT_INPUT_DATA: state.SUBMIT_INPUT_DATA
+    SUBMIT_INPUT_DATA: state.SUBMIT_INPUT_DATA,
+    GOOGLE_LINK_ACCT_SCREEN: state.GOOGLE_LINK_ACCT_SCREEN
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
@@ -375,7 +412,8 @@ const mapDispatchToProps = (dispatch:any) => ({
     SET_ALL_USERS: (action:any) => dispatch(SET_ALL_USERS(action)),
     SET_ALL_USERNAMES: (action:any) => dispatch(SET_ALL_USERNAMES(action)),
     SET_ALL_EMAILS: (action:any) => dispatch(SET_ALL_EMAILS(action)),
-    TOGGLE_SUBMIT_INPUT_DATA: () => dispatch(TOGGLE_SUBMIT_INPUT_DATA())
+    TOGGLE_SUBMIT_INPUT_DATA: () => dispatch(TOGGLE_SUBMIT_INPUT_DATA()),
+    TOGGLE_GOOGLE_LINK_ACCT_SCREEN: () => dispatch(TOGGLE_GOOGLE_LINK_ACCT_SCREEN())
     // TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
 })
 
