@@ -119,8 +119,15 @@ export const SET_CURRENT_USER = (action) => {
 export const TOGGLE_NO_LINK_GOOGLE_BTN_HOVER = () => { return { type: "TOGGLE_NO_LINK_GOOGLE_BTN_HOVER" } }
 export const TOGGLE_YES_LINK_GOOGLE_BTN_HOVER = () => { return { type: "TOGGLE_YES_LINK_GOOGLE_BTN_HOVER" } }
 
-export const TOGGLE_LINK_GOOGLE_BTN_CLICK = () => { return { type: "TOGGLE_LINK_GOOGLE_BTN_CLICK" }}
-export const NO_LINK_GOOGLE_CLICK  = () => { return { type: "NO_LINK_GOOGLE_CLICK" } }
+export const TOGGLE_YES_LINK_GOOGLE_BTN_CLICK = () => { return { type: "TOGGLE_YES_LINK_GOOGLE_BTN_CLICK" }}
+export const TOGGLE_NO_LINK_GOOGLE_BTN_CLICK  = () => { return { type: "TOGGLE_NO_LINK_GOOGLE_BTN_CLICK" } }
+
+export const SET_GOOGLE_IMG_URL = (action) => {
+  return { 
+    type: "SET_GOOGLE_IMG_URL",
+    payload: action.payload
+  }
+}
 
 // export const SET_SIGNUP_INPUTS_COMPLETE = (action) => {
 //   return {
