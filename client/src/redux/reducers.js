@@ -32,6 +32,7 @@ const initialState = {
     AGE_INPUT: "",
     INPUT_FOCUS: "",               // click on an input and it will hide 
     SUBMIT_INPUT_DATA: false,     // form data complete, validated in LoginoutGoogle.tsx with $('.submit-faucet).click()4
+    GOOGLE_LINK_ACCT_SCREEN: false,
 
     // user related redux state
     ALL_USERS: [],
@@ -140,6 +141,11 @@ const initialState = {
         return {
           ...state,
           SUBMIT_INPUT_DATA: state.SUBMIT_INPUT_DATA === false ? true : false 
+        }
+      case "TOGGLE_GOOGLE_LINK_ACCOUNT_SCREEN":
+        return {
+          ...state,
+          GOOGLE_LINK_ACCT_SCREEN: state.GOOGLE_LINK_ACCT_SCREEN === false ? true : false
         }
 
 
