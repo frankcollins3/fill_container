@@ -96,9 +96,16 @@ export const TOGGLE_SUBMIT_INPUT_DATA = () => {
   }
 }
 
-export const GOOGLE_LINK_ACCT_SCREEN = () => {
+export const TOGGLE_GOOGLE_LINK_ACCT_SCREEN = () => {
   return {
-    type: "GOOGLE_LINK_ACCT_SCREEN"
+    type: "TOGGLE_GOOGLE_LINK_ACCT_SCREEN"
+  }
+}
+
+export const SET_CURRENT_USER = (action) => {
+  return {
+    type: "SET_CURRENT_USER",
+    payload: action.payload
   }
 }
 
