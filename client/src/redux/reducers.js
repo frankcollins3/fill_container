@@ -10,9 +10,9 @@
 
 // initial state for redux 
 const initialState = {
-    HYDRO_SETTINGS: false,
+    HYDRO_SETTINGS: false,            // click gear.png the gear navbar icon and it brings up the sidebar on the main container.
 
-    HYDRO_DATA: {
+    HYDRO_DATA: {                     // fetch(postgres/tables/data)    
       id: 0,
       google_id: '',
       date: 1992-11-21,
@@ -21,15 +21,19 @@ const initialState = {
       status: {},
       users_id: 0
     },
-    LOG_IN_OUT_TYPE: 'LOGIN',
+    // signup state related 
+    LOG_IN_OUT_TYPE: 'LOGIN',       // LogInOutGoogle.tsx [login] [signup] clck either one to select this state.
     LOGIN_SIGNUP_BTN: false,
-    DISPLAY_FORM: "",
-    PASSWORD_INPUT: "***",
+    DISPLAY_FORM: "",               // click hand.png to toggle the       [login] [signup]    buttons from appearing.
+    PASSWORD_INPUT: "***",        
     DUMMY_PASSWORD_INPUT: "***",
     USERNAME_INPUT: "",
     EMAIL_INPUT: "",
     AGE_INPUT: "",
-    INPUT_FOCUS: "",
+    INPUT_FOCUS: "",               // click on an input and it will hide 
+    SUBMIT_INPUT_DATA: false,     // form data complete, validated in LoginoutGoogle.tsx with $('.submit-faucet).click()4
+
+    // user related redux state
     ALL_USERS: [],
     ALL_USERNAMES: [],
     ALL_EMAILS: [],
@@ -78,10 +82,11 @@ const initialState = {
           PASSWORD_INPUT: action.payload
         }
       
-      case 'SET_DUMMY_PASSWORD_INPUT':
+      case 'SET_DUMMY_PASSWORD_INPUT':        
         return {
           ...state,
-          DUMMY_PASSWORD_INPUT: "*"
+          DUMMY_PASSWORD_INPUT: action.payload
+          // DUMMY_PASSWORD_INPUT: dummyPassword
           // DUMMY_PASSWORD_INPUT: `${state.DUMMY_PASSWORD_INPUT}`
           // DUMMY_PASSWORD_INPUT: "*".repeat(action.payload.length)
         }
@@ -129,6 +134,12 @@ const initialState = {
           ...state,
           PARENT_CONFIRM: !state.PARENT_CONFIRM
           // PARENT_CONFIRM: state.PARENT_CONFIRM === true ? false : true
+        }
+
+      case "TOGGLE_SUBMIT_INPUT_DATA":
+        return {
+          ...state,
+          SUBMIT_INPUT_DATA: state.SUBMIT_INPUT_DATA === false ? true : false 
         }
 
 
