@@ -387,7 +387,7 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
                     <div> </div>
                 }
                 {
-                    SUBMIT_INPUT_DATA 
+                    SUBMIT_INPUT_DATA && !GOOGLE_LINK_ACCT_SCREEN
                     ?
                     <div></div>
                 :
