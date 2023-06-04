@@ -21,6 +21,15 @@ const initialState = {
       status: {},
       users_id: 0
     },
+
+    CURRENT_USER: {
+        id: 0,
+        username: '',
+        email: '',
+        age: ''
+        // no password that data doesn't need to be client facing.
+    },
+
     // signup state related 
     LOG_IN_OUT_TYPE: 'LOGIN',       // LogInOutGoogle.tsx [login] [signup] clck either one to select this state.
     LOGIN_SIGNUP_BTN: false,
@@ -142,10 +151,21 @@ const initialState = {
           ...state,
           SUBMIT_INPUT_DATA: state.SUBMIT_INPUT_DATA === false ? true : false 
         }
-      case "TOGGLE_GOOGLE_LINK_ACCOUNT_SCREEN":
+      case "TOGGLE_GOOGLE_LINK_ACCT_SCREEN":
         return {
           ...state,
           GOOGLE_LINK_ACCT_SCREEN: state.GOOGLE_LINK_ACCT_SCREEN === false ? true : false
+        }
+      case "SET_CURRENT_USER":
+        let payload = action.payload
+        let id = payload.id ? payload.id : ''
+        let username = payload.username ? payload.username : ''
+        let email = payload.email ? payload.email : ''
+        let age = payload.age ? payload.age : ''
+
+        return {
+          ...state,
+          CURRENT_USER: { id: id, username: username, email: email, age: age }
         }
 
 
