@@ -22,15 +22,13 @@ const initialState = {
       users_id: 0
     },
 
-    CURRENT_USER: {
-        id: 0,
-        username: '',
-        email: '',
-        age: ''
-        // no password that data doesn't need to be client facing.
-    },
-
     // signup state related 
+    CURRENT_USER: { id: 0, googleId: '', username: '', email: '', age: '' },
+    ALL_USERS: [],
+    ALL_USERNAMES: [],
+    ALL_EMAILS: [],
+    PARENT_CONFIRM: false,
+
     LOG_IN_OUT_TYPE: 'LOGIN',       // LogInOutGoogle.tsx [login] [signup] clck either one to select this state.
     LOGIN_SIGNUP_BTN: false,
     DISPLAY_FORM: "",               // click hand.png to toggle the       [login] [signup]    buttons from appearing.
@@ -42,12 +40,16 @@ const initialState = {
     INPUT_FOCUS: "",               // click on an input and it will hide 
     SUBMIT_INPUT_DATA: false,     // form data complete, validated in LoginoutGoogle.tsx with $('.submit-faucet).click()4
     GOOGLE_LINK_ACCT_SCREEN: false,
+    // signup state related 
+    
+    // link google account state;
+    NO_LINK_GOOGLE_BTN_HOVER: false,
+    YES_LINK_GOOGLE_BTN_HOVER: false,
+    // link google account state;
+
 
     // user related redux state
-    ALL_USERS: [],
-    ALL_USERNAMES: [],
-    ALL_EMAILS: [],
-    PARENT_CONFIRM: false,
+
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -66,6 +68,7 @@ const initialState = {
             weekday: action.payload.weekday, status: action.payload.status, users_id: action.payload.users_id
           }
         }
+
       case 'SET_LOG_IN_OUT_TYPE':
         return {
           ...state,
@@ -156,17 +159,27 @@ const initialState = {
           ...state,
           GOOGLE_LINK_ACCT_SCREEN: state.GOOGLE_LINK_ACCT_SCREEN === false ? true : false
         }
-      case "SET_CURRENT_USER":
-        let payload = action.payload
-        let id = payload.id ? payload.id : ''
-        let username = payload.username ? payload.username : ''
-        let email = payload.email ? payload.email : ''
-        let age = payload.age ? payload.age : ''
 
+      case "SET_CURRENT_USER":        
+        payload = action.payload
         return {
           ...state,
-          CURRENT_USER: { id: id, username: username, email: email, age: age }
+          CURRENT_USER: { id: payload.id, googleId: payload.googleId, username: action.payload.username, email: action.payload.email, age: action.payload.age }
         }
+
+      
+      case "TOGGLE_NO_LINK_GOOGLE_BTN_HOVER":
+        return {
+          ...state,
+          NO_LINK_GOOGLE_BTN_HOVER: state.NO_LINK_GOOGLE_BTN_HOVER === false ? true : false 
+        }
+
+      case "TOGGLE_YES_LINK_GOOGLE_BTN_HOVER":
+        return {
+          ...state,
+          YES_LINK_GOOGLE_BTN_HOVER: state.YES_LINK_GOOGLE_BTN_HOVER === false ? true : false 
+        }
+        
 
 
       default:
