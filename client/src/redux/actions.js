@@ -24,9 +24,14 @@ export const SET_PASSWORD_INPUT = (action) => {
 }
 
 export const SET_DUMMY_PASSWORD_INPUT = (action) => {
+  let actionCopy = action
+  const actionPayloadValue = actionCopy.payload
+  let payloadLength = actionPayloadValue.length
   return {
     type: "SET_DUMMY_PASSWORD_INPUT",
     payload: action.payload
+    // payload: "*".repeat(payloadLength)
+    // payload: "*".repeat(action.payload.length)
   }
 }
 
@@ -82,6 +87,12 @@ export const SET_ALL_EMAILS = (action) => {
 export const TOGGLE_PARENT_CONFIRM = (action) => {
   return {
     type: "TOGGLE_PARENT_CONFIRM"
+  }
+}
+
+export const TOGGLE_SUBMIT_INPUT_DATA = () => {
+  return {
+    type: "TOGGLE_SUBMIT_INPUT_DATA"
   }
 }
 
