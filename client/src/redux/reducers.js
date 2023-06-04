@@ -32,7 +32,8 @@ const initialState = {
     LOG_IN_OUT_TYPE: 'LOGIN',       // LogInOutGoogle.tsx [login] [signup] clck either one to select this state.
     LOGIN_SIGNUP_BTN: false,
     DISPLAY_FORM: "",               // click hand.png to toggle the       [login] [signup]    buttons from appearing.
-    PASSWORD_INPUT: "***",        
+    PASSWORD_INPUT: "***",   
+    GOOGLEID_INPUT: '',     
     DUMMY_PASSWORD_INPUT: "***",
     USERNAME_INPUT: "",
     EMAIL_INPUT: "",
@@ -45,6 +46,8 @@ const initialState = {
     // link google account state;
     NO_LINK_GOOGLE_BTN_HOVER: false,
     YES_LINK_GOOGLE_BTN_HOVER: false,
+    LINK_GOOGLE_BTN_CLICK: false,
+    NO_LINK_GOOGLE_CLICK: false,
     // link google account state;
 
 
@@ -53,6 +56,8 @@ const initialState = {
   };
 
   const rootReducer = (state = initialState, action) => {
+    let payload;
+    payload = action.payload ? action.payload : ''
     switch (action.type) {
       case 'TOGGLE_HYDRO_SETTINGS':
         return {
@@ -109,6 +114,13 @@ const initialState = {
           ...state,
           USERNAME_INPUT: action.payload
         }
+
+      case "SET_GOOGLEID_INPUT":
+          return {
+            ...state,
+            GOOGLEID_INPUT: action.payload
+        }
+
       case "SET_EMAIL_INPUT":
         return {
           ...state,
@@ -160,11 +172,10 @@ const initialState = {
           GOOGLE_LINK_ACCT_SCREEN: state.GOOGLE_LINK_ACCT_SCREEN === false ? true : false
         }
 
-      case "SET_CURRENT_USER":        
-        payload = action.payload
+      case "SET_CURRENT_USER":                
         return {
           ...state,
-          CURRENT_USER: { id: payload.id, googleId: payload.googleId, username: action.payload.username, email: action.payload.email, age: action.payload.age }
+          CURRENT_USER: { id: payload.id, googleId: payload.googleId, username: payload.username, email: payload.email, age: payload.age }
         }
 
       
@@ -179,8 +190,19 @@ const initialState = {
           ...state,
           YES_LINK_GOOGLE_BTN_HOVER: state.YES_LINK_GOOGLE_BTN_HOVER === false ? true : false 
         }
-        
+      
+      case "TOGGLE_LINK_GOOGLE_BTN_CLICK":        
+        return {
+          ...state,
+          LINK_GOOGLE_BTN_CLICK: !state.LINK_GOOGLE_BTN_CLICK
+        }
 
+      case "TOGGLE_NO_LINK_GOOGLE_BTN_CLICK":
+        return {
+          ...state,
+          NO_LINK_GOOGLE_CLICK: !state.NO_LINK_GOOGLE_CLICK
+        }
+        
 
       default:
         return state;
