@@ -42,9 +42,6 @@ export default async function allDBurl () {
             // let test_query = `{allDBsettings{id,age,height,weight,reminder,activity,start_time,end_time,users_id}}`
         }
     }
-    const returnObject = ()=> {
-    return urlObject
-    }
     applyAPI()
 
     // create promise and resolve the assigning of object values from the ENV GraphQL query return data.
