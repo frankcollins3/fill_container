@@ -22,23 +22,15 @@ import ConnectedAgeInput from '../../../components/elements/AgeInput'
 import ConnectedSignupLoginChecker from '../../../components/elements/SignupLoginChecker'
 
 import { connect, useDispatch } from 'react-redux'
-import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS } from '../../../redux/actions'
+import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS } from '../../../redux/actions'
 import $ from 'jquery'
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
 
  function LogInOutGoogle ( props:any ) {
     setCursor() 
 
-    // if (typeof window !== 'undefined') {
-    //     let eventassertions = [ {property: 'cursor', value: `normal`}]
-    //     CSS($('*'), 'cursor', `url('/water_img/mouse_droplet.png')`)   
-    //     // EVENT($('*'), 'mouseenter', eventassertions) 
-    //       $('*').on('mouseenter', (event:any) => { CSS($(event.target), 'cursor', 'normal') })
-    //     // let eventassertions = [CSS(target, 'cursor', normal)]
-    //   }
-
     const { 
-        LOGIN_SIGNUP_BTN, DISPLAY_FORM, PASSWORD_INPUT, INPUT_FOCUS, ALL_USERS,
+        LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_INPUT, EMAIL_INPUT, PASSWORD_INPUT, AGE_INPUT, PARENT_CONFIRM, SUBMIT_INPUT_DATA, TOGGLE_SUBMIT_INPUT_DATA,
         TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES } = props
           
 
@@ -74,9 +66,10 @@ import $ from 'jquery'
           let allUsers = await WaterRequest(allDBusersURL, options)
           let allUsersData = allUsers.data.allDBusers
           let allUsernames = allUsersData.filter((data:any) => data.hasOwnProperty('username')).map((data:any) => data.username);          
+          
+          SET_ALL_USERNAMES({ payload: allUsernames })
+
           let allEmails = allUsersData.filter((data:any) => data.hasOwnProperty('email')).map((data:any) => data.email)
-          console.log('allEmails')
-          console.log(allEmails)
 
           $('.submit-faucet').on('mouseenter', (event) => {
             CSS($('*'), 'cursor', `url('/water_img/mouseWaterCup.png'), auto`)           
@@ -126,8 +119,6 @@ import $ from 'jquery'
     }
 
     const showform = (event:any) => {
-        console.log('DISPLAY_FORM')
-        console.log(DISPLAY_FORM)
         let targetid:string = event.target.id
         // if (targetid === 'login') {
         //     TOGGLE_LOGIN_SIGNUP_BTN()
@@ -157,8 +148,6 @@ import $ from 'jquery'
     const formhover = async (event:any) => {
         let target:any = event.target
         let children = $(event.target).children()
-        console.log('children')
-        console.log(children)
     }
 
     const ghosttext = (event:any) => {
@@ -171,15 +160,133 @@ import $ from 'jquery'
         }        
     }
 
+    const submitFaucetClick = async () => {
+        let allUsernames = ALL_USERNAMES
+        let username_good:boolean = true
+        let email_good:boolean = true
+        let password_good:boolean = true
+        let age_good:boolean = true
+
+        let usernameinputLength:number = USERNAME_INPUT.length
+
+        
+        const checkinputs = () => {
+
+            if (allUsernames.includes(USERNAME_INPUT)) {
+                username_good = !username_good; // toggle state 
+                return 'username already exists'
+            } else {
+                if (usernameinputLength > 6 &&  usernameinputLength < 30 ) {
+                    console.log("username length is good")
+                } else {
+                    console.log("username failed")
+                    username_good = false
+                }
+            }
+    
+            if (EMAIL_INPUT.includes('@')) {
+                console.log("email good with @")
+                if (EMAIL_INPUT.replace(/^.*\.(.*)$/, '$1') === "com" || EMAIL_INPUT.replace(/^.*\.(.*)$/, '$1') === "net" || EMAIL_INPUT.replace(/^.*\.(.*)$/, '$1') === "org" ) {
+                    console.log('good with .net .com')
+                } else {
+                    console.log("email good with @ but failed with .com .net .org etc")
+                    email_good = false
+                }
+                // EMAIL_INPUT.replace(/^.*\.(.*)$/, '$1') === "com" || EMAIL_INPUT.replace(/^.*\.(.*)$/, '$1') === "net" || EMAIL_INPUT.replace(/^.*\.(.*)$/, '$1') === "org"
+            } else {
+                console.log("email failed")
+                email_good = false
+            }
+    
+            if (/[\!@#$%^&*\(\)]/.test(PASSWORD_INPUT)) {
+                if (/[A-Z]/.test(PASSWORD_INPUT) && /[0-9]/.test(PASSWORD_INPUT)) {
+                    console.log("nice the password input works.")
+                } else {
+                    password_good = false
+                }
+            } else {
+                password_good = false
+            }
+    
+            if (parseInt(AGE_INPUT) > 10) {
+                console.log("age is good older than 10")
+            } else {
+                if (PARENT_CONFIRM) {
+                    console.log("age is less than 10 but PARENT CONFIRM")
+                } else {
+                    console.log("age failed")
+                    age_good = false
+                }
+            }
+
+
+        }
+        const inputCheckingPromise = new Promise( (resolve, reject) => {
+            resolve(checkinputs())
+            reject(console.log('hey weve got a problem my friend'))
+        })
+
+        inputCheckingPromise
+        .then( () => {
+            if (username_good === true && email_good === true && password_good === true && age_good === true) {
+                // if (username_good && email_good && password_good && age_good) {
+                console.log("all_good")
+                TOGGLE_SUBMIT_INPUT_DATA()
+            //     console.log("all_good")
+            } else {
+                console.log("NOT_ALL_GOOD!")
+                console.log('username_good')
+                console.log(username_good)
+
+                console.log("email_good")
+                console.log(email_good)
+
+                console.log('password_good')
+                console.log(password_good)
+
+                console.log('age_good')
+                console.log(age_good)
+            }
+        })
+       
+
+
+        // /[\!@#$%^&*\(\)]/.test(PASSWORD_INPUT)
+        
+        console.log('allUsernames')
+        console.log(allUsernames)
+
+        
+        console.log('USERNAME_INPUT')
+        console.log(USERNAME_INPUT)
+
+        console.log('EMAIL_INPUT')
+        console.log(EMAIL_INPUT)
+
+        console.log('PASSWORD_INPUT')                                            
+        console.log(PASSWORD_INPUT)    
+
+        console.log('AGE_INPUT')
+        console.log(AGE_INPUT)
+        
+        
+    }
+
             return (
                 <div className="login-container">
                 <img onClick={showHideLoginSignupBtn} style={{ border: 'none' }} src="/water_img/hand.png"/>                
                 {/* // clientId: clientId || '569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com', */}            
-                <img style={{ transform: 'scale(0.50)' }} className="submit-faucet" src="/water_img/faucet.png"/>
+                <img onClick={submitFaucetClick} style={{ transform: 'scale(0.50)' }} className="submit-faucet" src="/water_img/faucet.png"/>
+
+                {
+                    SUBMIT_INPUT_DATA === false
+                        ?
                 <div style={{ 
                     display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', 
                     height: '300px', width: '200px',                 
                 }}>
+
+                   
                     {
                         LOGIN_SIGNUP_BTN 
                         ?                        
@@ -222,15 +329,14 @@ import $ from 'jquery'
                         <pre></pre>
                     }
                 </div>
+                :
+                <pre></pre>
+                }
                 
-                <div
-    style = {{ 
-        backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '50px', width: '50px', border: '5px solid #dedede73', zIndex: '2', 
-        transform: 'scale(0.25)', // transform: LOGIN_SIGNUP_BTN ? 'scale(0.25)' : 'none' 
-}}
-                className="google-container">
+<div className="google-container" style = {{ backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '50px', width: '50px', border: '5px solid #dedede73', zIndex: '2',transform: 'scale(0.25)' }}>
                     {/* <h1> blue text </h1> */}
-                <GoogleLogin
+
+                {/* <GoogleLogin
                 className="Google-Button"
                 clientId={'569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com'}
                 onSuccess={onSuccess}
@@ -239,7 +345,7 @@ import $ from 'jquery'
                 cookiePolicy={'single_host_origin'}
                 buttonText=""
                 >
-                </GoogleLogin>
+                </GoogleLogin> */}            
                 </div>
 
                 </div>
@@ -250,19 +356,26 @@ import $ from 'jquery'
 const mapStateToProps = (state:any) => ({
     LOGIN_SIGNUP_BTN: state.LOGIN_SIGNUP_BTN,
     DISPLAY_FORM: state.DISPLAY_FORM,
-    PASSWORD: state.PASSWORD,
+    USERNAME_INPUT: state.USERNAME_INPUT,
+    EMAIL_INPUT: state.EMAIL_INPUT,
+    PASSWORD_INPUT: state.PASSWORD_INPUT,
+    AGE_INPUT: state.AGE_INPUT,
+    PARENT_CONFIRM: state.PARENT_CONFIRM,
     INPUT_FOCUS: state.INPUT_FOCUS,
     ALL_USERS: state.ALL_USERS,
-    ALL_EMAILS: state.ALL_EMAILS
+    ALL_USERNAMES: state.ALL_USERNAMES,
+    ALL_EMAILS: state.ALL_EMAILS,
+    SUBMIT_INPUT_DATA: state.SUBMIT_INPUT_DATA
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
     TOGGLE_LOGIN_SIGNUP_BTN: () => dispatch(TOGGLE_LOGIN_SIGNUP_BTN()),
     TOGGLE_SHOW_FORM: (action:any) => dispatch(TOGGLE_SHOW_FORM(action)),
-    SET_PASSWORD: (action:any) => dispatch(SET_PASSWORD_INPUT(action)),
+    SET_PASSWORD_INPUT: (action:any) => dispatch(SET_PASSWORD_INPUT(action)),
     SET_ALL_USERS: (action:any) => dispatch(SET_ALL_USERS(action)),
     SET_ALL_USERNAMES: (action:any) => dispatch(SET_ALL_USERNAMES(action)),
-    SET_ALL_EMAILS: (action:any) => dispatch(SET_ALL_EMAILS(action))
+    SET_ALL_EMAILS: (action:any) => dispatch(SET_ALL_EMAILS(action)),
+    TOGGLE_SUBMIT_INPUT_DATA: () => dispatch(TOGGLE_SUBMIT_INPUT_DATA())
     // TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
 })
 
