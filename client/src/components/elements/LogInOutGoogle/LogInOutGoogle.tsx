@@ -12,6 +12,7 @@ import attributeJQ from '../../../utility/attributeJQ'
 import WaterRequest from '../../../utility/WaterRequest'
 import setCursor from '../../../utility/setCursor'
 import CSS from '../../../utility/CSS'
+import deathCertificate from '../../../utility/deathCertificate'
 // import ghostText from '../../../utility/GhostText'
 
 // components
@@ -56,6 +57,9 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
         let googleProfile:any = res.profileObj
         console.log(res.profileObj) 
         let googleImgUrl:string = googleProfile.imageUrl
+
+        deathCertificate('googleImgUrl', googleImgUrl, 2)
+
         console.log('googleImgUrl')
         console.log(googleImgUrl)
 
