@@ -204,7 +204,10 @@ const SettingsType = new GraphQLObjectType({
           API: { type: new GraphQLNonNull(GraphQLString) },
           NODE_ENV: { type: GraphQLString },
           GOOGLE_ID: { type: GraphQLString },
-          EUSER: { type: UsersType }
+          EUSER: { type: GraphQLString }
+          // EUSER: { id, googleId, username, password, email, age }
+          // EUSER: { id, googleId, username, email, password, age }
+          // EUSER: { type: UsersType }
           // id: { type: GraphQLInt }        
         })})
 
@@ -254,11 +257,11 @@ const RootQueryType = new GraphQLObjectType({
         let prod = env.REACT_APP_API_PROD
         let NODE_ENV = env.REACT_APP_NODE_ENV
         let GOOGLE_ID = env.REACT_APP_GOOGLE_ID
-        let EmergencyUser = env.REACT_APP_EUSER || {id: 0, googleId: '', username: '', email: 'no@nomail.com', age: 0 }
+        let EmergencyUser = env.REACT_APP_EUSER || {id: 1, googleId: '', password: '', username: '', email: 'no@nomail.com', age: 1 }
         // let server = process.env.NODE_ENV === 'development' ? dev : prod
         let serverStringForSplit = `${dev}***${prod}`
-        let obj = { DATABASE_URL: db_url, API: serverStringForSplit, NODE_ENV: NODE_ENV, GOOGLE_ID: GOOGLE_ID, EUSER: EmergencyUser }
         // let obj = { DATABASE_URL: db_url, API: serverStringForSplit, NODE_ENV: NODE_ENV, GOOGLE_ID: GOOGLE_ID }
+        let obj = { DATABASE_URL: db_url, API: serverStringForSplit, NODE_ENV: NODE_ENV, GOOGLE_ID: GOOGLE_ID, EUSER: EmergencyUser }
         return obj          
       }
     }, 
