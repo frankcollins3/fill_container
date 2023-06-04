@@ -307,6 +307,11 @@ const RootQueryType = new GraphQLObjectType({
       })         
     }
   },
+  userSignup: {
+      type: UsersType,
+      description: 'User Signup from /LogInOutGoogle.tsx. The data is submitted from  const inputCheckingPromise = new Promise()' 
+  },
+
   singledata: {    
     type: DataType,
     description: 'Data from Postgres a psql table column named data',
