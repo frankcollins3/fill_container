@@ -47,11 +47,20 @@ img {
   background-color: #dedede70;
 /* font-weight: bolder; */
   color: silver;
+  text-align: center;
 }
 
 .Login-Signup-Btn:hover {
   font-weight: bolder;
 }
+
+.submit-faucet {
+  align-self: center;
+  border: none;
+  border-radius: 0%;
+}
+
+/* .submit-faucet:hover { cursor: pointer; } */
 
 .row {
     align-self: space-between;
@@ -72,3 +81,13 @@ input:focus {
 }
 
 span { color: transparent; }
+#bluespan { color: #72d3fe; }
+#gspan { color: #4285f4; }
+#red_o_span { color: #EA4335; }
+#yellow_o_span { color: #FBBC05; }
+#lil_g_span { color: #4285f4; }
+#l_span { color: #34A853}
+#e_span { color: #EA4335; }
+
+
+h1 { color: silver; }     h1:hover { font-weight: bolder;}
