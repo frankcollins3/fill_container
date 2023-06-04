@@ -151,6 +151,7 @@ const SettingsType = new GraphQLObjectType({
       description: "Users Properties:",
       fields: () => ({      
         id: { type: (GraphQLInt) },     // { type: new GraphQLNonNull(GraphQLInt)}
+        googleId: { type: GraphQLString },  // user can choose between regular signin or googleId signin so cant NonNull in [ GraphQL | Postgres ] 
         username: { type: GraphQLString },
         password: { type: GraphQLString },
         email: { type: GraphQLString },
@@ -169,6 +170,7 @@ const SettingsType = new GraphQLObjectType({
           // Convert outgoing Date object to ISO 8601 string
           return value.toISOString();
         },
+        
         parseLiteral(ast) {
           if (ast.kind === Kind.STRING) {
             // Parse date string literal to Date object
@@ -273,7 +275,7 @@ const RootQueryType = new GraphQLObjectType({
     description: 'List of Users from Postgres & Prisma',
     resolve: async () => {
       let allusers = await prisma.users.findMany()
-      return { id, username, email, password, age } = allusers
+      return { id, googleId, username, email, password, age } = allusers
     }
   },
   allDBdata: {
