@@ -4,7 +4,7 @@ export default async function allDBurl () {
 // This func fetches GQL endpoint to get process.env.api. Then returns concatenated url strings data calls appwide. see bottom of code for explanation.
 
     // 1: fetch to GraphQL endpoint for env variables. 
-    let pre_envdata = await fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,API,NODE_ENV,GOOGLE_ID}}`)
+    let pre_envdata = await fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,API,NODE_ENV,GOOGLE_ID,EUSER}}`)
     // let pre_envdata = await fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,REACT_APP_API,NODE_ENV}}`)
     let env_data = await pre_envdata.json()
     let data = env_data.data.ENV
