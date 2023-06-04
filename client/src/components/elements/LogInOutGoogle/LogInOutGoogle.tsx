@@ -46,12 +46,17 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
     let API;
 
 
-    const onSuccess = (res:any) =>  { 
+    const onSignupSuccess = (res:any) =>  { 
         console.log(res.profileObj) 
         // create state and handle accessing user 
-
         // change the form in the middle to be the login user button. 
     }
+
+    const onLinkSuccess = (res:any) => {
+        console.log('res from onLinkSuccess')
+        console.log(res)
+    }
+
     const onFailure = (res:any) => { console.log("hey failure") }
 
     useEffect( () => {
@@ -232,7 +237,7 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
                 // this hides the form and hand.png && googleButton.png and proceeds to ask user if they want to link their google account.
                 TOGGLE_SUBMIT_INPUT_DATA()
                 // let CURRENT_USER_OBJECT = { id: 0, username: USERNAME_INPUT, email: EMAIL_INPUT, age: AGE_INPUT }
-                SET_CURRENT_USER( {payload: {id: 0, username: USERNAME_INPUT, email: EMAIL_INPUT, age: AGE_INPUT }})
+                SET_CURRENT_USER( {payload: {id: 0, googleId: '', username: USERNAME_INPUT, email: EMAIL_INPUT, age: AGE_INPUT }})
                 // this toggle google acct screen button changes the navbar elements to be [ G o o gl e ] letters. 
                 // TOGGLE_GOOGLE_LINK_ACCT_SCREEN()
 
@@ -319,6 +324,7 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
                 <pre></pre>
                 }
 
+                {/* this means that the user signed up and the data has been validated. this is a middle point that asks if the user wants to link google account. */}
                 {
                     SUBMIT_INPUT_DATA                     
                     ?
@@ -331,7 +337,7 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
                  <GoogleLogin
                 className="Google-Button"
                 clientId={'569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com'}
-                onSuccess={onSuccess}
+                onSuccess={onLinkSuccess}
                 onFailure={onFailure}
                 isSignedIn={true}
                 cookiePolicy={'single_host_origin'}
