@@ -96,6 +96,12 @@ export const TOGGLE_SUBMIT_INPUT_DATA = () => {
   }
 }
 
+export const GOOGLE_LINK_ACCT_SCREEN = () => {
+  return {
+    type: "GOOGLE_LINK_ACCT_SCREEN"
+  }
+}
+
 // export const SET_SIGNUP_INPUTS_COMPLETE = (action) => {
 //   return {
 //     type: "SET_SIGNUP_INPUTS_COMPLETE",
