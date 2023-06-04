@@ -80,7 +80,7 @@ input:focus {
   border: 1px dashed #72d3fe;
 }
 
-span { color: transparent; }
+#invisible { color: transparent; }
 #bluespan { color: #72d3fe; }
 #gspan { color: #4285f4; }
 #red_o_span { color: #EA4335; }
@@ -89,5 +89,23 @@ span { color: transparent; }
 #l_span { color: #34A853}
 #e_span { color: #EA4335; }
 
+.googleLinkBtnClass {
+  border: 5px solid hotpink;
+}
+
+#google-link-btn {
+  /* display: grid; */
+  /* grid-template-columns: 30% 30%; */
+  width: 50%;
+  justify-content: space-between;
+  align-items: center;
+  /* border: 5px solid orange; */
+}
+
 
 h1 { color: silver; }     h1:hover { font-weight: bolder;}
+
+pre {
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+}
