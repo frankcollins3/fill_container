@@ -22,20 +22,18 @@ import ConnectedAgeInput from '../../../components/elements/AgeInput'
 import ConnectedSignupLoginChecker from '../../../components/elements/SignupLoginChecker'
 
 import { connect, useDispatch } from 'react-redux'
-import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER } from '../../../redux/actions'
+import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL } from '../../../redux/actions'
 import $ from 'jquery'
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
 
  function LogInOutGoogle ( props:any ) {
-    setCursor()     
-    
+          
     const { 
-LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_INPUT, EMAIL_INPUT, PASSWORD_INPUT, AGE_INPUT, PARENT_CONFIRM, SUBMIT_INPUT_DATA, TOGGLE_SUBMIT_INPUT_DATA, GOOGLE_LINK_ACCT_SCREEN, CURRENT_USER, NO_LINK_GOOGLE_BTN_HOVER, YES_LINK_GOOGLE_BTN_HOVER,
-        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER } = props
+LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_INPUT, EMAIL_INPUT, PASSWORD_INPUT, AGE_INPUT, PARENT_CONFIRM, SUBMIT_INPUT_DATA, TOGGLE_SUBMIT_INPUT_DATA, GOOGLE_LINK_ACCT_SCREEN, CURRENT_USER, NO_LINK_GOOGLE_BTN_HOVER, YES_LINK_GOOGLE_BTN_HOVER, LINK_GOOGLE_BTN_CLICK, NO_LINK_GOOGLE_BTN_CLICK, GOOGLE_IMG_URL,
+        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL } = props
 
     const googleLinkBtnClass = ["row", "google-link-btn"].join(" ");
           
-
     const dispatch = useDispatch()
 
     let urlbank;
@@ -45,9 +43,9 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
     let clientId:any;
     let API;
 
-
     const onSignupSuccess = (res:any) =>  { 
-        console.log(res.profileObj) 
+        console.log('res')
+        console.log(res)        
         // create state and handle accessing user 
         // change the form in the middle to be the login user button. 
     }
@@ -55,6 +53,14 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
     const onLinkSuccess = (res:any) => {
         console.log('res from onLinkSuccess')
         console.log(res)
+        let googleProfile:any = res.profileObj
+        console.log(res.profileObj) 
+        let googleImgUrl:string = googleProfile.imageUrl
+        console.log('googleImgUrl')
+        console.log(googleImgUrl)
+
+        // let action = { PAYLOAD: googleImgUrl}
+        SET_GOOGLE_IMG_URL({ payload: googleImgUrl })
     }
 
     const onFailure = (res:any) => { console.log("hey failure") }
@@ -65,7 +71,7 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
           // let {HYDRO_DATA, HYDRO_SETTINGS } = await store.getState()
     
           API = urlbank.API      
-          env = urlbank.ENVdata.data.ENV   
+          env = urlbank.ENVdata.data.ENV           
           allDBusersURL = urlbank.allDBusersURL
           
           let options = { headers: 'AllUsers' }
@@ -121,17 +127,13 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
         if (DISPLAY_FORM === "login" || DISPLAY_FORM === "signup" && LOGIN_SIGNUP_BTN) {
             console.log("weve gottem both at the same time.")
         }
-        
-
     }
-
+        
     const showform = (event:any) => {
         let targetid:string = event.target.id
         TOGGLE_LOGIN_SIGNUP_BTN()
         TOGGLE_SHOW_FORM({payload: targetid})
     }
-
-
 
     const emailinputhandler = () => {}
     const ageinputhandler = () => {}
@@ -263,6 +265,18 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
             const noLinkGoogleHoverToggleDrop = () => { TOGGLE_NO_LINK_GOOGLE_BTN_HOVER() }
             const yesLinkGoogleHoverToggleDrop = () => { TOGGLE_YES_LINK_GOOGLE_BTN_HOVER() }
 
+            const linkGoogleReject = () => {
+                console.log("hey thats cute")
+                // start the icons so a user can pick a picture.
+                // SET_STATE all the inputs GraphQL save to database.
+                // navigate to the next page 
+            }
+
+            const linkGoogleConfirm = () => {
+                console.log('linkGoogleConfirm Click!')
+                TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()
+            }
+
             return (
                 <div className="login-container">
                 <img onClick={showHideLoginSignupBtn} style={{ border: 'none', display: SUBMIT_INPUT_DATA ? "none" : "" }} src="/water_img/hand.png"/>                
@@ -288,6 +302,7 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
                         :
                         <pre></pre>   
                     }
+
                     {
                         DISPLAY_FORM === "signup"
                         ?
@@ -325,32 +340,43 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
                 }
 
                 {/* this means that the user signed up and the data has been validated. this is a middle point that asks if the user wants to link google account. */}
+
                 {
                     SUBMIT_INPUT_DATA                     
                     ?
                     <div className="column">
+                        <img src={ GOOGLE_IMG_URL.length > 3 ? GOOGLE_IMG_URL : "/water_img/panda.png"} />
+                        {/* <img src={ GOOGLE_IMG_URL.length > 3 ? GOOGLE_IMG_URL : "/water_img/panda.png"} /> */}
                 <div className="row">
 <h1> <span id="bluespan"> Welcome! </span> Would you like to link with <span id="gspan">G</span> <span id="red_o_span">o</span><span id="yellow_o_span">o</span><span id="lil_g_span">g</span><span id="l_span">l</span> <span id="e_span">e</span>:</h1>
 {/* <h1> <span id="bluespan"> Welcome! </span> Would you like to link with <span id="gspan">G</span> <span id="red_o_span">o</span><span id="yellow_o_span">o</span><span id="lil_g_span">g</span><span id="l_span">l</span> <span id="e_span">e</span>:</h1> */}
-                        <div className="google-container" style = {{ backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '200px', width: '200px', border: '5px solid #dedede73', zIndex: '2',transform: 'scale(0.25)' }}>
-                    {/* <h1> blue text </h1> */}        
-                 <GoogleLogin
-                className="Google-Button"
-                clientId={'569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com'}
-                onSuccess={onLinkSuccess}
-                onFailure={onFailure}
-                isSignedIn={true}
-                cookiePolicy={'single_host_origin'}
-                buttonText=""
-                >
+    <div className="google-container" style = {{ backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '200px', width: '200px', border: '5px solid #dedede73', zIndex: '2',transform: 'scale(0.25)' }}>
+                    {/* <h1> blue text </h1> */}   
+
+                {
+                    LINK_GOOGLE_BTN_CLICK 
+                         ?
+                    <GoogleLogin
+                    className="Google-Button"
+                    clientId={'569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com'}
+                    onSuccess={onLinkSuccess}
+                    onFailure={onFailure}
+                    isSignedIn={true}
+                    cookiePolicy={'single_host_origin'}
+                    buttonText=""
+                    >
                 </GoogleLogin> 
+                         :
+                    <div> </div>
+                }
+                
                 <p style={{ color: "silver", fontSize: '22px'}}> ? </p>
                 </div>
                     </div>
                 <div id="google-link-btn" className={googleLinkBtnClass}>
                 
                 <div className="column">
-                <img className="close-confirm-btn" onMouseEnter={noLinkGoogleHoverToggleDrop} onMouseLeave={noLinkGoogleHoverToggleDrop} src="/water_img/close.png"/>
+                <img onClick={linkGoogleReject} className="close-confirm-btn" onMouseEnter={noLinkGoogleHoverToggleDrop} onMouseLeave={noLinkGoogleHoverToggleDrop} src="/water_img/close.png"/>
 
                 <div                  
                  id="NoLinkGoogleBtn" className="row">
@@ -367,7 +393,7 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
                 </div>
 
                 <div className="column">
-                <img onMouseEnter={yesLinkGoogleHoverToggleDrop} onMouseLeave={yesLinkGoogleHoverToggleDrop} src="/water_img/confirmation.png"/>
+                <img onClick={linkGoogleConfirm} onMouseEnter={yesLinkGoogleHoverToggleDrop} onMouseLeave={yesLinkGoogleHoverToggleDrop} src="/water_img/confirmation.png"/>
                 <div className="row">
                 <pre id={ YES_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "poppinsLight"} style={{ color: YES_LINK_GOOGLE_BTN_HOVER ? "silver" : "", fontWeight: YES_LINK_GOOGLE_BTN_HOVER ? "bolder" : "normal" }}> sign </pre>
                 <pre id={ YES_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "poppinsLight"} style={{ color: YES_LINK_GOOGLE_BTN_HOVER ? "silver" : "", fontWeight: YES_LINK_GOOGLE_BTN_HOVER ? "bolder" : "normal" }}> up </pre>
@@ -417,7 +443,6 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
         )    
 }
 
-
 const mapStateToProps = (state:any) => ({
     LOGIN_SIGNUP_BTN: state.LOGIN_SIGNUP_BTN,
     DISPLAY_FORM: state.DISPLAY_FORM,
@@ -435,6 +460,9 @@ const mapStateToProps = (state:any) => ({
     CURRENT_USER: state.CURRENT_USER,
     NO_LINK_GOOGLE_BTN_HOVER: state.NO_LINK_GOOGLE_BTN_HOVER,
     YES_LINK_GOOGLE_BTN_HOVER: state.YES_LINK_GOOGLE_BTN_HOVER,
+    LINK_GOOGLE_BTN_CLICK: state.LINK_GOOGLE_BTN_CLICK,
+    NO_LINK_GOOGLE_BTN_CLICK: state.NO_LINK_GOOGLE_CLICK,
+    GOOGLE_IMG_URL: state.GOOGLE_IMG_URL
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
@@ -448,7 +476,11 @@ const mapDispatchToProps = (dispatch:any) => ({
     TOGGLE_GOOGLE_LINK_ACCT_SCREEN: () => dispatch(TOGGLE_GOOGLE_LINK_ACCT_SCREEN()),
     SET_CURRENT_USER: (action:any) => dispatch(SET_CURRENT_USER(action)),
     TOGGLE_NO_LINK_GOOGLE_BTN_HOVER: () => dispatch(TOGGLE_NO_LINK_GOOGLE_BTN_HOVER()),
-    TOGGLE_YES_LINK_GOOGLE_BTN_HOVER: () => dispatch(TOGGLE_YES_LINK_GOOGLE_BTN_HOVER())
+    TOGGLE_YES_LINK_GOOGLE_BTN_HOVER: () => dispatch(TOGGLE_YES_LINK_GOOGLE_BTN_HOVER()),
+
+    TOGGLE_YES_LINK_GOOGLE_BTN_CLICK: () => dispatch(TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()),
+    TOGGLE_NO_LINK_GOOGLE_BTN_CLICK: () => dispatch(TOGGLE_NO_LINK_GOOGLE_BTN_CLICK()),
+    SET_GOOGLE_IMG_URL: (action:any) => dispatch(SET_GOOGLE_IMG_URL(action))
     // TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
 })
 
