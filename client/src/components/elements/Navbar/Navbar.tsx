@@ -18,7 +18,7 @@ import { TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE } from '../../../redux/actio
   const dispatch = useDispatch()
 
   const { 
-    HYDRO_SETTINGS, LOG_IN_OUT_TYPE,
+    HYDRO_SETTINGS, LOG_IN_OUT_TYPE, GOOGLE_LINK_ACCT_SCREEN,
     TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE,
    } = props
 
@@ -96,7 +96,7 @@ const homeclick = () => { window.location.href = "/"}
       let slashlesspathname:string = pathname.replace(noslashregex, '')      
       console.log('slashlesspathname')
       console.log(slashlesspathname)
-    if (slashlesspathname === "dashboard" || slashlesspathname === "loginoutgoogle") {
+    if (slashlesspathname === "dashboard") {    // i dont want to redirect to settings if one were to click on the gear from the login screen. it doesn't make sense you should be logged in.
       localStorage.setItem('settingsDuringDashboard', 'yes')
       window.location.href = "/"
     } else {
@@ -117,11 +117,19 @@ const homeclick = () => { window.location.href = "/"}
     const testuser = { username: 'test', email: 'test', password: 'test', age: 'test', GOOGLE_ID: 'GOOGLE_ID' }
 
   return (
-    <div className="navbar-container">
+    <div className="navbar-container" style={{
+      display: GOOGLE_LINK_ACCT_SCREEN ? "flex" : "",
+      flexDirection: GOOGLE_LINK_ACCT_SCREEN ? "row" : "row",
+      justifyContent: GOOGLE_LINK_ACCT_SCREEN ? "center" : "space-between",
+      alignItems: GOOGLE_LINK_ACCT_SCREEN ? "center" : "center"
+    }}>
     <div className="logo">
-    <img style={{ border: 'none' }} className={bothElemById} id="navbar-droplet" src="/water_img/small_droplet.png" />
-    <img style={{ border: 'none' }} className={bothElemById} id="msg-bottle"  src="/water_img/msg-bottle.png" />
-    <button onClick={test} style={{backgroundColor: 'limegreen', border: '1px dashed hotpink' }}> </button>
+    <img style={{ border: 'none' }} className={bothElemById} id="navbar-droplet" src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_big_g.png" : "/water_img/small_droplet.png"} />
+    {/* <img style={{ border: 'none' }} className={bothElemById} id="navbar-droplet" src="/google_img/google_big_g.png" /> */}
+    {/* <img style={{ border: 'none' }} className={bothElemById} id="navbar-droplet" src="/water_img/small_droplet.png" /> */}
+
+    <img style={{ border: 'none' }} className={bothElemById} id="msg-bottle"  src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_red_o.png" : "/water_img/msg-bottle.png"} />
+    {/* <button onClick={test} style={{backgroundColor: 'limegreen', border: '1px dashed hotpink' }}> </button> */}
     </div>
 
     <div className="middle-navbar">
@@ -131,13 +139,13 @@ const homeclick = () => { window.location.href = "/"}
       
       <div className="logo">
         {/* <Boop rotation={10} timing={150}> */}
-          <img onClick={homeclick} src="/water_img/home.png" />
-          <img onClick={statclick} src="/water_img/statistics.png" />
-          <img onClick={settingsclick} src="/water_img/settings.png" />
+          <img onClick={homeclick} src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_yellow_o.png" : "/water_img/home.png"} />
+          <img onClick={statclick} src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_lil_g.png" : "/water_img/statistics.png"} />
+          <img onClick={settingsclick} src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_l.png" : "/water_img/settings.png"} />
 
           
           {/* <LogInOutGoogle user={testuser}/> */}
-          <img onClick={doorclick} src="/water_img/exit.png" />
+          <img onClick={doorclick} src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_e.png" : "/water_img/exit.png"} />
           
  
         {/* </Boop> */}
@@ -151,7 +159,8 @@ const homeclick = () => { window.location.href = "/"}
 const mapStateToProps = (state:any) => ({
     HYDRO_SETTINGS: state.HYDRO_SETTINGS,
     HYDRO_DATA: state.HYDRO_DATA,
-    LOG_IN_OUT_TYPE: state.LOG_IN_OUT_TYPE
+    LOG_IN_OUT_TYPE: state.LOG_IN_OUT_TYPE,
+    GOOGLE_LINK_ACCT_SCREEN: state.GOOGLE_LINK_ACCT_SCREEN
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
