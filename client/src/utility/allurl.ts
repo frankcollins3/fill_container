@@ -1,24 +1,15 @@
 // URL bank for APP-API 
-export default async function allurl (users_id:number|undefined|null|string) { 
-    let parsedId:number|undefined;
-    if (users_id === undefined || users_id === null) {
-        parsedId = undefined
-    } else {
-        if (typeof users_id === 'string') parsedId = parseInt(users_id)
-        else if (typeof users_id === 'number') parsedId = users_id
-    }
+export default async function allDBurl () { 
     
-// This func fetches GQL endpoint to get process.env.api. Then returns concatenated url strings data calls appwide.   
+// This func fetches GQL endpoint to get process.env.api. Then returns concatenated url strings data calls appwide. see bottom of code for explanation.
 
-    // promise based checking of local host or production first, avoiding error crashing the app, and proceeding onto trying the other local or production path string in a fetch
-    // fetch(localhost).then( (!data) => return )
-    // fetch(production)
-
+    // 1: fetch to GraphQL endpoint for env variables. 
     let pre_envdata = await fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,API,NODE_ENV,GOOGLE_ID}}`)
     // let pre_envdata = await fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,REACT_APP_API,NODE_ENV}}`)
     let env_data = await pre_envdata.json()
     let data = env_data.data.ENV
     
+    // 2: split the API because it has both localhost:5000 and a currently mock deployment URL separated by three '***'
     let preAPI = data.API
     let dev_and_prod = preAPI.split('***')
 
@@ -27,26 +18,26 @@ export default async function allurl (users_id:number|undefined|null|string) {
 
     let NODE_ENV = data.NODE_ENV    
 
-    let allDBsettingsURL;
+    // ternary to set it to [ dev | prod ] mode.
     let API = NODE_ENV === 'development' ? env_dev : env_prod
     // let API = NODE_ENV === 'development' ? env_prod : env_dev
-    let allUsersURL
 
+    // object with values to be assigned. env is already assigned since we have that data already.
     let urlObject = {
         API: '',    
         allDBsettingsURL: '',
-        allUsersURL: '',
+        allDBusersURL: '',
+        allDBdataURL: '',
         ENVdata: env_data,
-        data: '',
     }
 
     const applyAPI = () => {
-        if (NODE_ENV === 'development') {
+        if (NODE_ENV === 'development' || NODE_ENV === 'production') {
             urlObject.API = API;
-            urlObject.allDBsettingsURL = `${API}fill_cont?query={allDBsettings(users_id: 1){id,age,height,weight,reminder,activity,start_time,end_time,users_id}}`;
-            urlObject.allUsersURL = `${API}fill_cont?query={allDBusers{id,username,password,email,age}}`
-            urlObject.data = `${API}fill_cont?query={singledata(users_id:1){google_id,progress,weekday,date,status,users_id}}`
-            // urlObject.data = `${API}fill_cont?query={data(users_id:${parsedId}){google_id,progress,weekday,date,status,users_id}}`
+            urlObject.allDBsettingsURL = `${API}fill_cont?query={allDBsettings{id,age,height,weight,reminder,activity,start_time,end_time,users_id}}`;
+            urlObject.allDBusersURL = `${API}fill_cont?query={allDBusers{id,googleId,username,email,password,age}}`
+            urlObject.allDBdataURL = `${API}fill_cont?query={allDBdata{google_id,date,progress,weekday,status,users_id}}`
+            // urlObject.data = `${API}fill_cont?query={singledata(users_id:1){google_id,progress,weekday,date,status,users_id}}`            
         } else {
             // let test_query = `{allDBsettings{id,age,height,weight,reminder,activity,start_time,end_time,users_id}}`
         }
@@ -54,15 +45,17 @@ export default async function allurl (users_id:number|undefined|null|string) {
     const returnObject = ()=> {
     return urlObject
     }
-
     applyAPI()
 
+    // create promise and resolve the assigning of object values from the ENV GraphQL query return data.
     const UrlObjectPromise = new Promise( (resolve, reject) => {
             resolve(applyAPI())
+            reject({ no: 'stop' })
     })
 
+    //  async promise with .then()--->                the object and promise get returned so they data should/would be returned if there is no problem with the fetch()
     return UrlObjectPromise.then(() => {
         return urlObject
     })    
 }
-// I considered exporting it as a type safe createContext() read only string storage but strings exported as object seems fine.   
+// almost used createContext() for this instead.
