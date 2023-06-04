@@ -103,7 +103,7 @@ import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
                 // <p style={{ fontSize: '8px', textAlign: 'center' }}> hi </p>
                 <div className="Checker-Container">
                     <div className="column">
-                    <img className="Checker-Droplet" src="/water_img/bg.png"/>
+                    <img className="Checker-Droplet" src={/[\!@#$%^&*\(\)]/.test(PASSWORD_INPUT) ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
                     {/* <img className="Checker-Droplet" src="/water_img/bg.png"/> */}
                     <p style={{ color: /[\!@#$%^&*\(\)]/.test(PASSWORD_INPUT) ? "#73defe" : "#686868" }}> special </p>
                     {/* .replace(/%20|\s|[^a-zA-Z0-9]/g, '') */}
@@ -111,13 +111,13 @@ import { TOGGLE_PARENT_CONFIRM } from '../../../redux/actions'
                     {/* <p style={{ color: /[!@#$%^&*()]/.test(PASSWORD_INPUT) ? "#73defe" : "686868" }}> special </p> */}
                     </div>
                     <div className="column">
-                    <img className="Checker-Droplet" src={usernameLength > 6 && usernameLength < 30 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
+                    <img className="Checker-Droplet" src={ /[A-Z]/.test(PASSWORD_INPUT) ? "/water_img/mouse_droplet.png" : "/water_img/bg.png" } />
                     {/* <img className="Checker-Droplet" src="/water_img/mouse_droplet.png"/> */}
                     <p style={{ color: /[A-Z]/.test(PASSWORD_INPUT) ? "#73defe" : "#686868" }}> CAPS </p>
                     {/* <p style={{ color: PASSWORD_INPUT.replace(/[\/A-Z]/g, '')  ? "#73defe" : "#686868" }}> CAPS </p> */}
                     </div>                    
                     <div className="column">
-                    <img className="Checker-Droplet" src={usernameLength > 6 && usernameLength < 30 ? "/water_img/mouse_droplet.png" : "/water_img/bg.png"}/>
+                    <img className="Checker-Droplet" src={ /[0-9]/.test(PASSWORD_INPUT) ? "/water_img/mouse_droplet.png" : "/water_img/bg.png" }/>
 
                     <p style={{ color: /[0-9]/.test(PASSWORD_INPUT) ? "#73defe" : "#686868" }}> number </p>
                     {/* <p style={{ color: RegexBank.hasNums.test(parseInt(PASSWORD_INPUT)) ? "#73defe" : "#686868" }}> number </p> */}                    
