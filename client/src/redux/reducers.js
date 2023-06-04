@@ -33,7 +33,9 @@ const initialState = {
     LOGIN_SIGNUP_BTN: false,
     DISPLAY_FORM: "",               // click hand.png to toggle the       [login] [signup]    buttons from appearing.
     PASSWORD_INPUT: "***",   
-    GOOGLEID_INPUT: '',     
+    GOOGLEID_INPUT: '',    
+    GOOGLE_IMG_URL: '',
+
     DUMMY_PASSWORD_INPUT: "***",
     USERNAME_INPUT: "",
     EMAIL_INPUT: "",
@@ -48,6 +50,7 @@ const initialState = {
     YES_LINK_GOOGLE_BTN_HOVER: false,
     LINK_GOOGLE_BTN_CLICK: false,
     NO_LINK_GOOGLE_CLICK: false,
+
     // link google account state;
 
 
@@ -191,7 +194,7 @@ const initialState = {
           YES_LINK_GOOGLE_BTN_HOVER: state.YES_LINK_GOOGLE_BTN_HOVER === false ? true : false 
         }
       
-      case "TOGGLE_LINK_GOOGLE_BTN_CLICK":        
+      case "TOGGLE_YES_LINK_GOOGLE_BTN_CLICK":        
         return {
           ...state,
           LINK_GOOGLE_BTN_CLICK: !state.LINK_GOOGLE_BTN_CLICK
@@ -201,6 +204,11 @@ const initialState = {
         return {
           ...state,
           NO_LINK_GOOGLE_CLICK: !state.NO_LINK_GOOGLE_CLICK
+        }
+      case "SET_GOOGLE_IMG_URL":
+        return {
+          ...state,
+          GOOGLE_IMG_URL: action.payload
         }
         
 
