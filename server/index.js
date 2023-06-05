@@ -152,6 +152,7 @@ const SettingsType = new GraphQLObjectType({
       fields: () => ({      
         id: { type: (GraphQLInt) },     // { type: new GraphQLNonNull(GraphQLInt)}
         googleId: { type: GraphQLString },  // user can choose between regular signin or googleId signin so cant NonNull in [ GraphQL | Postgres ] 
+        icon: { type: GraphQLString },
         username: { type: GraphQLString },
         password: { type: GraphQLString },
         email: { type: GraphQLString },
@@ -204,11 +205,8 @@ const SettingsType = new GraphQLObjectType({
           API: { type: new GraphQLNonNull(GraphQLString) },
           NODE_ENV: { type: GraphQLString },
           GOOGLE_ID: { type: GraphQLString },
-          EUSER: { type: GraphQLString }
+          // EUSER: { type: GraphQLString }
           // EUSER: { id, googleId, username, password, email, age }
-          // EUSER: { id, googleId, username, email, password, age }
-          // EUSER: { type: UsersType }
-          // id: { type: GraphQLInt }        
         })})
 
 const RootQueryType = new GraphQLObjectType({
@@ -257,11 +255,11 @@ const RootQueryType = new GraphQLObjectType({
         let prod = env.REACT_APP_API_PROD
         let NODE_ENV = env.REACT_APP_NODE_ENV
         let GOOGLE_ID = env.REACT_APP_GOOGLE_ID
-        let EmergencyUser = env.REACT_APP_EUSER || {id: 1, googleId: '', password: '', username: '', email: 'no@nomail.com', age: 1 }
+        let EmergencyUser = env.REACT_APP_EUSER || {id: 1, googleId: '', password: '', username: '', email: 'no@nomail.com', age: 1 }   // so user can see app if the login doesn't allow for it.
         // let server = process.env.NODE_ENV === 'development' ? dev : prod
         let serverStringForSplit = `${dev}***${prod}`
-        // let obj = { DATABASE_URL: db_url, API: serverStringForSplit, NODE_ENV: NODE_ENV, GOOGLE_ID: GOOGLE_ID }
-        let obj = { DATABASE_URL: db_url, API: serverStringForSplit, NODE_ENV: NODE_ENV, GOOGLE_ID: GOOGLE_ID, EUSER: EmergencyUser }
+        let obj = { DATABASE_URL: db_url, API: serverStringForSplit, NODE_ENV: NODE_ENV, GOOGLE_ID: GOOGLE_ID }
+        // let obj = { DATABASE_URL: db_url, API: serverStringForSplit, NODE_ENV: NODE_ENV, GOOGLE_ID: GOOGLE_ID, EUSER: EmergencyUser }
         return obj          
       }
     }, 
@@ -281,7 +279,7 @@ const RootQueryType = new GraphQLObjectType({
     description: 'List of Users from Postgres & Prisma',
     resolve: async () => {
       let allusers = await prisma.users.findMany()
-      return { id, googleId, username, email, password, age } = allusers
+      return { id, googleId, icon, username, email, password, age } = allusers
     }
   },
   allDBdata: {
