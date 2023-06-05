@@ -315,7 +315,22 @@ const RootQueryType = new GraphQLObjectType({
   },
   userSignup: {
       type: UsersType,
-      description: 'User Signup from /LogInOutGoogle.tsx. The data is submitted from  const inputCheckingPromise = new Promise()' 
+      description: 'User Signup from /LogInOutGoogle.tsx. The data is submitted from  const inputCheckingPromise = new Promise()',
+      args: {
+        id: { type: GraphQLInt },
+        googleId: { type: GraphQLString },
+        icon: { type: GraphQLString },
+        username: { type: GraphQLString },
+        email: { type: GraphQLString },
+        password: { type: GraphQLString },
+        age: { type: GraphQLInt }
+      },
+      resolve: async ( parent, args ) => {
+        const { id, googleId, icon, username, password, email, age } = args;
+        // id, googleId, icon, username, email, password, age
+  return { id: id ? id : 'noid', googleId: googleId ? googleId : 'noGoogleId', icon: icon ? icon : 'noicon', username: username ? username : '', password: password ? password : '', email: email ? email : '', age: age ? age : ''}
+        // return { id: id, googleId: 'googleid', icon: 'icon', username: 'sleepmaster', password: 'pw', email: 'realemail', age: 0 }
+      }
   },
 
   singledata: {    
