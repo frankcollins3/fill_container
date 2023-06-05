@@ -79,6 +79,8 @@ export const TOGGLE_INPUT_FOCUS = (action) => {
   }
 }
 
+export const TOGGLE_INPUT_DBL_CLICK = () => { return { type: "TOGGLE_INPUT_DBL_CLICK" } }
+
 export const SET_ALL_USERS = (action) => {
   return {
     type: "SET_ALL_USERS",
