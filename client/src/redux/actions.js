@@ -129,9 +129,18 @@ export const SET_GOOGLE_IMG_URL = (action) => {
   }
 }
 
-// export const SET_SIGNUP_INPUTS_COMPLETE = (action) => {
-//   return {
-//     type: "SET_SIGNUP_INPUTS_COMPLETE",
-//     payload: action.payload
-//   }
-// }
+export const SET_NON_GOOGLE_IMG_URL = (action) => {
+  return {
+    type: "SET_NON_GOOGLE_IMG_URL",
+    payload: action.payload
+  }
+}
+
+export const SET_USER_SELECT_IMG_URL = (action) => {
+  return {
+    type: "SET_USER_SELECT_IMG_URL",
+    payload: action.payload
+  }
+}
+
+export const TOGGLE_ICON_NOT_INPUT = () => { return  { type: "TOGGLE_ICON_NOT_INPUT" } }
