@@ -8,8 +8,10 @@ import store from '../../../redux/store'
 
 import CSS from '../../../utility/CSS'
 import timeoutFunc from '../../../utility/timeoutFunc'
+import allUrl from '../../../utility/fetch/allDBurl'
+import userSignup from '../../../utility/fetch/userSignup'
 
-import { TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE } from '../../../redux/actions'
+import { TOGGLE_HYDRO_SETTINGS } from '../../../redux/actions'
 
 // import $ from 'jquery'
 
@@ -18,6 +20,7 @@ import { TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE } from '../../../redux/actio
   const dispatch = useDispatch()
 
   const { 
+    USERNAME_INPUT, PASSWORD_INPUT, EMAIL_INPUT, AGE_INPUT, GOOGLE_IMG_URL, GOOGLE_ID_INPUT,
     HYDRO_SETTINGS, LOG_IN_OUT_TYPE, GOOGLE_LINK_ACCT_SCREEN,
     TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE,
    } = props
@@ -93,9 +96,7 @@ const homeclick = () => { window.location.href = "/"}
 
   const settingsclick = () => {  
     let noslashregex = /\//
-      let slashlesspathname:string = pathname.replace(noslashregex, '')      
-      console.log('slashlesspathname')
-      console.log(slashlesspathname)
+      let slashlesspathname:string = pathname.replace(noslashregex, '')            
     if (slashlesspathname === "dashboard") {    // i dont want to redirect to settings if one were to click on the gear from the login screen. it doesn't make sense you should be logged in.
       localStorage.setItem('settingsDuringDashboard', 'yes')
       window.location.href = "/"
@@ -105,31 +106,75 @@ const homeclick = () => { window.location.href = "/"}
   }
 
   const test = async () => {
-      console.log('HYDRO_SETTINGS from navbar')
-      console.log(HYDRO_SETTINGS)
+    console.log("test click")
+    let urlbank = await allUrl()
+    let env = urlbank.ENVdata.data.ENV
 
-      console.log('LOG_IN_OUT_TYPE')
-      console.log(LOG_IN_OUT_TYPE)
+    console.log('USERNAME_INPUT')
+    console.log(USERNAME_INPUT)
 
-    // TOGGLE_HYDRO_SETTINGS()
+    console.log('PASSWORD_INPUT')
+    console.log(PASSWORD_INPUT)
+
+    console.log('EMAIL_INPUT')
+    console.log(EMAIL_INPUT)
+
+    console.log('AGE_INPUT')
+    console.log(AGE_INPUT)
+
+    console.log('GOOGLE_IMG_URL')
+    console.log(GOOGLE_IMG_URL)
+
+    console.log('GOOGLE_ID_INPUT')
+    console.log(GOOGLE_ID_INPUT)
+
+
+    let nonREDUXUSERNAME = USERNAME_INPUT.length > 1 ? USERNAME_INPUT : '';
+    let nonREDUXPASSWORD = PASSWORD_INPUT.length > 1 ? PASSWORD_INPUT : '';
+    let nonREDUXEMAIL = EMAIL_INPUT.length > 1 ? EMAIL_INPUT : '';
+    let nonREDUXAGE = AGE_INPUT.length > 1 ? AGE_INPUT : '';
+    let nonREDUXGOOGLEID = GOOGLE_ID_INPUT ? GOOGLE_ID_INPUT.length > 1 ? GOOGLE_ID_INPUT : '' : 'nogoogleidinput';
+    let nonREDUXICON = GOOGLE_IMG_URL.length > 1 ? GOOGLE_IMG_URL : 'myurl';
+    
+    
+
+    let NODE_ENV = env.NODE_ENV
+
+    let realuser = { googleId: GOOGLE_ID_INPUT, icon: GOOGLE_IMG_URL, username: USERNAME_INPUT || '', email: EMAIL_INPUT || '', password:  PASSWORD_INPUT || '', age: AGE_INPUT || 0}
+
+
+    let testuser = { googleId: 'yup', icon: 'yes', username: 'yeah', password: 'surepass', email: 'sendaletter', age: 30 }
+    const predata = await userSignup(testuser, NODE_ENV)
+    
+    console.log('predata')
+    console.log(predata)
+
+    const realuserfetch = await userSignup(realuser, NODE_ENV)
+    console.log('realuserfetch')
+    console.log(realuserfetch)
+
+
+
+    // const predata = await fetch(`http://localhost:5000/fill_cont?query={userSignup{id,googleId,icon,username,email,age}}`)
+
   }
 
     const testuser = { username: 'test', email: 'test', password: 'test', age: 'test', GOOGLE_ID: 'GOOGLE_ID' }
 
   return (
-    <div className="navbar-container" style={{
-      display: GOOGLE_LINK_ACCT_SCREEN ? "flex" : "",
-      flexDirection: GOOGLE_LINK_ACCT_SCREEN ? "row" : "row",
-      justifyContent: GOOGLE_LINK_ACCT_SCREEN ? "center" : "space-between",
-      alignItems: GOOGLE_LINK_ACCT_SCREEN ? "center" : "center"
-    }}>
+    <div className="navbar-container" 
+    // style={{
+    //   display: GOOGLE_LINK_ACCT_SCREEN ? "flex" : "",
+    //   flexDirection: GOOGLE_LINK_ACCT_SCREEN ? "row" : "row",
+    //   justifyContent: GOOGLE_LINK_ACCT_SCREEN ? "center" : "space-between",
+    //   alignItems: GOOGLE_LINK_ACCT_SCREEN ? "center" : "center"
+    // }}
+    >
     <div className="logo">
-    <img style={{ border: 'none' }} className={bothElemById} id="navbar-droplet" src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_big_g.png" : "/water_img/small_droplet.png"} />
-    {/* <img style={{ border: 'none' }} className={bothElemById} id="navbar-droplet" src="/google_img/google_big_g.png" /> */}
-    {/* <img style={{ border: 'none' }} className={bothElemById} id="navbar-droplet" src="/water_img/small_droplet.png" /> */}
+    <img style={{ border: 'none' }} className={bothElemById} id="navbar-droplet" src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_big_g.png" : "/water_img/small_droplet.png"} />    
 
     <img style={{ border: 'none' }} className={bothElemById} id="msg-bottle"  src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_red_o.png" : "/water_img/msg-bottle.png"} />
-    {/* <button onClick={test} style={{backgroundColor: 'limegreen', border: '1px dashed hotpink' }}> </button> */}
+    <button onClick={test} style={{backgroundColor: 'limegreen', border: '1px dashed hotpink', transform: 'scale(2.0)' }}> </button>
     </div>
 
     <div className="middle-navbar">
@@ -160,12 +205,20 @@ const mapStateToProps = (state:any) => ({
     HYDRO_SETTINGS: state.HYDRO_SETTINGS,
     HYDRO_DATA: state.HYDRO_DATA,
     LOG_IN_OUT_TYPE: state.LOG_IN_OUT_TYPE,
-    GOOGLE_LINK_ACCT_SCREEN: state.GOOGLE_LINK_ACCT_SCREEN
+    GOOGLE_LINK_ACCT_SCREEN: state.GOOGLE_LINK_ACCT_SCREEN,
+
+
+    USERNAME_INPUT: state.USERNAME_INPUT,
+    PASSWORD_INPUT: state.PASSWORD_INPUT,
+    GOOGLE_ID_INPUT: state.GOOGLE_ID_INPUT,
+    EMAIL_INPUT: state.EMAIL_INPUT,
+    AGE_INPUT: state.AGE_INPUT,
+    GOOGLE_IMG_URL: state.GOOGLE_IMG_URL
+    
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
-    TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
-    SET_LOG_IN_OUT_TYPE: () => dispatch(SET_LOG_IN_OUT_TYPE())
+    TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS())
 })
 
 const ConnectedNavbar = connect(mapStateToProps, mapDispatchToProps)(Navbar)
