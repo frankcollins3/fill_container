@@ -43,6 +43,8 @@ const initialState = {
     INPUT_FOCUS: "",               // click on an input and it will hide 
     SUBMIT_INPUT_DATA: false,     // form data complete, validated in LoginoutGoogle.tsx with $('.submit-faucet).click()4
     GOOGLE_LINK_ACCT_SCREEN: false,
+
+    ICON_NOT_INPUT: false,
     // signup state related 
     
     // link google account state;
@@ -209,6 +211,11 @@ const initialState = {
         return {
           ...state,
           GOOGLE_IMG_URL: action.payload
+        }
+      case "TOGGLE_ICON_NOT_INPUT":
+        return {
+          ...state,
+          ICON_NOT_INPUT: !state.ICON_NOT_INPUT
         }
         
 
