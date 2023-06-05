@@ -13,6 +13,7 @@ import WaterRequest from '../../../utility/WaterRequest'
 import setCursor from '../../../utility/setCursor'
 import CSS from '../../../utility/CSS'
 import deathCertificate from '../../../utility/deathCertificate'
+import isItDeadYet from '../../../utility/isItDeadYet'
 // import ghostText from '../../../utility/GhostText'
 
 // components
@@ -23,21 +24,21 @@ import ConnectedAgeInput from '../../../components/elements/AgeInput'
 import ConnectedSignupLoginChecker from '../../../components/elements/SignupLoginChecker'
 
 import { connect, useDispatch } from 'react-redux'
-import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL } from '../../../redux/actions'
+import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT } from '../../../redux/actions'
 import $ from 'jquery'
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
 
  function LogInOutGoogle ( props:any ) {
           
     const { 
-LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_INPUT, EMAIL_INPUT, PASSWORD_INPUT, AGE_INPUT, PARENT_CONFIRM, SUBMIT_INPUT_DATA, TOGGLE_SUBMIT_INPUT_DATA, GOOGLE_LINK_ACCT_SCREEN, CURRENT_USER, NO_LINK_GOOGLE_BTN_HOVER, YES_LINK_GOOGLE_BTN_HOVER, LINK_GOOGLE_BTN_CLICK, NO_LINK_GOOGLE_BTN_CLICK, GOOGLE_IMG_URL,
-        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL } = props
+LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_INPUT, EMAIL_INPUT, PASSWORD_INPUT, AGE_INPUT, PARENT_CONFIRM, SUBMIT_INPUT_DATA, TOGGLE_SUBMIT_INPUT_DATA, GOOGLE_LINK_ACCT_SCREEN, CURRENT_USER, NO_LINK_GOOGLE_BTN_HOVER, YES_LINK_GOOGLE_BTN_HOVER, LINK_GOOGLE_BTN_CLICK, NO_LINK_GOOGLE_BTN_CLICK, GOOGLE_IMG_URL, ICON_NOT_INPUT,
+        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT } = props
 
     const googleLinkBtnClass = ["row", "google-link-btn"].join(" ");
           
     const dispatch = useDispatch()
 
-    let urlbank;
+    let urlbank:any;
     let allDBusersURL
     let api;
     let env;
@@ -51,27 +52,35 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
         // change the form in the middle to be the login user button. 
     }
 
-    const onLinkSuccess = (res:any) => {
+    const onLinkSuccess = async (res:any) => {
         console.log('res from onLinkSuccess')
         console.log(res)
         let googleProfile:any = res.profileObj
         console.log(res.profileObj) 
         let googleImgUrl:string = googleProfile.imageUrl
 
-        deathCertificate('googleImgUrl', googleImgUrl, 2)
-
-        console.log('googleImgUrl')
-        console.log(googleImgUrl)
+        deathCertificate('googleImgUrl', googleImgUrl, 1, false)
+        
+        // MeIcon | redux_state doesn't persist |  
 
         // let action = { PAYLOAD: googleImgUrl}
         SET_GOOGLE_IMG_URL({ payload: googleImgUrl })
     }
+
+    const remove = async () => {
+        let myitem = await isItDeadYet('googleImgUrl')        
+        console.log('myitem')
+        console.log(myitem)
+    }
+    
 
     const onFailure = (res:any) => { console.log("hey failure") }
 
     useEffect( () => {
         (async() => {
           urlbank = await allDBurl()
+          console.log('urlbank useEffect')
+          console.log(urlbank)
           // let {HYDRO_DATA, HYDRO_SETTINGS } = await store.getState()
     
           API = urlbank.API      
@@ -137,18 +146,6 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
         let targetid:string = event.target.id
         TOGGLE_LOGIN_SIGNUP_BTN()
         TOGGLE_SHOW_FORM({payload: targetid})
-    }
-
-    const emailinputhandler = () => {}
-    const ageinputhandler = () => {}
-
-    const deleteValue = (event:any) => {
-            let value:string = event.target.value
-            console.log('event')
-            console.log(event)
-            console.log(event.target)
-            console.log(value)   
-            value = ""        
     }
 
     const formhover = async (event:any) => {
@@ -274,19 +271,50 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
                 // start the icons so a user can pick a picture.
                 // SET_STATE all the inputs GraphQL save to database.
                 // navigate to the next page 
+                TOGGLE_ICON_NOT_INPUT()
             }
 
-            const linkGoogleConfirm = () => {
+            const linkGoogleConfirm = async () => {
                 console.log('linkGoogleConfirm Click!')
-                TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()
+                const urlPROMISE = new Promise((resolve, reject) => {
+                    let localURL = allDBurl()
+                    resolve(localURL)
+                    reject([])
+                })
+                
+                urlPROMISE.then( (urldata:any) => {
+                    const saveUserPROMISE = new Promise( (resolve, reject) => {
+                        let userSignupURL = urldata.userSignupURL
+                         resolve(fetch(userSignupURL))                         
+                         reject([])
+                    })
+                    saveUserPROMISE.then(async(userdata:any) => {
+                         userdata = await userdata.json()
+                        console.log('userdata')
+                        console.log(userdata)
+                    })
+                })
+                
+
+
+                
+
+
+                // TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()
+                // TOGGLE_ICON_NOT_INPUT()
             }
 
             return (
-                <div className="login-container">
-                <img onClick={showHideLoginSignupBtn} style={{ border: 'none', display: SUBMIT_INPUT_DATA ? "none" : "" }} src="/water_img/hand.png"/>                
+                <div className="login-container">                                        
+                    {
+
+                    }
+                    
+                        <img onClick={showHideLoginSignupBtn} style={{ border: 'none', display: SUBMIT_INPUT_DATA ? "none" : "" }} src="/water_img/hand.png"/>                
                 {/* // clientId: clientId || '569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com', */}            
     <img onClick={submitFaucetClick} style={{ transform: 'scale(0.50)', display: SUBMIT_INPUT_DATA ? "none" : "" }} className="submit-faucet" src={"/water_img/faucet.png"}/>
 
+                    
                 {
                     SUBMIT_INPUT_DATA === false
                         ?
@@ -350,12 +378,10 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
                     ?
                     <div className="column">
                         <img src={ GOOGLE_IMG_URL.length > 3 ? GOOGLE_IMG_URL : "/water_img/panda.png"} />
-                        {/* <img src={ GOOGLE_IMG_URL.length > 3 ? GOOGLE_IMG_URL : "/water_img/panda.png"} /> */}
+                        <button onClick={remove} style={{ margin: '1em'}}> </button>
                 <div className="row">
 <h1> <span id="bluespan"> Welcome! </span> Would you like to link with <span id="gspan">G</span> <span id="red_o_span">o</span><span id="yellow_o_span">o</span><span id="lil_g_span">g</span><span id="l_span">l</span> <span id="e_span">e</span>:</h1>
-{/* <h1> <span id="bluespan"> Welcome! </span> Would you like to link with <span id="gspan">G</span> <span id="red_o_span">o</span><span id="yellow_o_span">o</span><span id="lil_g_span">g</span><span id="l_span">l</span> <span id="e_span">e</span>:</h1> */}
-    <div className="google-container" style = {{ backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '200px', width: '200px', border: '5px solid #dedede73', zIndex: '2',transform: 'scale(0.25)' }}>
-                    {/* <h1> blue text </h1> */}   
+    <div className="google-container" style = {{ backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '200px', width: '200px', border: '5px solid #dedede73', zIndex: '2',transform: 'scale(0.25)' }}> 
 
                 {
                     LINK_GOOGLE_BTN_CLICK 
@@ -369,7 +395,7 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
                     cookiePolicy={'single_host_origin'}
                     buttonText=""
                     >
-                </GoogleLogin> 
+                    </GoogleLogin> 
                          :
                     <div> </div>
                 }
@@ -443,7 +469,9 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
                 </div>
                 }
 
+
                 </div>
+
         )    
 }
 
@@ -466,7 +494,8 @@ const mapStateToProps = (state:any) => ({
     YES_LINK_GOOGLE_BTN_HOVER: state.YES_LINK_GOOGLE_BTN_HOVER,
     LINK_GOOGLE_BTN_CLICK: state.LINK_GOOGLE_BTN_CLICK,
     NO_LINK_GOOGLE_BTN_CLICK: state.NO_LINK_GOOGLE_CLICK,
-    GOOGLE_IMG_URL: state.GOOGLE_IMG_URL
+    GOOGLE_IMG_URL: state.GOOGLE_IMG_URL,
+    ICON_NOT_INPUT: state.ICON_NOT_INPUT
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
@@ -484,7 +513,8 @@ const mapDispatchToProps = (dispatch:any) => ({
 
     TOGGLE_YES_LINK_GOOGLE_BTN_CLICK: () => dispatch(TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()),
     TOGGLE_NO_LINK_GOOGLE_BTN_CLICK: () => dispatch(TOGGLE_NO_LINK_GOOGLE_BTN_CLICK()),
-    SET_GOOGLE_IMG_URL: (action:any) => dispatch(SET_GOOGLE_IMG_URL(action))
+    SET_GOOGLE_IMG_URL: (action:any) => dispatch(SET_GOOGLE_IMG_URL(action)),
+    TOGGLE_ICON_NOT_INPUT: () => dispatch(TOGGLE_ICON_NOT_INPUT())
     // TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
 })
 
