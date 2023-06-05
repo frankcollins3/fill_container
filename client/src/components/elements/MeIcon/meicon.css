@@ -1,0 +1,9 @@
+.MeIcon-Container {
+    display: grid;
+    border: 20px dashed dodgerblue;
+    justify-content: center;
+    align-items: center;
+    grid-area: 
+        "center"
+    ;
+}
