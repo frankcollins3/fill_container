@@ -35,6 +35,8 @@ const initialState = {
     PASSWORD_INPUT: "***",   
     GOOGLEID_INPUT: '',    
     GOOGLE_IMG_URL: '',
+    NON_GOOGLE_IMG_URL: '',
+    USER_SELECT_IMG_URL: '',
 
     DUMMY_PASSWORD_INPUT: "***",
     USERNAME_INPUT: "",
@@ -207,11 +209,25 @@ const initialState = {
           ...state,
           NO_LINK_GOOGLE_CLICK: !state.NO_LINK_GOOGLE_CLICK
         }
+
       case "SET_GOOGLE_IMG_URL":
         return {
           ...state,
           GOOGLE_IMG_URL: action.payload
         }
+
+      case "SET_NON_GOOGLE_IMG_URL":
+        return {
+          ...state,
+          NON_GOOGLE_IMG_URL: action.payload
+        }
+
+      case "SET_USER_SELECT_IMG_URL":
+        return {
+          ...state,
+          USER_SELECT_IMG_URL: action.payload
+        }
+
       case "TOGGLE_ICON_NOT_INPUT":
         return {
           ...state,
