@@ -1,4 +1,4 @@
-export default function deathCertificate(key: string, value: string, minutes: number) {
+export default function deathCertificate(key: string, value: string, minutes: number, die:boolean) {
     const actualMinutes: number = minutes * 60 * 1000;
     const removeItem = () => localStorage.removeItem(key);
     const item = {
@@ -13,11 +13,14 @@ export default function deathCertificate(key: string, value: string, minutes: nu
     });
   
     deathPromise.then(() => {
-      setTimeout(() => {
-        removeItem();
-      }, actualMinutes);
+      if (die) {
+        setTimeout(() => {
+          removeItem();
+        }, actualMinutes);
+      } else {
+        return
+      }
     });
   
     return deathPromise;
-  }
-  
+  } 
