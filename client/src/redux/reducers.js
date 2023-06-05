@@ -43,6 +43,7 @@ const initialState = {
     EMAIL_INPUT: "",
     AGE_INPUT: "",
     INPUT_FOCUS: "",               // click on an input and it will hide 
+    INPUT_DBL_CLICK: false,
     SUBMIT_INPUT_DATA: false,     // form data complete, validated in LoginoutGoogle.tsx with $('.submit-faucet).click()4
     GOOGLE_LINK_ACCT_SCREEN: false,
 
@@ -146,6 +147,13 @@ const initialState = {
           INPUT_FOCUS: action.payload
           // INPUT_FOCUS: !state.INPUT_FOCUS
         }
+
+      case "TOGGLE_INPUT_DBL_CLICK":
+        return {
+          ...state,
+          INPT_DBL_CLICK: !state.INPUT_DBL_CLICK
+        }
+
       case "SET_ALL_USERS":
         return {
           ...state,
