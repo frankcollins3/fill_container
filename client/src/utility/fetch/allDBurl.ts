@@ -4,7 +4,7 @@ export default async function allDBurl () {
 // This func fetches GQL endpoint to get process.env.api. Then returns concatenated url strings data calls appwide. see bottom of code for explanation.
 
     // 1: fetch to GraphQL endpoint for env variables. 
-    let pre_envdata = await fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,API,NODE_ENV,GOOGLE_ID}}`)
+    let pre_envdata = await fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,API,NODE_ENV,GOOGLE_ID}}`) // { ENV {DATABASE_URL,API,NODE_ENV,GOOGLE_ID,EUSER }}
     // let pre_envdata = await fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,REACT_APP_API,NODE_ENV}}`)
     let env_data = await pre_envdata.json()
     let data = env_data.data.ENV
@@ -18,12 +18,9 @@ export default async function allDBurl () {
 
     let NODE_ENV = data.NODE_ENV    
 
-    let allDBsettingsURL;
-
     // ternary to set it to [ dev | prod ] mode.
     let API = NODE_ENV === 'development' ? env_dev : env_prod
     // let API = NODE_ENV === 'development' ? env_prod : env_dev
-    let allUsersURL
 
     // object with values to be assigned. env is already assigned since we have that data already.
     let urlObject = {
@@ -34,28 +31,22 @@ export default async function allDBurl () {
         ENVdata: env_data,
     }
 
-
     const applyAPI = () => {
         if (NODE_ENV === 'development' || NODE_ENV === 'production') {
             urlObject.API = API;
-            urlObject.allDBsettingsURL = `${API}fill_cont?query={allDBsettings(users_id: 1){id,age,height,weight,reminder,activity,start_time,end_time,users_id}}`;
-            urlObject.allDBusersURL = `${API}fill_cont?query={allDBusers{id,username,password,email,age}}`
+            urlObject.allDBsettingsURL = `${API}fill_cont?query={allDBsettings{id,age,height,weight,reminder,activity,start_time,end_time,users_id}}`;
+            urlObject.allDBusersURL = `${API}fill_cont?query={allDBusers{id,googleId,icon,username,email,password,age}}`
             urlObject.allDBdataURL = `${API}fill_cont?query={allDBdata{google_id,date,progress,weekday,status,users_id}}`
             // urlObject.data = `${API}fill_cont?query={singledata(users_id:1){google_id,progress,weekday,date,status,users_id}}`            
         } else {
             // let test_query = `{allDBsettings{id,age,height,weight,reminder,activity,start_time,end_time,users_id}}`
         }
     }
-    const returnObject = ()=> {
-    return urlObject
-    }
-
     applyAPI()
 
     // create promise and resolve the assigning of object values from the ENV GraphQL query return data.
     const UrlObjectPromise = new Promise( (resolve, reject) => {
             resolve(applyAPI())
-
             reject({ no: 'stop' })
     })
 
