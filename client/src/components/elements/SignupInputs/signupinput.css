@@ -1,0 +1,26 @@
+.SignupInput-Container {
+    margin: 0 auto;
+}
+
+.SignupInput-Container > input {
+    border: transparent;
+}
+
+input:focus {
+    border: 1px dashed #73defe;
+}
+
+/* border: 1px dashed #72d3fe; */
+/* margin-top: 0.55em; */
+
+/* input {
+    height: 2vw;
+    width: 12vw;
+    background-color: #dedede70;
+    color: silver;
+    text-align: center;
+  }
+  
+  input:focus {
+    border: 1px dashed #72d3fe;
+  } */
