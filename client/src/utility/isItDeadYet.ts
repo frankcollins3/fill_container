@@ -7,5 +7,5 @@ export default async function isItDeadYet(key:string) {
             localStorage.removeItem(key)
             return null;
         }
-        return item.value
+        return await JSON.parse(item).value        
 }
