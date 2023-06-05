@@ -9,33 +9,38 @@ import inputHandler from '../../../utility/inputHandler'
 import inputFocusToggleRedux from '../../../utility/inputFocusToggleRedux'
 import halfAssHash from '../../../utility/halfAssHash'
 import duplicateString from '../../../utility/duplicateString'
-
+import RegexBank from '../../../utility/RegexBank'
 
 import ConnectedSignupLoginChecker from '../../../components/elements/SignupLoginChecker'
 
-import {SET_PASSWORD_INPUT, SET_DUMMY_PASSWORD_INPUT, TOGGLE_INPUT_FOCUS} from '../../../redux/actions'
+import {SET_PASSWORD_INPUT, SET_DUMMY_PASSWORD_INPUT, TOGGLE_INPUT_FOCUS, TOGGLE_INPUT_DBL_CLICK} from '../../../redux/actions'
 
 function PasswordInput (props:any) {
 
-     const [passwordState, setPasswordState] = useState("")
-     const [dummyState, setDummyState] = useState("")
-     const [cleanInputState, setCleanInputState] = useState("")
-     const [dirtyInputState, setDirtyInputState] = useState("")
-    //  const [inputState, setInputState] = useState<any>()
+    let RegexObject:any
+
 
     let { 
-         TOGGLE_INPUT_FOCUS, PASSWORD_INPUT, DUMMY_PASSWORD_INPUT,
-         SET_PASSWORD_INPUT, SET_DUMMY_PASSWORD_INPUT
+         TOGGLE_INPUT_FOCUS, PASSWORD_INPUT, DUMMY_PASSWORD_INPUT, INPUT_DBL_CLICK,
+         SET_PASSWORD_INPUT, SET_DUMMY_PASSWORD_INPUT, TOGGLE_INPUT_DBL_CLICK
         } = props;
 
         // const {USERNAME_INPUT, SET_USERNAME_INPUT} = props
 
         useEffect( () => {
-            console.log('inputState useEffect')
-            // setDummyState("*".repeat(dummyState.length))
-        }, [])
+            (async() => {
+                RegexObject = await RegexBank()                
+            })()
+        })
+
+        useEffect( () => {            
+            let hasCaps = /A-Z/.test(PASSWORD_INPUT)            
+        }, [PASSWORD_INPUT])
         
-        const passwordinputhandler = async (evt: React.ChangeEvent<HTMLInputElement>) => {
+        const passwordinputhandler = async (evt: React.ChangeEvent<HTMLInputElement>) => {            
+            let hasNums4 = RegexObject.hasNums.test(parseInt(PASSWORD_INPUT))
+        
+
             let target = evt.target
             let value:any = target.value  // cant use string because we'll be looping over it     
             const statePromise = new Promise( (resolve, reject) => {
@@ -58,20 +63,33 @@ function PasswordInput (props:any) {
     }
     
     const inputfocus = async () => {
-         SET_DUMMY_PASSWORD_INPUT( { payload: ''})
+         SET_PASSWORD_INPUT( { payload: ''})
          TOGGLE_INPUT_FOCUS( { payload: 'password'} ) 
         }
+
+    const inputDblClick = (event:any) => {
+        // let target = event.target
+        // let targetType:string = target.type
+        // if (targetType === 'password') {
+        //     targetType = "text"
+        // } 
+        // else if (targetType === "text") {
+        //     targetType = "password"
+        // }
+        TOGGLE_INPUT_DBL_CLICK()
+        setTimeout( () => {
+            console.log(TOGGLE_INPUT_DBL_CLICK)
+        }, 2000)
+    }
+        
+        
 
                                                                                     
     const renderPasswordInput = () => {
         return (
         <>
-<input id="password" type="password" style={{ color: '#72d3fe', fontSize: '20px'}} onFocus={inputfocus} value={PASSWORD_INPUT} onMouseEnter={ghosttext} // "*".repeat(DUMMY_PASSWORD_INPUT.length)
-// <input id="password" type="text" style={{ color: '#72d3fe', fontSize: '20px'}} onFocus={inputfocus} value={DUMMY_PASSWORD_INPUT} onMouseEnter={ghosttext} // "*".repeat(DUMMY_PASSWORD_INPUT.length)
-onChange={(event) => { passwordinputhandler(event); }}>
-
-</input> 
-<p style={{ textAlign: 'center' }}> : {PASSWORD_INPUT || 'no pw'} </p>
+<input onDoubleClick={inputDblClick} id="password" type={INPUT_DBL_CLICK ? "text" : "password"} style={{ color: '#72d3fe', fontSize: '20px'}} onFocus={inputfocus} value={PASSWORD_INPUT} onMouseEnter={ghosttext} // "*".repeat(DUMMY_PASSWORD_INPUT.length)
+onChange={(event) => { passwordinputhandler(event); }}/>
     </>
         )
     }
@@ -84,13 +102,15 @@ const mapStateToProps = (state:any) => ({
     PASSWORD_INPUT: state.PASSWORD_INPUT,
     DUMMY_PASSWORD_INPUT: state.DUMMY_PASSWORD_INPUT,
     INPUT_FOCUS: state.INPUT_FOCUS,
+    INPUT_DBL_CLICK: state.INPUT_DBL_CLICK
     // ALL_USERS: state.ALL_USERS
 })
 
 const mapDispatchToProps =(dispatch:any) => ({
     SET_PASSWORD_INPUT: (action:any) => dispatch(SET_PASSWORD_INPUT(action)),
     SET_DUMMY_PASSWORD_INPUT: (action:any) => dispatch(SET_DUMMY_PASSWORD_INPUT(action)),
-    TOGGLE_INPUT_FOCUS: (action:any) => dispatch(TOGGLE_INPUT_FOCUS(action))
+    TOGGLE_INPUT_FOCUS: (action:any) => dispatch(TOGGLE_INPUT_FOCUS(action)),
+    TOGGLE_INPUT_DBL_CLICK: () => dispatch(TOGGLE_INPUT_DBL_CLICK())
 })
 
 const ConnectedUsernameInput = connect(mapStateToProps, mapDispatchToProps)(PasswordInput)
