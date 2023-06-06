@@ -340,7 +340,7 @@ const RootQueryType = new GraphQLObjectType({
         let allusers = await prisma.users.findMany()
         let autoIncrementUserId = allusers.length + 1
 
-        let NewUser = await prisma.users.create({
+        return NewUser = await prisma.users.create({
           data: {
             id: autoIncrementUserId,
             username: username,
@@ -349,11 +349,42 @@ const RootQueryType = new GraphQLObjectType({
             age: age
           }
         }).then( (u) => {
-
             return {
+              // id: 1, googleId: '1', icon: '1', username: '1', password: '1', email: '1@1.1', age: 1
               id: u.id, googleId: '', icon: '', username: u.username, password: u.password, email: u.email, age: u.age
             }
         })
+      }
+  },
+  linkUserWithGoogle: {
+      type: UsersType,
+      description: 'App Provides choice for user/human: | Sign-up with username | Google --> This query links: username, password, email with google.',
+      args: {
+        id: { type: GraphQLInt },
+        username: { type: GraphQLString },
+        googleId: { type: GraphQLString },
+        icon: { type: GraphQLString }
+      },
+      resolve: async (parent, args) => {
+        // There will be 2 functions that perform this query. 1 for username and 1 for id.     
+        if (args.username) {
+          const { username, googleId } = args
+            const findUser = await prisma.users.findFirst({
+              where: {
+                username: username
+              }
+            }).then(async(newUser) => {
+              const googleUpdateUser = await prisma.users.update({
+                where: {
+                  googleId: newUser.username
+                },
+                data: {
+                  googleId: newUser.googleId
+                }
+              })
+            })
+
+        }
       }
   },
 
