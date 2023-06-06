@@ -8,10 +8,12 @@ import store from '../../../redux/store'
 
 import CSS from '../../../utility/CSS'
 import timeoutFunc from '../../../utility/timeoutFunc'
+import PromiseFunc from '../../../utility/PromiseFunc'
 import allUrl from '../../../utility/fetch/allDBurl'
 import userSignup from '../../../utility/fetch/userSignup'
 
 import { TOGGLE_HYDRO_SETTINGS } from '../../../redux/actions'
+import ConnectedSignupLoginChecker from '../SignupLoginChecker';
 
 // import $ from 'jquery'
 
@@ -105,57 +107,55 @@ const homeclick = () => { window.location.href = "/"}
     } 
   }
 
+  // email
+// "fwc3rd@gmail.com"
+// familyName
+// "Collins"
+// givenName
+// "Frank"
+// googleId
+// "117827387775507687118"
+// imageUrl
+// "https://lh3.googleusercontent.com/a/AAcHTtd_55dRY1mQ1-GP5R4PHEgjmSRGTZNK7aGM8-82=s96-c"
+// name
+// "Frank Collins"
+
   const test = async () => {
     console.log("test click")
     let urlbank = await allUrl()
     let env = urlbank.ENVdata.data.ENV
+    let miz:string = "mastermizery".replace(/\s/g, '')
+    let googleId:string = '117827387775507687118'.replace(/\s/g, '')
+    let icon:string = 'https://lh3.googleusercontent.com/a/AAcHTtd_55dRY1mQ1-GP5R4PHEgjmSRGTZNK7aGM8-82=s96-c'.replace(/\s/g, '')
+    await localStorage.setItem("icon", icon)
+    let storageIcon = await localStorage.getItem("icon")
+    console.log('storageIcon')
+    console.log(storageIcon)
 
-    console.log('USERNAME_INPUT')
-    console.log(USERNAME_INPUT)
+    console.log('icon')
+    console.log(icon)
 
-    console.log('PASSWORD_INPUT')
-    console.log(PASSWORD_INPUT)
-
-    console.log('EMAIL_INPUT')
-    console.log(EMAIL_INPUT)
-
-    console.log('AGE_INPUT')
-    console.log(AGE_INPUT)
-
-    console.log('GOOGLE_IMG_URL')
-    console.log(GOOGLE_IMG_URL)
-
-    console.log('GOOGLE_ID_INPUT')
-    console.log(GOOGLE_ID_INPUT)
-
-
-    let nonREDUXUSERNAME = USERNAME_INPUT.length > 1 ? USERNAME_INPUT : '';
-    let nonREDUXPASSWORD = PASSWORD_INPUT.length > 1 ? PASSWORD_INPUT : '';
-    let nonREDUXEMAIL = EMAIL_INPUT.length > 1 ? EMAIL_INPUT : '';
-    let nonREDUXAGE = AGE_INPUT.length > 1 ? AGE_INPUT : '';
-    let nonREDUXGOOGLEID = GOOGLE_ID_INPUT ? GOOGLE_ID_INPUT.length > 1 ? GOOGLE_ID_INPUT : '' : 'nogoogleidinput';
-    let nonREDUXICON = GOOGLE_IMG_URL.length > 1 ? GOOGLE_IMG_URL : 'myurl';
     
-    
+    let href:string = `http://localhost:5000/`
+    let args = `(name:"mastermizery",googleId:"117827387775507687118",imageUrl:"https://lh3.googleusercontent.com/a/AAcHTtd_55dRY1mQ1-GP5R4PHEgjmSRGTZNK7aGM8-82=s96-c")`
 
-    let NODE_ENV = env.NODE_ENV
+const predata = await fetch(`http://localhost:5000/fill_cont?query={linkUserWithGoogle(username:"${encodeURIComponent(`${miz}`)}",googleId:"${encodeURIComponent(`${storageIcon}`)}",icon:"${encodeURIComponent(`${icon}`)}"){id,googleId,icon,username,email,age}}`)   // W O R K S !!!!!
 
-    let realuser = { googleId: GOOGLE_ID_INPUT, icon: GOOGLE_IMG_URL, username: USERNAME_INPUT || '', email: EMAIL_INPUT || '', password:  PASSWORD_INPUT || '', age: AGE_INPUT || 0}
-
-
-    let testuser = { googleId: 'yup', icon: 'yes', username: 'yeah', password: 'surepass', email: 'sendaletter', age: 30 }
-    const predata = await userSignup(testuser, NODE_ENV)
-    
-    console.log('predata')
-    console.log(predata)
-
-    const realuserfetch = await userSignup(realuser, NODE_ENV)
-    console.log('realuserfetch')
-    console.log(realuserfetch)
-
-
-
+// const predata = await fetch(`http://localhost:5000/fill_cont?query={linkUserWithGoogle(username:"${encodeURIComponent(`${miz}`)}",googleId:"${encodeURIComponent(`${googleId}`)}",icon:"${encodeURIComponent(`${icon}`)}"){id,googleId,icon,username,email,age}}`)   // W O R K S !!!!!
+    const data = await predata.json()
+    console.log('data')
+    console.log(data)
     // const predata = await fetch(`http://localhost:5000/fill_cont?query={userSignup{id,googleId,icon,username,email,age}}`)
+  }
+
+  const test2 = async () => {
+    let icon:string = 'icon'
+    const iconFromStorage:any|undefined = localStorage.getItem('icon') 
+    // const iconFromStorage:any|undefined = localStorage.getItem('icon') !== undefined ? localStorage.getItem('icon') : ''
+    const failure = "-____-"    
+    const retrieveIcon = await PromiseFunc(iconFromStorage, failure)
+    console.log('retrieveIcon')
+    console.log(retrieveIcon)
 
   }
 
@@ -174,7 +174,8 @@ const homeclick = () => { window.location.href = "/"}
     <img style={{ border: 'none' }} className={bothElemById} id="navbar-droplet" src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_big_g.png" : "/water_img/small_droplet.png"} />    
 
     <img style={{ border: 'none' }} className={bothElemById} id="msg-bottle"  src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_red_o.png" : "/water_img/msg-bottle.png"} />
-    <button onClick={test} style={{backgroundColor: 'limegreen', border: '1px dashed hotpink', transform: 'scale(2.0)' }}> </button>
+    <button onClick={test} style={{ margin: '1em', backgroundColor: 'limegreen', border: '1px dashed hotpink', transform: 'scale(2.0)' }}> </button>
+    <button onClick={test2} style={{ margin: '1em', backgroundColor: 'coral', border: 'salmon', transform: 'scale(2.0)' }}> </button>
     </div>
 
     <div className="middle-navbar">
