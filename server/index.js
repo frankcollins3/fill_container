@@ -396,28 +396,45 @@ const RootQueryType = new GraphQLObjectType({
     },
     resolve: async (parent, args) => {
       const { username, googleId, icon  } = args
+      let argsArray = [googleId, icon]
+
       // const { username, googleId, icon } = args
       let iconGIDconcat = `${googleId}///${icon}`
-
       let allusers = await prisma.users.findMany()
       let mastermiz = allusers.find(user => user.username === 'mastermizery')
       let miz = mastermiz.username
       let miz2 = mastermiz[0]
 
-
-
-      return await prisma.users.update({
-      // const updateUser = await prisma.users.update({
-        where: {
-          id: 1
-        },
-        data: {          
-          google_id: iconGIDconcat,
-          // icon: icon
-        },
-      }).then( (updatedUser) => {        
-      return { id: updatedUser.id || 1, googleId: updatedUser.google_id || 'updateID', icon: updatedUser.icon ||'updateIcon', username: miz || 'updateusername', password: 'updatepassword', email: 'updateemail', age: 101 }      
+      let encodePromise = new Promise( (resolve, reject) => {
+          // let encodeloop = argsArray.map( (arg) => typeof arg === 'string' ? encodeURIComponent(arg) : [])
+          let encodedArray = argsArray.map((arg) =>
+          typeof arg === 'string' ? encodeURIComponent(arg) : []
+        );
+          resolve(encodedArray);
+          reject('-____-')
       })
+      return encodePromise
+      .then(async(encoded) => {
+
+        return await prisma.users.update({
+        // const updateUser = await prisma.users.update({
+          where: {
+            id: 1
+          },
+          data: {          
+            google_id: encoded[0],
+            icon: encoded[1]
+            // icon: icon
+          },
+        }).then( (updatedUser) => {        
+        return { id: updatedUser.id || 1, googleId: updatedUser.google_id || 'updateID', icon: updatedUser.icon ||'updateIcon', username: miz || 'updateusername', password: 'updatepassword', email: 'updateemail', age: 101 }      
+        })
+
+      })
+
+
+
+
         
       // return { id: 101, googleId: 'updateID', icon: 'updateIcon', username: miz || 'updateusername', password: 'updatepassword', email: 'updateemail', age: 101 }
 
