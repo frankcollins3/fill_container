@@ -90,14 +90,11 @@ import $ from 'jquery'
     useEffect( () => {
         (async() => {
           urlbank = await allDBurl()
-          console.log('urlbank useEffect')
-          console.log(urlbank)
           // let {HYDRO_DATA, HYDRO_SETTINGS } = await store.getState()
     
           API = urlbank.API      
           env = urlbank.ENVdata.data.ENV        
           NODE_ENV = env.NODE_ENV   
-          console.log(`NODE_ENV in the useEffect ${NODE_ENV}`)
           allDBusersURL = urlbank.allDBusersURL
           
           let options = { headers: 'AllUsers' }
@@ -259,18 +256,6 @@ import $ from 'jquery'
 
             //     console.log("all_good")
             } else {
-                console.log("NOT_ALL_GOOD!")
-                console.log('username_good')
-                console.log(username_good)
-                
-                console.log("email_good")
-                console.log(email_good)
-                
-                console.log('password_good')
-                console.log(password_good)
-                
-                console.log('age_good')
-                console.log(age_good)
                 return 
             }
         })           
@@ -301,13 +286,13 @@ import $ from 'jquery'
                         let userSignupURL = urldata.userSignupURL
                         //  resolve(fetch(userSignupURL))        
                         // userSignup ------> src/utility/userSignup ----------->
-                        resolve(userSignup({id:1, googleId: 'noG', icon: 'iconic.png', username: 'nameuser', email: 'me@me.com', password: 'pw', age: 88 }, localNODE_ENV))
+                        resolve(userSignup({ googleId: '', icon: '', username: USERNAME_INPUT, email: EMAIL_INPUT, password: PASSWORD_INPUT, age: AGE_INPUT }, localNODE_ENV))
+                        // resolve(userSignup({id:1, googleId: 'noG', icon: 'iconic.png', username: 'nameuser', email: 'me@me.com', password: 'pw', age: 88 }, localNODE_ENV))
                         reject([])
                     })
                     saveUserPROMISE.then(async(userdata:any) => {                         
-                        //  userdata = await userdata.json()
-                        console.log('userdata')
-                        console.log(userdata)
+                    
+                        TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()
                     })
                 })
             }
@@ -414,7 +399,7 @@ import $ from 'jquery'
                 {
                     LINK_GOOGLE_BTN_CLICK 
                          ?
-                    <GoogleLogin
+                    <GoogleLogin            // developers.google.com -> guides -> handle-errors
                     className="Google-Button"
                     clientId={'569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com'}
                     onSuccess={onLinkSuccess}
