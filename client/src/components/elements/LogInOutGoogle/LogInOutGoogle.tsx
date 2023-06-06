@@ -39,7 +39,8 @@ import $ from 'jquery'
                                     
             TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER,
             TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, 
-            TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK } = props
+            TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK 
+          } = props
 
     const googleLinkBtnClass = ["row", "google-link-btn"].join(" ");
 
@@ -53,6 +54,7 @@ import $ from 'jquery'
     let env;
     let clientId:any;
     let API;
+    let NODE_ENV:string 
 
     const onSignupSuccess = (res:any) =>  { 
         console.log('res')
@@ -93,7 +95,9 @@ import $ from 'jquery'
           // let {HYDRO_DATA, HYDRO_SETTINGS } = await store.getState()
     
           API = urlbank.API      
-          env = urlbank.ENVdata.data.ENV           
+          env = urlbank.ENVdata.data.ENV        
+          NODE_ENV = env.NODE_ENV   
+          console.log(`NODE_ENV in the useEffect ${NODE_ENV}`)
           allDBusersURL = urlbank.allDBusersURL
           
           let options = { headers: 'AllUsers' }
@@ -292,14 +296,15 @@ import $ from 'jquery'
                 })
                 
                 urlPROMISE.then( (urldata:any) => {
+                    let localNODE_ENV = urldata.ENVdata.data.ENV.NODE_ENV                    
                     const saveUserPROMISE = new Promise( (resolve, reject) => {
                         let userSignupURL = urldata.userSignupURL
-                        //  resolve(fetch(userSignupURL))                         
-                        resolve(userSignup({id:1, googleId: 'noG', icon: 'iconic.png', username: 'nameuser', email: 'me@me.com', password: 'pw', age: 88 }, 'development'))
+                        //  resolve(fetch(userSignupURL))        
+                        // userSignup ------> src/utility/userSignup ----------->
+                        resolve(userSignup({id:1, googleId: 'noG', icon: 'iconic.png', username: 'nameuser', email: 'me@me.com', password: 'pw', age: 88 }, localNODE_ENV))
                         reject([])
                     })
-                    saveUserPROMISE.then(async(userdata:any) => {
-                         userdata = await userdata.json()
+                    saveUserPROMISE.then(async(userdata:any) => {                         
                         //  userdata = await userdata.json()
                         console.log('userdata')
                         console.log(userdata)
@@ -354,11 +359,19 @@ import $ from 'jquery'
                         <SignupInput inputType={'email'}/>
                         <SignupInput inputType={'age'}/>
                         <SignupInput inputType={'password'}/>                        
-                        <img
-                        onClick={showPassIconClick}
-                        style={{ opacity: PASSWORD_SHOW_CLICK ? "1.0" : PASSWORD_SHOW ? "0.5" : "0.1", height: '25px', width: '25px', alignSelf: 'center' }}
-                        src="/water_img/statistics.png"
-                        />
+                        {/* <ConnectedAgeInput/> */}
+
+                        {
+                            INPUT_FOCUS === 'password' 
+                                    ?
+                                    <img
+                                    onClick={showPassIconClick}
+                                    style={{ border: 'none', opacity: PASSWORD_SHOW_CLICK ? "1.0" : PASSWORD_SHOW ? "0.5" : "0.1", height: '25px', width: '25px', alignSelf: 'center' }}
+                                    src="/water_img/statistics.png"
+                                    />
+                                    :
+                                <div></div>
+                        }
 
                         </form>
                         { INPUT_FOCUS ? <ConnectedSignupLoginChecker loginstate={INPUT_FOCUS} /> : <pre> </pre> }                                                
