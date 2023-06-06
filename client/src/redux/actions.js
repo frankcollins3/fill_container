@@ -44,16 +44,9 @@ export const SET_PASSWORD_INPUT = (action) => {
   }
 }
 
-//    /PasswordInput.tsx && [ issue #95 ]     forgot about <input type={"password"} this was a simple hasher for decoy state so that password would be hashed in GraphQL. DummyState was "hashed" client side to show on input.
-export const SET_DUMMY_PASSWORD_INPUT = (action) => {
-  let actionCopy = action
-  const actionPayloadValue = actionCopy.payload
-  let payloadLength = actionPayloadValue.length
-  return {
-    type: "SET_DUMMY_PASSWORD_INPUT",
-    payload: action.payload // payload: "*".repeat(action.payload.length)
-  }
-}
+export const TOGGLE_PASSWORD_SHOW = () => { return { type: "TOGGLE_PASSWORD_SHOW" } }
+
+export const TOGGLE_PASSWORD_SHOW_CLICK = () => { return { type: "TOGGLE_PASSWORD_SHOW_CLICK" } }
 
 //    /EmailInput.tsx ------->    const emailinputhandler = (event:any) => { inputHandler(event, SET_EMAIL_INPUT) }        ---------> utility/inputHandler SET_EMAIL_INPUT 
 export const SET_EMAIL_INPUT = (action) => {
