@@ -349,44 +349,93 @@ const RootQueryType = new GraphQLObjectType({
             age: age
           }
         }).then( (u) => {
-            return {
-              // id: 1, googleId: '1', icon: '1', username: '1', password: '1', email: '1@1.1', age: 1
-              id: u.id, googleId: '', icon: '', username: u.username, password: u.password, email: u.email, age: u.age
-            }
+            return { id: u.id, googleId: '', icon: '', username: u.username, password: u.password, email: u.email, age: u.age }
         })
       }
   },
+  // linkUserWithGoogle: {
+  //     type: UsersType,
+  //     description: 'App Provides choice for user/human: | Sign-up with username | Google --> This query links: username, password, email with google.',
+  //     args: {
+  //       username: { type: GraphQLString },
+  //       // id: { type: GraphQLInt },
+  //       googleId: { type: GraphQLString },
+  //       // icon: { type: GraphQLString }
+  //     },
+  //     resolve: async (parent, args) => {  // There will be 2 functions that perform this query. 1 for username and 1 for id.     
+  //       if (args.username) {
+  //         const { username, googleId } = args
+  //           return prisma.users.findFirst({
+  //             where: {
+  //               username: username
+  //             }
+  //           }).then(async(newUser) => {
+  //             console.log('newUser serverside')
+  //             console.log(newUser)
+  //             const googleUpdateUser = await prisma.users.update({
+  //               where: {
+  //                 googleId: newUser.username
+  //               },
+  //               data: {
+  //                 googleId: newUser.googleId
+  //               }
+  //             })
+  //           }).then(async(updatedUser) => {    // const { id, googleId, icon, username, password, email, age } = updatedUser
+  //             return { id: 101, googleId: 'updateID', icon: 'updateIcon', username: 'updateusername', password: 'updatepassword', email: 'updateemail', age: 101 }
+  //           })
+  //       }
+  //     }
+  // },
   linkUserWithGoogle: {
-      type: UsersType,
-      description: 'App Provides choice for user/human: | Sign-up with username | Google --> This query links: username, password, email with google.',
-      args: {
-        id: { type: GraphQLInt },
-        username: { type: GraphQLString },
-        googleId: { type: GraphQLString },
-        icon: { type: GraphQLString }
-      },
-      resolve: async (parent, args) => {
-        // There will be 2 functions that perform this query. 1 for username and 1 for id.     
-        if (args.username) {
-          const { username, googleId } = args
-            const findUser = await prisma.users.findFirst({
-              where: {
-                username: username
-              }
-            }).then(async(newUser) => {
-              const googleUpdateUser = await prisma.users.update({
-                where: {
-                  googleId: newUser.username
-                },
-                data: {
-                  googleId: newUser.googleId
-                }
-              })
-            })
+    type: UsersType,
+    description: 'List of Settings',
+    args: {
+      username: { type: GraphQLString }
+    },
+    resolve: async (parent, args) => {
+      const { username } = args
 
-        }
-      }
-  },
+      let allusers = await prisma.users.findMany()
+      let mastermizery = allusers[0]
+      let miz = mastermizery.username
+
+      // prisma.users.update()
+
+      // const updatePromise = new Promise( (promise, resolve) => {
+      //   const updateUser = prisma.user.update({
+      //       where: {
+      //         email: 'fwc3rd@gmail.com'
+      //       },
+      //       data: {
+      //         username: 'MASTERMIZERY',
+      //       },
+      //     })
+      //     resolve(updateUser)
+      //     reject("hey youre a reject")
+      // })
+      
+      // updatePromise
+      // .then(async() => {
+
+      // })
+
+      return await prisma.users.update({
+      // const updateUser = await prisma.users.update({
+        where: {
+          id: 1
+        },
+        data: {
+          username: 'mastermizery',
+        },
+      }).then( (updatedUser) => {        
+      return { id: updatedUser.id || 1, googleId: 'updateID', icon: 'updateIcon', username: miz || 'updateusername', password: 'updatepassword', email: 'updateemail', age: 101 }      
+      })
+        
+      // return { id: 101, googleId: 'updateID', icon: 'updateIcon', username: miz || 'updateusername', password: 'updatepassword', email: 'updateemail', age: 101 }
+
+    // return { id: 101, googleId: 'updateID', icon: 'updateIcon', username: 'updateusername', password: 'updatepassword', email: 'updateemail', age: 101 }
+    }
+  },  
 
   singledata: {    
     type: DataType,
