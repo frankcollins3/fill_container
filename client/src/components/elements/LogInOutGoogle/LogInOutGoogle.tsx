@@ -14,6 +14,7 @@ import setCursor from '../../../utility/setCursor'
 import CSS from '../../../utility/CSS'
 import deathCertificate from '../../../utility/deathCertificate'
 import isItDeadYet from '../../../utility/isItDeadYet'
+import userSignup from '../../../utility/fetch/userSignup'
 // import ghostText from '../../../utility/GhostText'
 
 // components
@@ -22,19 +23,27 @@ import ConnectedUsernameInput from '../../../components/elements/UsernameInput'
 import ConnectedEmailInput from '../../../components/elements/EmailInput'
 import ConnectedAgeInput from '../../../components/elements/AgeInput'
 import ConnectedSignupLoginChecker from '../../../components/elements/SignupLoginChecker'
+import SignupInput from '../../../components/elements/SignupInputs'
 
 import { connect, useDispatch } from 'react-redux'
-import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT } from '../../../redux/actions'
+import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK } from '../../../redux/actions'
 import $ from 'jquery'
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
 
  function LogInOutGoogle ( props:any ) {
           
     const { 
-LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_INPUT, EMAIL_INPUT, PASSWORD_INPUT, AGE_INPUT, PARENT_CONFIRM, SUBMIT_INPUT_DATA, TOGGLE_SUBMIT_INPUT_DATA, GOOGLE_LINK_ACCT_SCREEN, CURRENT_USER, NO_LINK_GOOGLE_BTN_HOVER, YES_LINK_GOOGLE_BTN_HOVER, LINK_GOOGLE_BTN_CLICK, NO_LINK_GOOGLE_BTN_CLICK, GOOGLE_IMG_URL, ICON_NOT_INPUT,
-        TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT } = props
+            LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_INPUT, EMAIL_INPUT, PASSWORD_INPUT, AGE_INPUT, PARENT_CONFIRM, SUBMIT_INPUT_DATA, 
+            TOGGLE_SUBMIT_INPUT_DATA, GOOGLE_LINK_ACCT_SCREEN, CURRENT_USER, NO_LINK_GOOGLE_BTN_HOVER,
+            YES_LINK_GOOGLE_BTN_HOVER, LINK_GOOGLE_BTN_CLICK, NO_LINK_GOOGLE_BTN_CLICK, GOOGLE_IMG_URL, ICON_NOT_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_CLICK,
+                                    
+            TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER,
+            TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, 
+            TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK } = props
 
     const googleLinkBtnClass = ["row", "google-link-btn"].join(" ");
+
+    const [passwordShow, setPasswordShow] = useState<boolean>(false)
           
     const dispatch = useDispatch()
 
@@ -89,7 +98,7 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
           
           let options = { headers: 'AllUsers' }
 
-          let allUsers = await WaterRequest(allDBusersURL, options)
+          let allUsers = await WaterRequest(allDBusersURL, options, undefined)
           let allUsersData = allUsers.data.allDBusers
           let allUsernames = allUsersData.filter((data:any) => data.hasOwnProperty('username')).map((data:any) => data.username);          
           
@@ -221,9 +230,9 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
                     age_good = false
                 }
             }
-
-
         }
+
+
         const inputCheckingPromise = new Promise( (resolve, reject) => {
             resolve(checkinputs())
             reject(console.log('hey weve got a problem my friend'))
@@ -285,24 +294,24 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
                 urlPROMISE.then( (urldata:any) => {
                     const saveUserPROMISE = new Promise( (resolve, reject) => {
                         let userSignupURL = urldata.userSignupURL
-                         resolve(fetch(userSignupURL))                         
-                         reject([])
+                        //  resolve(fetch(userSignupURL))                         
+                        resolve(userSignup({id:1, googleId: 'noG', icon: 'iconic.png', username: 'nameuser', email: 'me@me.com', password: 'pw', age: 88 }, 'development'))
+                        reject([])
                     })
                     saveUserPROMISE.then(async(userdata:any) => {
                          userdata = await userdata.json()
+                        //  userdata = await userdata.json()
                         console.log('userdata')
                         console.log(userdata)
                     })
                 })
-                
-
-
-                
-
-
-                // TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()
-                // TOGGLE_ICON_NOT_INPUT()
             }
+
+            const showPassIconClick = () => {
+                console.log("hey you clicked me!")   
+                TOGGLE_PASSWORD_SHOW_CLICK()             
+            }
+
 
             return (
                 <div className="login-container">                                        
@@ -341,10 +350,16 @@ LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_
 
                         <div className="Form-Container">
                         <form onMouseEnter={formhover}>                         
-                        <ConnectedUsernameInput/>
-                        <ConnectedEmailInput/>
-                        <ConnectedPasswordInput/>
-                        <ConnectedAgeInput/>
+                        <SignupInput inputType={'username'}/>
+                        <SignupInput inputType={'email'}/>
+                        <SignupInput inputType={'age'}/>
+                        <SignupInput inputType={'password'}/>                        
+                        <img
+                        onClick={showPassIconClick}
+                        style={{ opacity: PASSWORD_SHOW_CLICK ? "1.0" : PASSWORD_SHOW ? "0.5" : "0.1", height: '25px', width: '25px', alignSelf: 'center' }}
+                        src="/water_img/statistics.png"
+                        />
+
                         </form>
                         { INPUT_FOCUS ? <ConnectedSignupLoginChecker loginstate={INPUT_FOCUS} /> : <pre> </pre> }                                                
                         </div>
@@ -481,6 +496,8 @@ const mapStateToProps = (state:any) => ({
     USERNAME_INPUT: state.USERNAME_INPUT,
     EMAIL_INPUT: state.EMAIL_INPUT,
     PASSWORD_INPUT: state.PASSWORD_INPUT,
+    PASSWORD_SHOW: state.PASSWORD_SHOW,
+    PASSWORD_SHOW_CLICK: state.PASSWORD_SHOW_CLICK,
     AGE_INPUT: state.AGE_INPUT,
     PARENT_CONFIRM: state.PARENT_CONFIRM,
     INPUT_FOCUS: state.INPUT_FOCUS,
@@ -502,6 +519,8 @@ const mapDispatchToProps = (dispatch:any) => ({
     TOGGLE_LOGIN_SIGNUP_BTN: () => dispatch(TOGGLE_LOGIN_SIGNUP_BTN()),
     TOGGLE_SHOW_FORM: (action:any) => dispatch(TOGGLE_SHOW_FORM(action)),
     SET_PASSWORD_INPUT: (action:any) => dispatch(SET_PASSWORD_INPUT(action)),
+    TOGGLE_PASSWORD_SHOW: () => dispatch(TOGGLE_PASSWORD_SHOW()),
+    TOGGLE_PASSWORD_SHOW_CLICK: () => dispatch(TOGGLE_PASSWORD_SHOW_CLICK()),
     SET_ALL_USERS: (action:any) => dispatch(SET_ALL_USERS(action)),
     SET_ALL_USERNAMES: (action:any) => dispatch(SET_ALL_USERNAMES(action)),
     SET_ALL_EMAILS: (action:any) => dispatch(SET_ALL_EMAILS(action)),
