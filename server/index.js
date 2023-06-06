@@ -1,3 +1,4 @@
+// const {useState, useEffect} = require("react")
 const express = require('express');
 const path = require("path");
 const cors = require('cors');
@@ -19,6 +20,15 @@ const anotherDataRouter = require('./routes/allPokemon')
 // graphiql ----------> localhost:5000/graphql
 const PORT = 5000;
 const app = express();
+let allusersPSQL;
+
+// useEffect( () => {
+//   (async() => {
+//     allusersPSQL = await prisma.users.findMany()    
+//   })()
+
+// }, [])
+
 
 const allPokemonAPI = async () => {    
     let bucket = []
@@ -317,7 +327,7 @@ const RootQueryType = new GraphQLObjectType({
       type: UsersType,
       description: 'User Signup from /LogInOutGoogle.tsx. The data is submitted from  const inputCheckingPromise = new Promise()',
       args: {
-        id: { type: GraphQLInt },
+        // id: { type: GraphQLInt },
         googleId: { type: GraphQLString },
         icon: { type: GraphQLString },
         username: { type: GraphQLString },
@@ -326,10 +336,24 @@ const RootQueryType = new GraphQLObjectType({
         age: { type: GraphQLInt }
       },
       resolve: async ( parent, args ) => {
-        const { id, googleId, icon, username, password, email, age } = args;
-        // id, googleId, icon, username, email, password, age
-  return { id: id ? id : 'noid', googleId: googleId ? googleId : 'noGoogleId', icon: icon ? icon : 'noicon', username: username ? username : '', password: password ? password : '', email: email ? email : '', age: age ? age : ''}
-        // return { id: id, googleId: 'googleid', icon: 'icon', username: 'sleepmaster', password: 'pw', email: 'realemail', age: 0 }
+        const { googleId, icon, username, password, email, age } = args;
+        let allusers = await prisma.users.findMany()
+        let autoIncrementUserId = allusers.length + 1
+
+        let NewUser = await prisma.users.create({
+          data: {
+            id: autoIncrementUserId,
+            username: username,
+            password: password,
+            email: email,
+            age: age
+          }
+        }).then( (u) => {
+
+            return {
+              id: u.id, googleId: '', icon: '', username: u.username, password: u.password, email: u.email, age: u.age
+            }
+        })
       }
   },
 
