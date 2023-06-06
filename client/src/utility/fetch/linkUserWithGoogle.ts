@@ -1,0 +1,53 @@
+import allUrl from './allDBurl'
+
+export default async function linkUserWithGoogle(signedUpUser:string|number, googleId:string, icon:any) {               
+    const urlPromise = new Promise( (resolve, reject) => {
+        let urlbank = allUrl()
+        resolve(urlbank)
+        reject(':D')
+    })
+    return urlPromise
+    .then(async(urlbankdata:any) => {
+        console.log('urlbankdata ')
+        console.log(urlbankdata)
+        let env = urlbankdata.ENVdata.data.ENV        
+        let username;
+        let id;
+        let miz:string = "mastermizery".replace(/\s/g, '')
+        let googleId:string = '117827387775507687118'.replace(/\s/g, '')
+        // let icon:string = 'https://lh3.googleusercontent.com/a/AAcHTtd_55dRY1mQ1-GP5R4PHEgjmSRGTZNK7aGM8-82=s96-c'.replace(/\s/g, '')
+        await localStorage.setItem("icon", icon)
+        let storageIcon = await localStorage.getItem("icon")    
+        let href:string = `http://localhost:5000/`
+        const predata = await fetch(`http://localhost:5000/fill_cont?query={linkUserWithGoogle(username:"${encodeURIComponent(`${signedUpUser}`)}",icon:"${encodeURIComponent(`${storageIcon}`)}",googleId:"${encodeURIComponent(`${googleId}`)}"){id,googleId,icon,username,email,age}}`)   // W O R K S !!!!!
+        const data = await predata.json()
+        console.log('update data from utility script')
+        console.log(data)
+        return data
+        
+    })
+
+    // const test = async () => {
+    //     let urlbank = await allUrl()
+    //     let env = urlbank.ENVdata.data.ENV
+    //     let miz:string = "mastermizery".replace(/\s/g, '')
+    //     let googleId:string = '117827387775507687118'.replace(/\s/g, '')
+    //     let icon:string = 'https://lh3.googleusercontent.com/a/AAcHTtd_55dRY1mQ1-GP5R4PHEgjmSRGTZNK7aGM8-82=s96-c'.replace(/\s/g, '')
+    //     await localStorage.setItem("icon", icon)
+    //     let storageIcon = await localStorage.getItem("icon")    
+    //     let href:string = `http://localhost:5000/`
+    //     let args = `(name:"mastermizery",googleId:"117827387775507687118",imageUrl:"https://lh3.googleusercontent.com/a/AAcHTtd_55dRY1mQ1-GP5R4PHEgjmSRGTZNK7aGM8-82=s96-c")`
+    //     const predata = await fetch(`http://localhost:5000/fill_cont?query={linkUserWithGoogle(username:"${encodeURIComponent(`${miz}`)}",icon:"${encodeURIComponent(`${storageIcon}`)}",googleId:"${encodeURIComponent(`${googleId}`)}"){id,googleId,icon,username,email,age}}`)   // W O R K S !!!!!
+    //     const data = await predata.json()
+    //     console.log('update data from utility script')
+    //     console.log(data)
+    //     return data
+    // }
+
+    // return test()
+
+}
+
+
+
+// const predata = await fetch(`http://localhost:5000/fill_cont?query={userSignup{id,googleId,icon,username,email,age}}`)
