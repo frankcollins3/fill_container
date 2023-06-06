@@ -32,13 +32,14 @@ const initialState = {
     LOG_IN_OUT_TYPE: 'LOGIN',       // LogInOutGoogle.tsx [login] [signup] clck either one to select this state.
     LOGIN_SIGNUP_BTN: false,
     DISPLAY_FORM: "",               // click hand.png to toggle the       [login] [signup]    buttons from appearing.
-    PASSWORD_INPUT: "***",   
+    PASSWORD_INPUT: "* * *",   
+    PASSWORD_SHOW: false,
+    PASSWORD_SHOW_CLICK: false,
     GOOGLEID_INPUT: '',    
     GOOGLE_IMG_URL: '',
     NON_GOOGLE_IMG_URL: '',
     USER_SELECT_IMG_URL: '',
 
-    DUMMY_PASSWORD_INPUT: "***",
     USERNAME_INPUT: "",
     EMAIL_INPUT: "",
     AGE_INPUT: "",
@@ -46,8 +47,8 @@ const initialState = {
     INPUT_DBL_CLICK: false,
     SUBMIT_INPUT_DATA: false,     // form data complete, validated in LoginoutGoogle.tsx with $('.submit-faucet).click()4
     GOOGLE_LINK_ACCT_SCREEN: false,
-
     ICON_NOT_INPUT: false,
+
     // signup state related 
     
     // link google account state;
@@ -107,16 +108,18 @@ const initialState = {
           ...state,
           PASSWORD_INPUT: action.payload
         }
-      
-      case 'SET_DUMMY_PASSWORD_INPUT':        
+
+      case 'TOGGLE_PASSWORD_SHOW':
         return {
           ...state,
-          DUMMY_PASSWORD_INPUT: action.payload
-          // DUMMY_PASSWORD_INPUT: dummyPassword
-          // DUMMY_PASSWORD_INPUT: `${state.DUMMY_PASSWORD_INPUT}`
-          // DUMMY_PASSWORD_INPUT: "*".repeat(action.payload.length)
+          PASSWORD_SHOW: !state.PASSWORD_SHOW
         }
-
+      case 'TOGGLE_PASSWORD_SHOW_CLICK':
+        return {
+          ...state,
+          PASSWORD_SHOW_CLICK: !state.PASSWORD_SHOW_CLICK
+        }
+      
       case "SET_USERNAME_INPUT":
         return {
           ...state,
