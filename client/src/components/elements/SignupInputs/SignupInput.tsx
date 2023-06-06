@@ -9,7 +9,7 @@ import attributeJQ from '../../../utility/attributeJQ'
 import RegexBank from '../../../utility/RegexBank'
 
 // redux acitons
-import { SET_USERNAME_INPUT, SET_EMAIL_INPUT, SET_PASSWORD_INPUT, SET_AGE_INPUT, TOGGLE_INPUT_FOCUS, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK } from '../../../redux/actions'
+import { SET_USERNAME_INPUT, SET_EMAIL_INPUT, SET_PASSWORD_INPUT, SET_AGE_INPUT, TOGGLE_INPUT_FOCUS, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, TOGGLE_USERNAME_INPUT_HOVER, TOGGLE_PASSWORD_INPUT_HOVER, TOGGLE_EMAIL_INPUT_HOVER, TOGGLE_AGE_INPUT_HOVER } from '../../../redux/actions'
 import ConnectedSignupLoginChecker from '../SignupLoginChecker'
 
 interface Props {
@@ -20,14 +20,22 @@ interface Props {
     PASSWORD_SHOW_CLICK: boolean,
     EMAIL_INPUT: string,
     AGE_INPUT: string,
+    USERNAME_INPUT_HOVER: string,
+    PASSWORD_INPUT_HOVER: string,
+    EMAIL_INPUT_HOVER: string,
+    AGE_INPUT_HOVER: string,
 
     TOGGLE_INPUT_FOCUS: any
     SET_USERNAME_INPUT: any,
     SET_PASSWORD_INPUT: any,
-    TOGGLE_PASSWORD_SHOW: any,
-    TOGGLE_PASSWORD_SHOW_CLICK: any,
     SET_EMAIL_INPUT: any,
     SET_AGE_INPUT: any,
+    TOGGLE_PASSWORD_SHOW: any,
+    TOGGLE_PASSWORD_SHOW_CLICK: any,
+    TOGGLE_USERNAME_INPUT_HOVER: any,
+    TOGGLE_PASSWORD_INPUT_HOVER: any,
+    TOGGLE_EMAIL_INPUT_HOVER: any,
+    TOGGLE_AGE_INPUT_HOVER: any
 }
 
 function SignupInput (props: Props) {
@@ -36,9 +44,7 @@ function SignupInput (props: Props) {
 
     const dispatch = useDispatch()
 
-    let RegexObject:any;
-    let hoverTimer:any;
-    let isHovered = false;
+    let RegexObject:any;    
 
     useEffect( () => {
         (async() => {
@@ -49,8 +55,8 @@ function SignupInput (props: Props) {
 
     // let inputType:string = props.inputType
 
-const { inputType, USERNAME_INPUT, PASSWORD_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_CLICK, EMAIL_INPUT, AGE_INPUT, SET_USERNAME_INPUT, 
-    SET_PASSWORD_INPUT, SET_EMAIL_INPUT, SET_AGE_INPUT, TOGGLE_INPUT_FOCUS, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK } = props
+const { inputType, USERNAME_INPUT, PASSWORD_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_CLICK, EMAIL_INPUT, AGE_INPUT, SET_USERNAME_INPUT, USERNAME_INPUT_HOVER, PASSWORD_INPUT_HOVER, EMAIL_INPUT_HOVER, AGE_INPUT_HOVER,
+    SET_PASSWORD_INPUT, SET_EMAIL_INPUT, SET_AGE_INPUT, TOGGLE_INPUT_FOCUS, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, TOGGLE_USERNAME_INPUT_HOVER, TOGGLE_PASSWORD_INPUT_HOVER, TOGGLE_EMAIL_INPUT_HOVER, TOGGLE_AGE_INPUT_HOVER} = props
 
     console.log('props from SignupInput')
     console.log(props)
@@ -82,38 +88,31 @@ const { inputType, USERNAME_INPUT, PASSWORD_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_
         }
     }
 
-    // const ghosttext = (event:any) => {
-    //     let target:any = event.target
-    //     let jqtarget:any = $(event.target)
-    //     let targetId:string = event.target.id       
-    //     if (targetId === 'password') {        
-    //     } else {
-    //         attributeJQ(target, 'value', targetId)         
-    //     }
-    // }
-
     const ghostText = (event:any) => attributeJQ(event.target, 'value', event.target.id)
 
-    
-    // const inputfocus = async () => { TOGGLE_INPUT_FOCUS( { payload: inputType } ) }
-
     const inputfocus = async () => {
-        if (inputType === 'password') SET_PASSWORD_INPUT( { payload: '' } )
-        if (inputType === 'username') SET_USERNAME_INPUT( { payload: 'U' } )    // hey who are U?               (get lucky on these little ideas that pop up)
-        if (inputType === 'email') SET_EMAIL_INPUT( { payload: '@' } )    // hey who are U?               (get lucky on these little ideas that pop up)
         
-        TOGGLE_INPUT_FOCUS( { payload: inputType } )
-        let Timer;
-        Timer = setTimeout( () => {
-            console.group('inputType')
-            console.group(inputType)
-            console.log("hey guys how are you")        
-        }, 1000)
-    }
 
-    const showPassClick = () => {
-        // setPasswordShowClick(true)    
-        TOGGLE_PASSWORD_SHOW_CLICK()
+        if (inputType === 'password') {
+                if (!PASSWORD_INPUT_HOVER) {
+                    SET_PASSWORD_INPUT( { payload: '' } )                        
+                    TOGGLE_PASSWORD_INPUT_HOVER()
+                }
+        }
+        if (inputType === 'username') {
+                if (!USERNAME_INPUT_HOVER) {
+                    SET_USERNAME_INPUT( { payload: 'U' } )    // hey who are U?               (get lucky on these little ideas that pop up)
+                    TOGGLE_USERNAME_INPUT_HOVER()
+                }                
+            
+        }
+        if (inputType === 'email') {            
+                if (!EMAIL_INPUT_HOVER) {
+                    SET_EMAIL_INPUT( { payload: '@' } )    // hey who are U?               (get lucky on these little ideas that pop up)        
+                    TOGGLE_EMAIL_INPUT_HOVER()
+                }            
+        }
+        TOGGLE_INPUT_FOCUS( { payload: inputType } )                
     }
         
         const RenderSignupInput = () => {
@@ -124,14 +123,11 @@ const { inputType, USERNAME_INPUT, PASSWORD_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_
               spellCheck="false"
               id={inputType}
               value={ inputType === "username" ? USERNAME_INPUT : inputType === "email" ? EMAIL_INPUT : inputType === 'password' ? PASSWORD_INPUT: inputType === "age" ? AGE_INPUT : "text" }
-            //   type={inputType === 'password' ? "password" : inputType}
               onChange={inputOnChange}
-                onMouseEnter={ghostText}
-            //   onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onMouseMove={ghostText}
+              onMouseEnter={ghostText}
               onFocus={inputfocus}
-            //   onChange={ageinputhandler}
             />        
-                </>                
+               </>                
             )
         }
 
@@ -146,7 +142,12 @@ const mapStateToProps = (state:any) => ({
         EMAIL_INPUT: state.EMAIL_INPUT,
         AGE_INPUT: state.AGE_INPUT,    
         PASSWORD_SHOW: state.PASSWORD_SHOW,
-        PASSWORD_SHOW_CLICK: state.PASSWORD_SHOW_CLICK
+        PASSWORD_SHOW_CLICK: state.PASSWORD_SHOW_CLICK,
+
+        USERNAME_INPUT_HOVER: state.USERNAME_INPUT_HOVER,
+        PASSWORD_INPUT_HOVER: state.PASSWORD_INPUT_HOVER,
+        EMAIL_INPUT_HOVER: state.EMAIL_INPUT_HOVER,
+        AGE_INPUT_HOVER: state.AGE_INPUT_HOVER,
 })
 
 // TEST_STATE: state.TEST_STATE   
@@ -159,6 +160,11 @@ const mapDispatchToProps = (dispatch:any) => ({
         TOGGLE_PASSWORD_SHOW_CLICK: () => dispatch(TOGGLE_PASSWORD_SHOW_CLICK()),
         SET_EMAIL_INPUT: (action:any) => dispatch(SET_EMAIL_INPUT(action)),
         SET_AGE_INPUT: (action:any) => dispatch(SET_AGE_INPUT(action)),
+
+        TOGGLE_USERNAME_INPUT_HOVER: () => dispatch(TOGGLE_USERNAME_INPUT_HOVER()),
+        TOGGLE_PASSWORD_INPUT_HOVER: () => dispatch(TOGGLE_PASSWORD_INPUT_HOVER()),
+        TOGGLE_EMAIL_INPUT_HOVER: () => dispatch(TOGGLE_EMAIL_INPUT_HOVER()),
+        TOGGLE_AGE_INPUT_HOVER: () => dispatch(TOGGLE_AGE_INPUT_HOVER())
 })
 
 // cannot find name TOGGLE_TEST_STATE have to create it and link /redux/actions path up.
