@@ -10,6 +10,7 @@ import RegexBank from '../../../utility/RegexBank'
 
 // redux acitons
 import { SET_USERNAME_INPUT, SET_EMAIL_INPUT, SET_PASSWORD_INPUT, SET_AGE_INPUT, TOGGLE_INPUT_FOCUS, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK } from '../../../redux/actions'
+import ConnectedSignupLoginChecker from '../SignupLoginChecker'
 
 interface Props {
     inputType: string,
@@ -94,7 +95,21 @@ const { inputType, USERNAME_INPUT, PASSWORD_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_
     const ghostText = (event:any) => attributeJQ(event.target, 'value', event.target.id)
 
     
-    const inputfocus = async () => { TOGGLE_INPUT_FOCUS( { payload: inputType } ) }
+    // const inputfocus = async () => { TOGGLE_INPUT_FOCUS( { payload: inputType } ) }
+
+    const inputfocus = async () => {
+        if (inputType === 'password') SET_PASSWORD_INPUT( { payload: '' } )
+        if (inputType === 'username') SET_USERNAME_INPUT( { payload: 'U' } )    // hey who are U?               (get lucky on these little ideas that pop up)
+        if (inputType === 'email') SET_EMAIL_INPUT( { payload: '@' } )    // hey who are U?               (get lucky on these little ideas that pop up)
+        
+        TOGGLE_INPUT_FOCUS( { payload: inputType } )
+        let Timer;
+        Timer = setTimeout( () => {
+            console.group('inputType')
+            console.group(inputType)
+            console.log("hey guys how are you")        
+        }, 1000)
+    }
 
     const showPassClick = () => {
         // setPasswordShowClick(true)    
