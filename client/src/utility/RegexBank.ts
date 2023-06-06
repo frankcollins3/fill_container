@@ -6,6 +6,7 @@ export default function RegexBank () {
 
         hasCaps: /[A-Z]/g,
         hasNums: /[A-Z]/g,
+        noWhiteSpace: /\s/g,
     }
     return regexobject
     // let regobj = regexobject
