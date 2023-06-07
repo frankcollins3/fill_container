@@ -1,6 +1,6 @@
 import $ from 'jquery'
 
-export default function lazyJQanimate(elemObj:any, elemId:string) {
+export default function lazyJQanimate(elemObj:any, elemId:string, confirmOrReject:string) {
     if (!elemObj) return
     if (elemId === 'link-google') {
         $(elemObj)
@@ -32,9 +32,18 @@ export default function lazyJQanimate(elemObj:any, elemId:string) {
         opacity: 0.2                                                                
         }, 500)
         .promise()
-        .done(function() {
-        $(elemObj).detach();
-        })       
+        .promise()
+        .done(async () => {
+        await $('#googlereject').detach();
+        if (confirmOrReject === 'signp') {
+            await $('*').fadeOut()
+            await $('*').css('opacity', '0.3')
+            $(elemObj).detach();
+            window.location.href = '/'
+        }        
+        })   
+        // .done(function() {
+        // })       
     }
 
     if (elemId === 'googlereject') {
@@ -51,9 +60,12 @@ export default function lazyJQanimate(elemObj:any, elemId:string) {
         .promise()
         .done(async () => {
         await $('#googlereject').detach();
-        await $('*').fadeOut()
-        await $('*').css('opacity', '0.3')
-        // window.location.href = '/'
+        if (confirmOrReject === 'signup') {
+            await $('*').fadeOut()
+            await $('*').fadeIn()
+            await $('*').css('opacity', '0.3')
+            window.location.href = '/'
+        }
         })   
     }
 }
