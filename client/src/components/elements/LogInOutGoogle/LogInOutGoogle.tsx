@@ -229,6 +229,11 @@ import $ from 'jquery'
             }
 
             const onLinkSuccess = async (res:any) => {
+                let RegexMenu = await RegexBank()
+                let noWhiteSpaceRegex = RegexMenu.noWhiteSpace
+                
+                
+
                 console.log('res from onLinkSuccess')
                 console.log(res)
                 let googleProfile:any = res.profileObj
@@ -245,9 +250,12 @@ import $ from 'jquery'
                 const u = userUpdatedWithGoogle.data.linkUserWithGoogle
 
                 const uGID = u.googleId
-                if (uGID === 'Google Account in Use. Account Settings to fix Please!') {
+                if (noWhiteSpaceRegex.test(uGID)) {
                     console.log('hey were in here guys')
                     SET_LOG_IN_OUT_FLASH_MSG( { payload: uGID })
+                    setTimeout( () => {
+                    SET_LOG_IN_OUT_FLASH_MSG( { payload: '' })
+                    }, 6000)
                 } 
                                 
                 console.log('userUpdatedWithGoogle')
@@ -390,8 +398,8 @@ import $ from 'jquery'
                     SUBMIT_INPUT_DATA                     
                     ?
                     <div className="column">
-                        <img src={ GOOGLE_IMG_URL.length > 3 ? GOOGLE_IMG_URL : "/water_img/panda.png"} />
-                        <button onClick={remove} style={{ margin: '1em'}}> </button>
+                        {/* <img src={ GOOGLE_IMG_URL.length > 3 ? GOOGLE_IMG_URL : "/water_img/panda.png"} /> */}
+                        {/* <button onClick={remove} style={{ margin: '1em'}}> </button> */}
                 <div className="row">
 <h1> <span id="bluespan"> Welcome! </span> Would you like to link with <span id="gspan">G</span> <span id="red_o_span">o</span><span id="yellow_o_span">o</span><span id="lil_g_span">g</span><span id="l_span">l</span> <span id="e_span">e</span>:</h1>
     <div className="google-container" style = {{ backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '200px', width: '200px', border: '5px solid #dedede73', zIndex: '2',transform: 'scale(0.25)' }}> 
