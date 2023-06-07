@@ -1,5 +1,6 @@
 // const {useState, useEffect} = require("react")
 const express = require('express');
+const bcrypt = require("bcryptjs");
 const path = require("path");
 const cors = require('cors');
 const axios = require("axios");
@@ -20,15 +21,6 @@ const anotherDataRouter = require('./routes/allPokemon')
 // graphiql ----------> localhost:5000/graphql
 const PORT = 5000;
 const app = express();
-let allusersPSQL;
-
-// useEffect( () => {
-//   (async() => {
-//     allusersPSQL = await prisma.users.findMany()    
-//   })()
-
-// }, [])
-
 
 const allPokemonAPI = async () => {    
     let bucket = []
@@ -340,11 +332,17 @@ const RootQueryType = new GraphQLObjectType({
         let allusers = await prisma.users.findMany()
         let autoIncrementUserId = allusers.length + 1
 
+        const saltRounds = 13
+        const tableSalt = bcrypt.genSaltSync(saltRounds)
+        const passHasher = bcrypt.hashSync(password, tableSalt)
+
+
         return NewUser = await prisma.users.create({
           data: {
             id: autoIncrementUserId,
             username: username,
-            password: password,
+            password: passHasher,
+            // password: password,
             email: email,
             age: age
           }
@@ -398,7 +396,9 @@ const RootQueryType = new GraphQLObjectType({
       const { username, googleId, icon  } = args
       let argsArray = [googleId, icon]
       let iconGIDconcat = `${googleId}///${icon}`
-      let allusers = await prisma.users.findMany()      
+      let allusers = await prisma.users.findMany()    
+      let me = allusers.filter(user => user.username === username)
+      let myid = me[0].id  
         
       let encodePromise = new Promise( (resolve, reject) => {
           let encodedArray = argsArray.map((arg) =>                   // map over the elements which will return an array
@@ -413,7 +413,7 @@ const RootQueryType = new GraphQLObjectType({
         return await prisma.users.update({
         // const updateUser = await prisma.users.update({
           where: {
-            id: 1
+            id: myid
           },
           data: {          
             google_id: googleId,          // access .map() ----> let argsArray = [googleId, icon]   [0] = googleId  [1] = icon
@@ -423,10 +423,7 @@ const RootQueryType = new GraphQLObjectType({
           const u = updatedUser
         return { id: u.id || 1, googleId: u.google_id, icon: u.icon, username: u.username, password: u.password, email: u.email, age: u.age }      
         })
-      })        
-      // return { id: 101, googleId: 'updateID', icon: 'updateIcon', username: miz || 'updateusername', password: 'updatepassword', email: 'updateemail', age: 101 }
-
-    // return { id: 101, googleId: 'updateID', icon: 'updateIcon', username: 'updateusername', password: 'updatepassword', email: 'updateemail', age: 101 }
+      })            
     }
   },  
 
