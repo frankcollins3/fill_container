@@ -233,22 +233,41 @@ import $ from 'jquery'
                 console.log(res.profileObj) 
                 let googleImgUrl:string = googleProfile.imageUrl
                 let googleId:string = googleProfile.googleId
+                let timer:any
         
                 deathCertificate('googleImgUrl', googleImgUrl, 1, false)
                 SET_GOOGLE_IMG_URL({ payload: googleImgUrl })
 
-                let userUpdatedWithGoogle = await linkUserWithGoogle(USERNAME_INPUT, googleId, googleImgUrl)
+                let userUpdatedWithGoogle = await linkUserWithGoogle(USERNAME_INPUT, googleId, googleImgUrl)                
+                const u = userUpdatedWithGoogle.data.linkUserWithGoogle
+                                
                 console.log('userUpdatedWithGoogle')
                 console.log(userUpdatedWithGoogle)
+
+                // let updatedUserObject = { googleId: u.googleId, icon: u.icon, username: u.username, password: u.password, age: u.age, id: u.id }
+                let userStringObject = `GID:${u.googleId},icon:${u.icon},username:${u.username},password:${u.password},age:${u.age},id:${u.id}`
+                console.log('userStringObject')
+                console.log(userStringObject)
+                // console.log('updatedUserObject')
+                // console.log(updatedUserObject)
+
+                await localStorage.setItem("user", userStringObject)
+
+                timer = await setTimeout(async() => {
+                    let updatedUserStrObj:any = await localStorage.getItem("user");
+                    console.log('updatedUserStrObj')
+                    console.log(updatedUserStrObj)
+                }, 2000)
+                // await timer()
+
+                // localStorage.setItem("user", {updatedUserObject})
 
                     
                 // MeIcon | redux_state doesn't persist |          
                 // let action = { PAYLOAD: googleImgUrl}
             }
 
-            const linkGoogleConfirm = async () => {
-                console.log('USERNAME_INPUT')
-                console.log(USERNAME_INPUT)
+            const linkGoogleConfirm = async () => {                
 
                 console.log('linkGoogleConfirm Click!')
                 const urlPROMISE = new Promise((resolve, reject) => {
@@ -263,6 +282,8 @@ import $ from 'jquery'
                         let userSignupURL = urldata.userSignupURL
                         //  resolve(fetch(userSignupURL))        
                         // userSignup ------> src/utility/userSignup ----------->
+
+
                         resolve(userSignup({ googleId: '', icon: '', username: USERNAME_INPUT, email: EMAIL_INPUT, password: PASSWORD_INPUT, age: AGE_INPUT }, localNODE_ENV))
                         // resolve(userSignup({id:1, googleId: 'noG', icon: 'iconic.png', username: 'nameuser', email: 'me@me.com', password: 'pw', age: 88 }, localNODE_ENV))
                         reject([])
