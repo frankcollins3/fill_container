@@ -305,6 +305,7 @@ import $ from 'jquery'
                     saveUserPROMISE.then(async(userdata:any) => {                         
                         // UPDATE TO        G       O       O       G       L       E               !!!!!!!!!!!!!!!!!!!
                         TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()
+  
                     })
                 })
             }
@@ -401,8 +402,11 @@ import $ from 'jquery'
                         {/* <img src={ GOOGLE_IMG_URL.length > 3 ? GOOGLE_IMG_URL : "/water_img/panda.png"} /> */}
                         {/* <button onClick={remove} style={{ margin: '1em'}}> </button> */}
                 <div className="row">
-<h1> <span id="bluespan"> Welcome! </span> Would you like to link with <span id="gspan">G</span> <span id="red_o_span">o</span><span id="yellow_o_span">o</span><span id="lil_g_span">g</span><span id="l_span">l</span> <span id="e_span">e</span>:</h1>
-    <div className="google-container" style = {{ backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '200px', width: '200px', border: '5px solid #dedede73', zIndex: '2',transform: 'scale(0.25)' }}> 
+<h1 style={{ wordSpacing: LINK_GOOGLE_BTN_CLICK ? '1.175em' : 'normal' }}>
+     <span id="bluespan"> {LINK_GOOGLE_BTN_CLICK ? 'Well, Come!' : 'Welcome!'} </span> {LINK_GOOGLE_BTN_CLICK ? '' : 'Would'} {LINK_GOOGLE_BTN_CLICK ? "Y" : 'y' }ou {LINK_GOOGLE_BTN_CLICK ? "L" : 'l' }ike {LINK_GOOGLE_BTN_CLICK ? "" : 'to link with'} <span id="gspan">G</span><span id="red_o_span">o</span><span id="yellow_o_span">o</span><span id="lil_g_span">g</span><span id="l_span">l</span><span id="e_span">e</span>:
+</h1>
+
+    <div id="link-google" className="google-container" style = {{ backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '200px', width: '200px', border: '5px solid #dedede73', zIndex: '2',transform: 'scale(0.25)' }}> 
 
                 {
                     LINK_GOOGLE_BTN_CLICK 
