@@ -53,7 +53,7 @@ export default function lazyJQanimate(elemObj:any, elemId:string) {
         await $('#googlereject').detach();
         await $('*').fadeOut()
         await $('*').css('opacity', '0.3')
-        window.location.href = '/'
+        // window.location.href = '/'
         })   
     }
 }
