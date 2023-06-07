@@ -31,6 +31,7 @@ const initialState = {
 
     LOG_IN_OUT_TYPE: 'LOGIN',       // LogInOutGoogle.tsx [login] [signup] clck either one to select this state.
     LOGIN_SIGNUP_BTN: false,
+    LOG_IN_OUT_FLASH_MSG: '',
     DISPLAY_FORM: "",               // click hand.png to toggle the       [login] [signup]    buttons from appearing.
     PASSWORD_INPUT: "* * *",   
     PASSWORD_SHOW: false,
@@ -39,6 +40,12 @@ const initialState = {
     GOOGLE_IMG_URL: '',
     NON_GOOGLE_IMG_URL: '',
     USER_SELECT_IMG_URL: '',
+
+    USERNAME_INPUT_HOVER: false,
+    EMAIL_INPUT_HOVER: false,
+    AGE_INPUT_HOVER: false,
+    PASSWORD_INPUT_HOVER: false,
+    
 
     USERNAME_INPUT: "",
     EMAIL_INPUT: "",
@@ -96,11 +103,19 @@ const initialState = {
           LOGIN_SIGNUP_BTN: state.LOGIN_SIGNUP_BTN === false ? true : false 
           // LOGIN_SIGNUP_BTN: !state.LOGIN_SIGNUP_BTN
         }
+
+      case 'SET_LOG_IN_OUT_FLASH_MSG':
+        return {
+          ...state,
+          LOG_IN_OUT_FLASH_MSG: action.payload
+        }  
+      
       case 'TOGGLE_SHOW_FORM':
         return {
           ...state,
           DISPLAY_FORM: action.payload
         }
+
       // this is the state for signup/login inputs so that a password checker can be made for the password input and others.
       case 'SET_PASSWORD_INPUT':
       // case 'SET_PASSWORD_INPUT' || 'SET_EMAIL_INPUT' || 'SET_USERNAME_INPUT' || 'SET_AGE_INPUT':
@@ -108,6 +123,11 @@ const initialState = {
           ...state,
           PASSWORD_INPUT: action.payload
         }
+      
+      case "TOGGLE_USERNAME_INPUT_HOVER": return { ...state, USERNAME_INPUT_HOVER: !state.USERNAME_INPUT_HOVER }
+      case "TOGGLE_PASSWORD_INPUT_HOVER": return { ...state, PASSWORD_INPUT_HOVER: !state.PASSWORD_INPUT_HOVER }
+      case "TOGGLE_EMAIL_INPUT_HOVER": return { ...state, EMAIL_INPUT_HOVER: !state.EMAIL_INPUT_HOVER }
+      case "TOGGLE_AGE_INPUT_HOVER": return { ...state, AGE_INPUT_HOVER: !state.AGE_INPUT_HOVER }
 
       case 'TOGGLE_PASSWORD_SHOW':
         return {
