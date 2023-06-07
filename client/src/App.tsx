@@ -28,6 +28,7 @@ import {GoogleLogin, GoogleLogout} from 'react-google-login'
 import {gapi} from 'gapi-script'
 
 // redux / global state management 
+import { SET_LOG_IN_OUT_FLASH_MSG } from './redux/actions'
 import store from './redux/store'
 
 function App( props:any ) {
@@ -37,8 +38,8 @@ function App( props:any ) {
 
 
   const { 
-    HYDRO_SETTINGS, LOG_IN_OUT_TYPE, CURRENT_USER, ICON_NOT_INPUT,          // state from mapStateToProps above the export app statement.
-    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE      // actions from mapDispatchToProps bottom of App.tsx
+    HYDRO_SETTINGS, LOG_IN_OUT_TYPE, CURRENT_USER, GOOGLE_IMAGE_URL, ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG,          // state from mapStateToProps above the export app statement.
+    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_LOG_IN_OUT_FLASH_MSG
   } = props    // object destructuring props haven't done this before.
 
   let env:any;
@@ -79,20 +80,22 @@ function App( props:any ) {
 
   const renderApp = () => {
       return (
-        <div className="main">
-        
+        <div className="main">        
     <Router>
     <Routes>
     <Route path={'/'} element={ < HomeTS /> } />
     {/* <Route path={'/settings'} element={ < Settings /> } /> */}
     {/*   settings needs redux state. [ SETTINGS_DISPLAY | TOGGLE_SETTINGS_DISPLAY ]   */}
-    <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedMeIcon/> : <ConnectedLogInOutGoogle/>  } />
+    {/* <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedLogInOutGoogle/> : <ConnectedMeIcon googleImageUrl={GOOGLE_IMAGE_URL}/>  } /> */}
+    <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedMeIcon /> : <ConnectedLogInOutGoogle/>  } />
     <Route path={'/dashboard'} element={ < Dashboard /> } />
     </Routes>
     </Router>  
       </div>
       )
   }
+
+  
 
   return (
     // <GoogleUserContext.Provider value={googleUser} >
@@ -101,12 +104,21 @@ function App( props:any ) {
         {/* <button style={{ backgroundColor: 'maroon', color: 'olive'}} onClick={test}>test</button>
         <button style={{ backgroundColor: 'orange', color: 'maroon'}} onClick={test2}>test2</button> */}
         <Navbar />
-        <h1 className="lifewater"> Water is Life</h1>
+        <h1 
+        style={{  
+          color: LOG_IN_OUT_FLASH_MSG ? 'silver' : '#73defe', fontSize: LOG_IN_OUT_FLASH_MSG ? '13px' : '32px', fontFamily: LOG_IN_OUT_FLASH_MSG ? 'Poppins' : 'Moon Dance',
+          letterSpacing: LOG_IN_OUT_FLASH_MSG ? '0.25em' : '1.175em',
+      }}
+        className="lifewater"> {LOG_IN_OUT_FLASH_MSG ? LOG_IN_OUT_FLASH_MSG : 'Water is Life' } </h1>
+         {/* <h1 className="lifewater"> { CURRENT_USER.username ? `${CURRENT_USER.username} <br> is Water` : "Life is Water" } </h1> */}
       </div>
         {renderApp()}
-      <div className="credits">
-        <h1 className="lifewater"> {CURRENT_USER.username ? `${CURRENT_USER.username} is Water` : "Life is Water" } </h1>
+      <div className="credits">        
+
         {/* <h1 className="lifewater"> Life is Water </h1> */}
+         {/* <h1 className="lifewater"> { CURRENT_USER.username ? `${CURRENT_USER.username} <br> is Water` : "Life is Water" } </h1> */}
+         <h1 className="lifewater" dangerouslySetInnerHTML={{ __html: CURRENT_USER.username  ? `${CURRENT_USER.username}<br> is Water` : "Life is Water" }}></h1>
+
         <Credits />
       {/* <p style={{ textAlign: 'center' }}> LOG_IN_OUT_TYPE: { LOG_IN_OUT_TYPE  } </p> */}
       {/* <p style={{ textAlign: 'center' }}> LOG_IN_OUT_TYPE: { LOG_IN_OUT_TYPE === 'login' ? 'login' : 'logout' } </p> */}
@@ -125,15 +137,17 @@ const mapStateToProps = (state:any) => ({
     
     // regular app props
     LOG_IN_OUT_TYPE: state.LOG_IN_OUT_TYPE,
+    LOG_IN_OUT_FLASH_MSG: state.LOG_IN_OUT_FLASH_MSG,
     HYDRO_SETTINGS: state.HYDRO_SETTINGS,
 
     CURRENT_USER: state.CURRENT_USER,
-    ICON_NOT_INPUT: state.ICON_NOT_INPUT
+    ICON_NOT_INPUT: state.ICON_NOT_INPUT,
+    GOOGLE_IMAGE_URL: state.GOOGLE_IMAGE_URL
 });
 
 // global redux actions. these are the state-mutating actions being mapped to props
 const mapDispatchToProps = (dispatch: any) => ({
-  
+    SET_LOG_IN_OUT_FLASH_MSG: () => dispatch(SET_LOG_IN_OUT_FLASH_MSG())
 });
 
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
