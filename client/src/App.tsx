@@ -86,6 +86,7 @@ function App( props:any ) {
     <Route path={'/'} element={ < HomeTS /> } />
     {/* <Route path={'/settings'} element={ < Settings /> } /> */}
     {/*   settings needs redux state. [ SETTINGS_DISPLAY | TOGGLE_SETTINGS_DISPLAY ]   */}
+    
     {/* <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedLogInOutGoogle/> : <ConnectedMeIcon googleImageUrl={GOOGLE_IMAGE_URL}/>  } /> */}
     <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedMeIcon /> : <ConnectedLogInOutGoogle/>  } />
     <Route path={'/dashboard'} element={ < Dashboard /> } />
@@ -100,29 +101,20 @@ function App( props:any ) {
   return (
     // <GoogleUserContext.Provider value={googleUser} >
     <div className="App">
-      <div className="navbar">      
-        {/* <button style={{ backgroundColor: 'maroon', color: 'olive'}} onClick={test}>test</button>
-        <button style={{ backgroundColor: 'orange', color: 'maroon'}} onClick={test2}>test2</button> */}
+      <div className="navbar">              
         <Navbar />
         <h1 
         style={{  
           color: LOG_IN_OUT_FLASH_MSG ? 'silver' : '#73defe', fontSize: LOG_IN_OUT_FLASH_MSG ? '13px' : '32px', fontFamily: LOG_IN_OUT_FLASH_MSG ? 'Poppins' : 'Moon Dance',
           letterSpacing: LOG_IN_OUT_FLASH_MSG ? '0.25em' : '1.175em',
       }}
-        className="lifewater"> {LOG_IN_OUT_FLASH_MSG ? LOG_IN_OUT_FLASH_MSG : 'Water is Life' } </h1>
-         {/* <h1 className="lifewater"> { CURRENT_USER.username ? `${CURRENT_USER.username} <br> is Water` : "Life is Water" } </h1> */}
+        className="lifewater"> {ICON_NOT_INPUT ? "Water You?" : LOG_IN_OUT_FLASH_MSG ? LOG_IN_OUT_FLASH_MSG : 'Water is Life' } </h1>
+        {/* water you during the selection of these elements */}
       </div>
         {renderApp()}
-      <div className="credits">        
-
-        {/* <h1 className="lifewater"> Life is Water </h1> */}
-         {/* <h1 className="lifewater"> { CURRENT_USER.username ? `${CURRENT_USER.username} <br> is Water` : "Life is Water" } </h1> */}
+      <div className="credits">                
          <h1 className="lifewater" dangerouslySetInnerHTML={{ __html: CURRENT_USER.username  ? `${CURRENT_USER.username}<br> is Water` : "Life is Water" }}></h1>
-
-        <Credits />
-      {/* <p style={{ textAlign: 'center' }}> LOG_IN_OUT_TYPE: { LOG_IN_OUT_TYPE  } </p> */}
-      {/* <p style={{ textAlign: 'center' }}> LOG_IN_OUT_TYPE: { LOG_IN_OUT_TYPE === 'login' ? 'login' : 'logout' } </p> */}
-      {/* <p style={{ textAlign: 'center' }}> settings: { HYDRO_SETTINGS ? 'on' : 'off' } </p> */}
+        <Credits />    
       </div>
     </div>
     // </GoogleUserContext.Provider>
