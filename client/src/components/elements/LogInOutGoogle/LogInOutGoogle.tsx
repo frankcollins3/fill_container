@@ -1,3 +1,4 @@
+
 import React from "react"
 import "./LoginOutGoogle.css" 
 // import  "./LogInOutGoogle.module.scss"
@@ -12,6 +13,7 @@ import attributeJQ from '../../../utility/attributeJQ'
 import WaterRequest from '../../../utility/WaterRequest'
 import setCursor from '../../../utility/setCursor'
 import CSS from '../../../utility/CSS'
+import RegexBank from '../../../utility/RegexBank'
 import deathCertificate from '../../../utility/deathCertificate'
 import isItDeadYet from '../../../utility/isItDeadYet'
 import userSignup from '../../../utility/fetch/userSignup'
@@ -27,7 +29,7 @@ import ConnectedSignupLoginChecker from '../../../components/elements/SignupLogi
 import SignupInput from '../../../components/elements/SignupInputs'
 
 import { connect, useDispatch } from 'react-redux'
-import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK } from '../../../redux/actions'
+import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG } from '../../../redux/actions'
 import $ from 'jquery'
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
 
@@ -36,11 +38,11 @@ import $ from 'jquery'
     const { 
             LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_INPUT, EMAIL_INPUT, PASSWORD_INPUT, AGE_INPUT, PARENT_CONFIRM, SUBMIT_INPUT_DATA, 
             TOGGLE_SUBMIT_INPUT_DATA, GOOGLE_LINK_ACCT_SCREEN, CURRENT_USER, NO_LINK_GOOGLE_BTN_HOVER,
-            YES_LINK_GOOGLE_BTN_HOVER, LINK_GOOGLE_BTN_CLICK, NO_LINK_GOOGLE_BTN_CLICK, GOOGLE_IMG_URL, ICON_NOT_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_CLICK,
+            YES_LINK_GOOGLE_BTN_HOVER, LINK_GOOGLE_BTN_CLICK, NO_LINK_GOOGLE_BTN_CLICK, GOOGLE_IMG_URL, ICON_NOT_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_CLICK, LOG_IN_OUT_FLASH_MSG,
                                     
             TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER,
             TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, 
-            TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK 
+            TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG
           } = props
 
     const googleLinkBtnClass = ["row", "google-link-btn"].join(" ");
@@ -238,18 +240,21 @@ import $ from 'jquery'
                 deathCertificate('googleImgUrl', googleImgUrl, 1, false)
                 SET_GOOGLE_IMG_URL({ payload: googleImgUrl })
 
-                let userUpdatedWithGoogle = await linkUserWithGoogle(USERNAME_INPUT, googleId, googleImgUrl)                
+                
+                let userUpdatedWithGoogle = await linkUserWithGoogle(USERNAME_INPUT, googleId, googleImgUrl)                                
                 const u = userUpdatedWithGoogle.data.linkUserWithGoogle
+
+                const uGID = u.googleId
+                if (uGID === 'Google Account in Use. Account Settings to fix Please!') {
+                    console.log('hey were in here guys')
+                    SET_LOG_IN_OUT_FLASH_MSG( { payload: uGID })
+                } 
                                 
                 console.log('userUpdatedWithGoogle')
                 console.log(userUpdatedWithGoogle)
 
                 // let updatedUserObject = { googleId: u.googleId, icon: u.icon, username: u.username, password: u.password, age: u.age, id: u.id }
                 let userStringObject = `GID:${u.googleId},icon:${u.icon},username:${u.username},password:${u.password},age:${u.age},id:${u.id}`
-                console.log('userStringObject')
-                console.log(userStringObject)
-                // console.log('updatedUserObject')
-                // console.log(updatedUserObject)
 
                 await localStorage.setItem("user", userStringObject)
 
@@ -258,6 +263,7 @@ import $ from 'jquery'
                     console.log('updatedUserStrObj')
                     console.log(updatedUserStrObj)
                 }, 2000)
+
                 // await timer()
 
                 // localStorage.setItem("user", {updatedUserObject})
@@ -484,6 +490,7 @@ import $ from 'jquery'
 
 const mapStateToProps = (state:any) => ({
     LOGIN_SIGNUP_BTN: state.LOGIN_SIGNUP_BTN,
+    LOG_IN_OUT_FLASH_MSG: state.LOG_IN_OUT_FLASH_MSG,
     DISPLAY_FORM: state.DISPLAY_FORM,
     USERNAME_INPUT: state.USERNAME_INPUT,
     EMAIL_INPUT: state.EMAIL_INPUT,
@@ -509,6 +516,7 @@ const mapStateToProps = (state:any) => ({
 
 const mapDispatchToProps = (dispatch:any) => ({
     TOGGLE_LOGIN_SIGNUP_BTN: () => dispatch(TOGGLE_LOGIN_SIGNUP_BTN()),
+    SET_LOG_IN_OUT_FLASH_MSG: (action:any) => dispatch(SET_LOG_IN_OUT_FLASH_MSG(action)),
     TOGGLE_SHOW_FORM: (action:any) => dispatch(TOGGLE_SHOW_FORM(action)),
     SET_PASSWORD_INPUT: (action:any) => dispatch(SET_PASSWORD_INPUT(action)),
     TOGGLE_PASSWORD_SHOW: () => dispatch(TOGGLE_PASSWORD_SHOW()),
