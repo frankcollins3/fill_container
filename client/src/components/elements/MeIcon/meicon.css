@@ -1,9 +1,57 @@
+* {
+    text-align: center;
+}
+
 .MeIcon-Container {
     display: grid;
-    border: 20px dashed dodgerblue;
+    justify-content: space-between; /* Add this line */
+    align-items: center;
+    grid-template-columns: 1fr 1fr;
     justify-content: center;
     align-items: center;
-    grid-area: 
-        "center"
-    ;
-}
+    background-color: #dedede70;
+    /* border: 1px dashed #72d3fe; */
+    min-height: 50vh;
+    min-width: 50vw;
+    padding: 0.5em 0.5em;
+    grid-gap: 0.5em;
+    /* width: 100%; */
+    /* grid-gap: 10em; */
+  }
+
+  .MeIcon-Container :nth-child(-n+2):hover { border: 1px dashed #73defe; }
+  
+  .Cont {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    margin: 0 1em;
+    /* border: 1px dashed #73defe; */
+    min-height: 50vh;
+  }
+  
+  .Left-Cont {
+
+    
+  }
+  
+  /* .Right-Cont {
+    height: 500px;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-gap: 1em;
+  } */
+
+  .Right-Cont {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-gap: 1em;
+  }
+
+
+img { height: 50px; width: 50px; border: none; }
+
+img:hover { border: 1px dashed #73defe }
