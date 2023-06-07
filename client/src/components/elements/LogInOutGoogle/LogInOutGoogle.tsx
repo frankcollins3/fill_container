@@ -222,8 +222,29 @@ import $ from 'jquery'
 
 
             const linkGoogleReject = () => {
-                console.log("hey thats cute")
-                // start the icons so a user can pick a picture.
+                const urlPROMISE = new Promise((resolve, reject) => {
+                    let localURL = allDBurl()
+                    resolve(localURL)
+                    reject([])
+                })
+//  client/utility/fetch/userSignup --------> redux state holds the USERNAME_INPUT, AGE_INPUT etc -------->  func toggle redux state: <GoogleLogin> to appear ----> onSuccess={onLinkSuccess} which were in now.
+                urlPROMISE.then( (urldata:any) => {
+                    let localNODE_ENV = urldata.ENVdata.data.ENV.NODE_ENV                    
+                    const saveUserPROMISE = new Promise( (resolve, reject) => {
+                        let userSignupURL = urldata.userSignupURL
+                        resolve(userSignup({ googleId: '', icon: '', username: USERNAME_INPUT, email: EMAIL_INPUT, password: PASSWORD_INPUT, age: AGE_INPUT }, localNODE_ENV))
+                        reject([])
+                    })
+                    saveUserPROMISE.then(async(userdata:any) => {                         
+                        // UPDATE TO        G       O       O       G       L       E               !!!!!!!!!!!!!!!!!!!
+                        TOGGLE_NO_LINK_GOOGLE_BTN_CLICK()
+                        setTimeout( () => {
+                            lazyJQanimate($('#link-google'), 'link-google')     
+                            lazyJQanimate($('#googleconfirmation'), 'googleconfirmation')                            
+                            lazyJQanimate('#googlereject', 'googlereject')      
+                        })
+                    })
+                })
                 // SET_STATE all the inputs GraphQL save to database.
                 // navigate to the next page 
                 TOGGLE_ICON_NOT_INPUT()
@@ -273,13 +294,6 @@ import $ from 'jquery'
                     console.log(updatedUserStrObj)
                 }, 2000)
 
-                // await timer()
-
-                // localStorage.setItem("user", {updatedUserObject})
-
-                    
-                // MeIcon | redux_state doesn't persist |          
-                // let action = { PAYLOAD: googleImgUrl}
             }
 
             //  linkGoogleConfirm is the signup function
