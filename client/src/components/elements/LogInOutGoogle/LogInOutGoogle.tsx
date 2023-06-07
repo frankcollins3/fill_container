@@ -16,6 +16,7 @@ import CSS from '../../../utility/CSS'
 import RegexBank from '../../../utility/RegexBank'
 import deathCertificate from '../../../utility/deathCertificate'
 import isItDeadYet from '../../../utility/isItDeadYet'
+import lazyJQanimate from '../../../utility/lazyJQanimate'
 import userSignup from '../../../utility/fetch/userSignup'
 import linkUserWithGoogle from '../../../utility/fetch/linkUserWithGoogle'
 // import ghostText from '../../../utility/GhostText'
@@ -281,9 +282,8 @@ import $ from 'jquery'
                 // let action = { PAYLOAD: googleImgUrl}
             }
 
+            //  linkGoogleConfirm is the signup function
             const linkGoogleConfirm = async () => {                
-
-                console.log('linkGoogleConfirm Click!')
                 const urlPROMISE = new Promise((resolve, reject) => {
                     let localURL = allDBurl()
                     resolve(localURL)
@@ -294,18 +294,17 @@ import $ from 'jquery'
                     let localNODE_ENV = urldata.ENVdata.data.ENV.NODE_ENV                    
                     const saveUserPROMISE = new Promise( (resolve, reject) => {
                         let userSignupURL = urldata.userSignupURL
-                        //  resolve(fetch(userSignupURL))        
-                        // userSignup ------> src/utility/userSignup ----------->
-
-
                         resolve(userSignup({ googleId: '', icon: '', username: USERNAME_INPUT, email: EMAIL_INPUT, password: PASSWORD_INPUT, age: AGE_INPUT }, localNODE_ENV))
-                        // resolve(userSignup({id:1, googleId: 'noG', icon: 'iconic.png', username: 'nameuser', email: 'me@me.com', password: 'pw', age: 88 }, localNODE_ENV))
                         reject([])
                     })
                     saveUserPROMISE.then(async(userdata:any) => {                         
                         // UPDATE TO        G       O       O       G       L       E               !!!!!!!!!!!!!!!!!!!
                         TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()
-  
+                        setTimeout( () => {
+                            lazyJQanimate($('#link-google'), 'link-google')     
+                            lazyJQanimate($('#googleconfirmation'), 'googleconfirmation')                            
+                            lazyJQanimate('#googlereject', 'googlereject')      
+                        })
                     })
                 })
             }
@@ -431,7 +430,7 @@ import $ from 'jquery'
                 <div id="google-link-btn" className={googleLinkBtnClass}>
                 
                 <div className="column">
-                <img onClick={linkGoogleReject} className="close-confirm-btn" onMouseEnter={noLinkGoogleHoverToggleDrop} onMouseLeave={noLinkGoogleHoverToggleDrop} src="/water_img/close.png"/>
+                <img id="googlereject" onClick={linkGoogleReject} className="close-confirm-btn" onMouseEnter={noLinkGoogleHoverToggleDrop} onMouseLeave={noLinkGoogleHoverToggleDrop} src="/water_img/close.png"/>
 
                 <div                  
                  id="NoLinkGoogleBtn" className="row">
@@ -448,7 +447,7 @@ import $ from 'jquery'
                 </div>
 
                 <div className="column">
-                <img onClick={linkGoogleConfirm} onMouseEnter={yesLinkGoogleHoverToggleDrop} onMouseLeave={yesLinkGoogleHoverToggleDrop} src="/water_img/confirmation.png"/>
+                <img id="googleconfirmation" onClick={linkGoogleConfirm} onMouseEnter={yesLinkGoogleHoverToggleDrop} onMouseLeave={yesLinkGoogleHoverToggleDrop} src="/water_img/confirmation.png"/>
                 <div className="row">
                 <pre id={ YES_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "poppinsLight"} style={{ color: YES_LINK_GOOGLE_BTN_HOVER ? "silver" : "", fontWeight: YES_LINK_GOOGLE_BTN_HOVER ? "bolder" : "normal" }}> sign </pre>
                 <pre id={ YES_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "poppinsLight"} style={{ color: YES_LINK_GOOGLE_BTN_HOVER ? "silver" : "", fontWeight: YES_LINK_GOOGLE_BTN_HOVER ? "bolder" : "normal" }}> up </pre>
