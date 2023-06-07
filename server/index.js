@@ -398,6 +398,7 @@ const RootQueryType = new GraphQLObjectType({
       let iconGIDconcat = `${googleId}///${icon}`
       let allusers = await prisma.users.findMany()    
       let me = allusers.filter(user => user.username === username)
+      
       let myid = me[0].id  
         
       let encodePromise = new Promise( (resolve, reject) => {
@@ -409,6 +410,9 @@ const RootQueryType = new GraphQLObjectType({
       })
       return encodePromise
       .then(async(encoded) => {
+        let alreadyUsedGoogleId = allusers.some(user => user.googleId === googleId)
+        let alreadyUsedGoogleIcon = allusers.some(user => user.icon === icon)
+        
 
         return await prisma.users.update({
         // const updateUser = await prisma.users.update({
@@ -416,8 +420,8 @@ const RootQueryType = new GraphQLObjectType({
             id: myid
           },
           data: {          
-            google_id: googleId,          // access .map() ----> let argsArray = [googleId, icon]   [0] = googleId  [1] = icon
-            icon: icon
+            google_id: alreadyUsedGoogleId ? googleId : 'Google Id already linked Up!',          // access .map() ----> let argsArray = [googleId, icon]   [0] = googleId  [1] = icon
+            icon: alreadyUsedGoogleIcon ? icon : "Good icon is used for another account",
           },
         }).then( (updatedUser) => {        
           const u = updatedUser
