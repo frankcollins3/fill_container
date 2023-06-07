@@ -15,6 +15,7 @@ import CSS from '../../../utility/CSS'
 import deathCertificate from '../../../utility/deathCertificate'
 import isItDeadYet from '../../../utility/isItDeadYet'
 import userSignup from '../../../utility/fetch/userSignup'
+import linkUserWithGoogle from '../../../utility/fetch/linkUserWithGoogle'
 // import ghostText from '../../../utility/GhostText'
 
 // components
@@ -63,21 +64,6 @@ import $ from 'jquery'
         // change the form in the middle to be the login user button. 
     }
 
-    const onLinkSuccess = async (res:any) => {
-        console.log('res from onLinkSuccess')
-        console.log(res)
-        let googleProfile:any = res.profileObj
-        console.log(res.profileObj) 
-        let googleImgUrl:string = googleProfile.imageUrl
-
-        deathCertificate('googleImgUrl', googleImgUrl, 1, false)
-        
-        // MeIcon | redux_state doesn't persist |  
-
-        // let action = { PAYLOAD: googleImgUrl}
-        SET_GOOGLE_IMG_URL({ payload: googleImgUrl })
-    }
-
     const remove = async () => {
         let myitem = await isItDeadYet('googleImgUrl')        
         console.log('myitem')
@@ -113,14 +99,9 @@ import $ from 'jquery'
           $('.submit-faucet').on('mouseleave', (event) => {
             CSS($('*'), 'cursor', `url('/water_img/mouse_droplet.png'), auto`)           
           })
-          
-        
-        //   SET_ALL_USERS( {payload: allUsersData })
+                  
           SET_ALL_USERNAMES( {payload: allUsernames })
-          SET_ALL_EMAILS( { payload: allEmails })
-            
-        //   SET_ALL_USERS( {payload: allUsersData })
-                
+          SET_ALL_EMAILS( { payload: allEmails })                            
           clientId = env.GOOGLE_ID
                 function start() {
             gapi.client.init({
@@ -132,21 +113,13 @@ import $ from 'jquery'
         const loadgoogle = () => { gapi.load('client:auth2', start) }
         loadgoogle()
         })()
-
-        
       }, [])
-
-    // console.log(user.user.GOOGLE_ID)
 
     let InOutGoogleFunction:any;
 
     const showHideLoginSignupBtn = () => {        
-        // robust code
         TOGGLE_LOGIN_SIGNUP_BTN()
-        // if (!LOGIN_SIGNUP_BTN) TOGGLE_LOGIN_SIGNUP_BTN()        
-        // TOGGLE_LOGIN_SIGNUP_BTN()
         if (DISPLAY_FORM !== "login" || DISPLAY_FORM !== "signup") TOGGLE_SHOW_FORM({payload: ""})
-
         if (DISPLAY_FORM === "login" || DISPLAY_FORM === "signup" && LOGIN_SIGNUP_BTN) {
             console.log("weve gottem both at the same time.")
         }
@@ -182,9 +155,7 @@ import $ from 'jquery'
 
         let usernameinputLength:number = USERNAME_INPUT.length
 
-        
         const checkinputs = () => {
-
             if (allUsernames.includes(USERNAME_INPUT)) {
                 username_good = !username_good; // toggle state 
                 return 'username already exists'
@@ -198,22 +169,16 @@ import $ from 'jquery'
             }
     
             if (EMAIL_INPUT.includes('@')) {
-                console.log("email good with @")
                 if (EMAIL_INPUT.replace(/^.*\.(.*)$/, '$1') === "com" || EMAIL_INPUT.replace(/^.*\.(.*)$/, '$1') === "net" || EMAIL_INPUT.replace(/^.*\.(.*)$/, '$1') === "org" ) {
-                    console.log('good with .net .com')
                 } else {
-                    console.log("email good with @ but failed with .com .net .org etc")
                     email_good = false
                 }
-                // EMAIL_INPUT.replace(/^.*\.(.*)$/, '$1') === "com" || EMAIL_INPUT.replace(/^.*\.(.*)$/, '$1') === "net" || EMAIL_INPUT.replace(/^.*\.(.*)$/, '$1') === "org"
             } else {
-                console.log("email failed")
                 email_good = false
             }
     
             if (/[\!@#$%^&*\(\)]/.test(PASSWORD_INPUT)) {
                 if (/[A-Z]/.test(PASSWORD_INPUT) && /[0-9]/.test(PASSWORD_INPUT)) {
-                    console.log("nice the password input works.")
                 } else {
                     password_good = false
                 }
@@ -222,12 +187,9 @@ import $ from 'jquery'
             }
     
             if (parseInt(AGE_INPUT) > 10) {
-                console.log("age is good older than 10")
             } else {
                 if (PARENT_CONFIRM) {
-                    console.log("age is less than 10 but PARENT CONFIRM")
                 } else {
-                    console.log("age failed")
                     age_good = false
                 }
             }
@@ -243,18 +205,8 @@ import $ from 'jquery'
         inputCheckingPromise
         .then( () => {
             if (username_good === true && email_good === true && password_good === true && age_good === true) {
-                // CREATE USER DONE OVER HERE! GraphQL + new Promise() & fetch() to save to postgres DB && SET_CURRENT_USER to save the user to redux state so components can do ---> CURRENT_USER ? ternary rendering. 
-                // if (username_good && email_good && password_good && age_good) {
-                console.log("all_good")
-
-                // this hides the form and hand.png && googleButton.png and proceeds to ask user if they want to link their google account.
                 TOGGLE_SUBMIT_INPUT_DATA()
-                // let CURRENT_USER_OBJECT = { id: 0, username: USERNAME_INPUT, email: EMAIL_INPUT, age: AGE_INPUT }
                 SET_CURRENT_USER( {payload: {id: 0, googleId: '', username: USERNAME_INPUT, email: EMAIL_INPUT, age: AGE_INPUT }})
-                // this toggle google acct screen button changes the navbar elements to be [ G o o gl e ] letters. 
-                // TOGGLE_GOOGLE_LINK_ACCT_SCREEN()
-
-            //     console.log("all_good")
             } else {
                 return 
             }
@@ -264,6 +216,8 @@ import $ from 'jquery'
             const noLinkGoogleHoverToggleDrop = () => { TOGGLE_NO_LINK_GOOGLE_BTN_HOVER() }
             const yesLinkGoogleHoverToggleDrop = () => { TOGGLE_YES_LINK_GOOGLE_BTN_HOVER() }
 
+
+
             const linkGoogleReject = () => {
                 console.log("hey thats cute")
                 // start the icons so a user can pick a picture.
@@ -272,14 +226,37 @@ import $ from 'jquery'
                 TOGGLE_ICON_NOT_INPUT()
             }
 
+            const onLinkSuccess = async (res:any) => {
+                console.log('res from onLinkSuccess')
+                console.log(res)
+                let googleProfile:any = res.profileObj
+                console.log(res.profileObj) 
+                let googleImgUrl:string = googleProfile.imageUrl
+                let googleId:string = googleProfile.googleId
+        
+                deathCertificate('googleImgUrl', googleImgUrl, 1, false)
+                SET_GOOGLE_IMG_URL({ payload: googleImgUrl })
+
+                let userUpdatedWithGoogle = await linkUserWithGoogle(USERNAME_INPUT, googleId, googleImgUrl)
+                console.log('userUpdatedWithGoogle')
+                console.log(userUpdatedWithGoogle)
+
+                    
+                // MeIcon | redux_state doesn't persist |          
+                // let action = { PAYLOAD: googleImgUrl}
+            }
+
             const linkGoogleConfirm = async () => {
+                console.log('USERNAME_INPUT')
+                console.log(USERNAME_INPUT)
+
                 console.log('linkGoogleConfirm Click!')
                 const urlPROMISE = new Promise((resolve, reject) => {
                     let localURL = allDBurl()
                     resolve(localURL)
                     reject([])
                 })
-                
+//  client/utility/fetch/userSignup --------> redux state holds the USERNAME_INPUT, AGE_INPUT etc -------->  func toggle redux state: <GoogleLogin> to appear ----> onSuccess={onLinkSuccess} which were in now.
                 urlPROMISE.then( (urldata:any) => {
                     let localNODE_ENV = urldata.ENVdata.data.ENV.NODE_ENV                    
                     const saveUserPROMISE = new Promise( (resolve, reject) => {
@@ -291,7 +268,7 @@ import $ from 'jquery'
                         reject([])
                     })
                     saveUserPROMISE.then(async(userdata:any) => {                         
-                    
+                        // UPDATE TO        G       O       O       G       L       E               !!!!!!!!!!!!!!!!!!!
                         TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()
                     })
                 })
@@ -304,12 +281,8 @@ import $ from 'jquery'
 
 
             return (
-                <div className="login-container">                                        
-                    {
-
-                    }
-                    
-                        <img onClick={showHideLoginSignupBtn} style={{ border: 'none', display: SUBMIT_INPUT_DATA ? "none" : "" }} src="/water_img/hand.png"/>                
+                <div className="login-container">                                                                    
+                        <img onClick={showHideLoginSignupBtn} style={{ cursor: 'pointer', border: 'none', display: SUBMIT_INPUT_DATA ? "none" : "" }} src="/water_img/hand.png"/>                
                 {/* // clientId: clientId || '569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com', */}            
     <img onClick={submitFaucetClick} style={{ transform: 'scale(0.50)', display: SUBMIT_INPUT_DATA ? "none" : "" }} className="submit-faucet" src={"/water_img/faucet.png"}/>
 
