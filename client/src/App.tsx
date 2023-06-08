@@ -1,7 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
-import React from "react"
-import {useState, useEffect, useContext, createContext } from 'react';
+import React, {useState, useEffect, useContext, createContext, ReactNode } from "react"
 import { connect, Provider, useDispatch } from "react-redux"
 
 import $ from 'jquery'
@@ -21,7 +20,10 @@ import Dashboard from './components/elements/Dashboard/Dashboard'
 import ConnectedCredits from './components/elements/Credits/Credits.tsx'
 import ConnectedLogInOutGoogle from './components/elements/LogInOutGoogle/LogInOutGoogle'
 import ConnectedMeIcon from './components/elements/MeIcon/'
+import ConnectedLetterLifth1 from './components/elements/LetterLifth1/'
 import HomeTS from './components/webpage/home/homeTS'
+import {ImgProvider} from './utility/ImgContext'
+
 
 // <GoogleLogin> and googleAPI components and variables.
 import {GoogleLogin, GoogleLogout} from 'react-google-login'
@@ -34,6 +36,19 @@ import store from './redux/store'
 function App( props:any ) {
   const dispatch = useDispatch()
   setCursor($('*'))   
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -87,8 +102,8 @@ function App( props:any ) {
     {/* <Route path={'/settings'} element={ < Settings /> } /> */}
     {/*   settings needs redux state. [ SETTINGS_DISPLAY | TOGGLE_SETTINGS_DISPLAY ]   */}
     
-    {/* <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedLogInOutGoogle/> : <ConnectedMeIcon googleImageUrl={GOOGLE_IMAGE_URL}/>  } /> */}
-    <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedMeIcon /> : <ConnectedLogInOutGoogle/>  } />
+    <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedLogInOutGoogle/> : <ConnectedMeIcon googleImageUrl={GOOGLE_IMAGE_URL}/>  } />
+    {/* <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedMeIcon /> : <ConnectedLogInOutGoogle/>  } /> */}
     <Route path={'/dashboard'} element={ < Dashboard /> } />
     </Routes>
     </Router>  
@@ -100,6 +115,7 @@ function App( props:any ) {
 
   return (
     // <GoogleUserContext.Provider value={googleUser} >
+    <ImgProvider>
     <div className="App">
       <div className="navbar">              
         <Navbar />
@@ -113,12 +129,13 @@ function App( props:any ) {
         style={{  
           color: LOG_IN_OUT_FLASH_MSG ? 'silver' : '#73defe', fontSize: LOG_IN_OUT_FLASH_MSG ? '13px' : '32px', fontFamily: LOG_IN_OUT_FLASH_MSG ? 'Poppins' : 'Moon Dance',
           letterSpacing: LOG_IN_OUT_FLASH_MSG ? '0.25em' : '1.175em',
-      }}>
+        }}>
         </h1>
         {/* className="lifewater"> {ICON_NOT_INPUT ? "Water You?" : LOG_IN_OUT_FLASH_MSG ? LOG_IN_OUT_FLASH_MSG : FLIP_FLOP_ICON ? "Water Thoughs" : 'Water is Life' } </h1> */}
         <ConnectedCredits  />    
       </div>
     </div>
+    </ImgProvider>
     // </GoogleUserContext.Provider>
   );
 }
