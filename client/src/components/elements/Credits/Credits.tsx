@@ -1,13 +1,22 @@
 import React from 'react';
 import './credits.css';
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
+
+import {TOGGLE_FLIP_FLOP_ICON} from "../../../redux/actions"
 
   function Credits( props: any ) {
 
-  const { FLIP_FLOP_ICON, ICON_NOT_INPUT } = props
+  const {
+    FLIP_FLOP_ICON, ICON_NOT_INPUT,
+    TOGGLE_FLIP_FLOP_ICON
+  } = props
 
   console.log(FLIP_FLOP_ICON)
   console.log(ICON_NOT_INPUT)
+
+  const stateToggle = () => {
+    TOGGLE_FLIP_FLOP_ICON()
+  }
 
   const RenderCredits = () => {
 
@@ -22,8 +31,9 @@ import { connect } from 'react-redux'
           </a> */}
             
             {
-          window.location.pathname === "/loginoutgoogle" ? (
-            <img src="/water_img/sandals.png" />
+          window.location.pathname === "/loginoutgoogle" && ICON_NOT_INPUT ? (
+            <img style={ { opacity: FLIP_FLOP_ICON ? "1.0" : "0.333"}}
+            onClick={stateToggle} src="/water_img/sandals.png" />
           ) : (
             <div></div>
           )
@@ -52,7 +62,11 @@ import { connect } from 'react-redux'
     ICON_NOT_INPUT: state.ICON_NOT_INPUT
 })
 
+  const mapDispatchToProps = (dispatch:any) => ({
+    TOGGLE_FLIP_FLOP_ICON: () => dispatch(TOGGLE_FLIP_FLOP_ICON())
+  })
+
    
-  const ConnectedCredits = connect(mapStateToProps)(Credits)
+  const ConnectedCredits = connect(mapStateToProps,mapDispatchToProps)(Credits)
 
   export default ConnectedCredits
