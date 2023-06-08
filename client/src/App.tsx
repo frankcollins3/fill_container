@@ -18,7 +18,7 @@ import waterIntakeWeightFormula from './utility/waterIntakeWeightFormula'
 // * components from src/components *
 import Navbar from './components/elements/Navbar'
 import Dashboard from './components/elements/Dashboard/Dashboard'
-import Credits from './components/elements/Credits/Credits'
+import ConnectedCredits from './components/elements/Credits/Credits.tsx'
 import ConnectedLogInOutGoogle from './components/elements/LogInOutGoogle/LogInOutGoogle'
 import ConnectedMeIcon from './components/elements/MeIcon/'
 import HomeTS from './components/webpage/home/homeTS'
@@ -38,8 +38,8 @@ function App( props:any ) {
 
 
   const { 
-    HYDRO_SETTINGS, LOG_IN_OUT_TYPE, CURRENT_USER, GOOGLE_IMAGE_URL, ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG,          // state from mapStateToProps above the export app statement.
-    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_LOG_IN_OUT_FLASH_MSG
+    HYDRO_SETTINGS, LOG_IN_OUT_TYPE, CURRENT_USER, GOOGLE_IMAGE_URL, ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG, FLIP_FLOP_ICON,       // state from mapStateToProps above the export app statement.
+    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_LOG_IN_OUT_FLASH_MSG, 
   } = props    // object destructuring props haven't done this before.
 
   let env:any;
@@ -103,18 +103,20 @@ function App( props:any ) {
     <div className="App">
       <div className="navbar">              
         <Navbar />
-        <h1 
-        style={{  
-          color: LOG_IN_OUT_FLASH_MSG ? 'silver' : '#73defe', fontSize: LOG_IN_OUT_FLASH_MSG ? '13px' : '32px', fontFamily: LOG_IN_OUT_FLASH_MSG ? 'Poppins' : 'Moon Dance',
-          letterSpacing: LOG_IN_OUT_FLASH_MSG ? '0.25em' : '1.175em',
-      }}
-        className="lifewater"> {ICON_NOT_INPUT ? "Water You?" : LOG_IN_OUT_FLASH_MSG ? LOG_IN_OUT_FLASH_MSG : 'Water is Life' } </h1>
+        <h1 className="lifewater" dangerouslySetInnerHTML={{ __html: CURRENT_USER.username  ? `${CURRENT_USER.username}<br> is Water` : "Life is Water" }}></h1>          
         {/* water you during the selection of these elements */}
       </div>
         {renderApp()}
-      <div className="credits">                
-         <h1 className="lifewater" dangerouslySetInnerHTML={{ __html: CURRENT_USER.username  ? `${CURRENT_USER.username}<br> is Water` : "Life is Water" }}></h1>
-        <Credits />    
+      <div className="credits" >              
+        <h1 className="lifewater" dangerouslySetInnerHTML={{ __html: ICON_NOT_INPUT && FLIP_FLOP_ICON ? "Water <br> You" : LOG_IN_OUT_FLASH_MSG ? LOG_IN_OUT_FLASH_MSG : 'Water is Life' }}        
+        // <h1 className="lifewater" dangerouslySetInnerHTML={{ __html: ICON_NOT_INPUT && FLIP_FLOP_ICON ? "Water You?<br>Water Thoughs" : LOG_IN_OUT_FLASH_MSG ? LOG_IN_OUT_FLASH_MSG : 'Water is Life' }}        
+        style={{  
+          color: LOG_IN_OUT_FLASH_MSG ? 'silver' : '#73defe', fontSize: LOG_IN_OUT_FLASH_MSG ? '13px' : '32px', fontFamily: LOG_IN_OUT_FLASH_MSG ? 'Poppins' : 'Moon Dance',
+          letterSpacing: LOG_IN_OUT_FLASH_MSG ? '0.25em' : '1.175em',
+      }}>
+        </h1>
+        {/* className="lifewater"> {ICON_NOT_INPUT ? "Water You?" : LOG_IN_OUT_FLASH_MSG ? LOG_IN_OUT_FLASH_MSG : FLIP_FLOP_ICON ? "Water Thoughs" : 'Water is Life' } </h1> */}
+        <ConnectedCredits  />    
       </div>
     </div>
     // </GoogleUserContext.Provider>
@@ -133,8 +135,12 @@ const mapStateToProps = (state:any) => ({
     HYDRO_SETTINGS: state.HYDRO_SETTINGS,
 
     CURRENT_USER: state.CURRENT_USER,
+    GOOGLE_IMAGE_URL: state.GOOGLE_IMAGE_URL,
+
     ICON_NOT_INPUT: state.ICON_NOT_INPUT,
-    GOOGLE_IMAGE_URL: state.GOOGLE_IMAGE_URL
+    FLIP_FLOP_ICON: state.FLIP_FLOP_ICON
+
+
 });
 
 // global redux actions. these are the state-mutating actions being mapped to props
