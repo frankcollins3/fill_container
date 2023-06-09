@@ -206,7 +206,7 @@ const SettingsType = new GraphQLObjectType({
           DATABASE_URL: { type: new GraphQLNonNull(GraphQLString) },          
           API: { type: new GraphQLNonNull(GraphQLString) },
           NODE_ENV: { type: GraphQLString },
-          GOOGLE_ID: { type: GraphQLString },
+        GOOGLE_ID: { type: GraphQLString },
           // EUSER: { type: GraphQLString }
           // EUSER: { id, googleId, username, password, email, age }
         })})
@@ -219,10 +219,14 @@ const RootQueryType = new GraphQLObjectType({
       type: GraphQLString,
       description: 'Invoke Puppeteer',
       args: {
-        searchTerm: { type: GraphQLString }
+        searchTerm: { type: GraphQLString },
+        // backupArr: { type: new GraphQLList(GraphQLString) }
       },
-      resolve: async (parent, args) => {        
-        const { searchTerm } = args
+      resolve: async (parent, args) => {
+        const { searchTerm, } = args;
+        const backupArr = ['/water_img/water-park.png', '/water_img/manta-ray.png', '/water_img/aqua-jogging.png', '/water_img/whale.png'];
+        let randomValue = backupArr[Math.floor(Math.random() * backupArr.length )]        
+        
 
         const browser = await puppeteer.launch({headless: true});
         const page = await browser.newPage();
@@ -240,50 +244,12 @@ const RootQueryType = new GraphQLObjectType({
           const image = document.querySelector('.rg_i');
           const url = image.getAttribute('data-src') || image.getAttribute('src');
           
-          return url;
+          return url || randomvalue
         });
         
-        await browser.close();
-
-
-        // let { searchTerm } = args;
-        // return searchTerm
-        // return searchTerm
+        // await browser.close();
       }
     },
-  //   puppeteer: {
-  //     type: GraphQLString,    
-  //     // type: new GraphQLList(GraphQLString),    
-  //     description: 'Invoke Puppeteer',
-  //     args:  {
-  //       searchTerm: GraphQLString
-  //     },  
-  //     resolve: async (parent, args) => {
-  //       let { searchTerm } = args;
-
-  //       const puppeteer = require('puppeteer');
-
-  //     async function fetchImage(searchTerm) {
-  //       const browser = await puppeteer.launch({headless: false});
-  //       const page = await browser.newPage();
-        
-  //       // Navigate to Google Images
-  //       await page.goto(`https://www.google.com/search?q=${encodeURIComponent(searchTerm)}&tbm=isch`);
-  //       // const response = await axios.post('http://localhost:5000/pokemon?query={allDataAllPokemon(id:103){name,poke_id,type,moves,abilities}}');
-        
-  //       // Wait for the images to load
-  //       await page.waitForSelector('.rg_i');
-
-  //       // Evaluate the page and extract the first image URL
-  //       return imageUrl = await page.evaluate(() => {
-  //         const image = document.querySelector('.rg_i');
-  //         const url = image.getAttribute('data-src') || image.getAttribute('src');
-          
-  //         return url;
-  //       });
-  //     }
-  //   }
-  // },   
     ENV: {      
       type: EnvType,
       description: 'List of Env Variables',
