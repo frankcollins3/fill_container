@@ -54,8 +54,7 @@ const initialState = {
     INPUT_DBL_CLICK: false,
     SUBMIT_INPUT_DATA: false,     // form data complete, validated in LoginoutGoogle.tsx with $('.submit-faucet).click()4
     GOOGLE_LINK_ACCT_SCREEN: false,
-    ICON_NOT_INPUT: false,
-
+    
     // signup state related 
     
     // link google account state;
@@ -63,12 +62,12 @@ const initialState = {
     YES_LINK_GOOGLE_BTN_HOVER: false,
     LINK_GOOGLE_BTN_CLICK: false,
     NO_LINK_GOOGLE_CLICK: false,
-
-    // link google account state;
-
-
-    // user related redux state
-
+        
+    // icons  
+    ICON_NOT_INPUT: false,  // this is kind of login it is the boolean that decides if the  <Route element={} will be the <ConnectedLogInOutGoogle> or the <ConnectedMeIcon>
+    FLIP_FLOP_ICON: false,
+    SPIN_BOTTLE_IMG: '',
+    SPIN_BOTTLE_SEARCHING: false,
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -263,6 +262,23 @@ const initialState = {
         return {
           ...state,
           ICON_NOT_INPUT: !state.ICON_NOT_INPUT
+        }
+
+      case "TOGGLE_FLIP_FLOP_ICON":
+        return {
+          ...state,
+          FLIP_FLOP_ICON: !state.FLIP_FLOP_ICON
+        }
+
+      case "SET_SPIN_BOTTLE_IMG":
+        return {
+          ...state,
+          SPIN_BOTTLE_IMG: action.payload
+        }
+      case "TOGGLE_SPIN_BOTTLE_SEARCHING":
+        return {
+          ...state,
+          SPIN_BOTTLE_SEARCHING: !state.SPIN_BOTTLE_SEARCHING
         }
         
 
