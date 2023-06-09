@@ -6,10 +6,12 @@ import $ from 'jquery'
 
 import CSS from '../../../utility/CSS'
 import PromiseFunc from '../../../utility/PromiseFunc'
-import allUrl from '../../../utility/fetch/allDBurl'
+import MathRandom from '../../../utility/MathRandom'
 import Boop from '../../../utility/ParentchildParent/Boop'
 import {useImage} from '../../../utility/ImgContext'
 import linkUserWithGoogle from '../../../utility/fetch/linkUserWithGoogle'
+
+import allUrl from '../../../utility/fetch/allDBurl'
 
 import { TOGGLE_HYDRO_SETTINGS, SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING } from '../../../redux/actions'
 import ConnectedSignupLoginChecker from '../SignupLoginChecker';
@@ -28,8 +30,10 @@ import ConnectedSignupLoginChecker from '../SignupLoginChecker';
 
    const { 
     waterPark, mantaRay, aquaJogging, whale,
-     msgBottle, smallDroplet, home, exit, statistics, settings, 
+    msgBottle, smallDroplet, home, exit, statistics, settings, mouseWaterCup, cup, drink, bottle, bottles,
   } = useImage()
+
+
 
   // let navbardropletJQ = $('.navbar-droplet')
   // let msgbottleJQ = $('.msg-bottle')
@@ -112,37 +116,74 @@ const homeclick = () => { window.location.href = "/"}
     // const predata = await fetch(`http://localhost:5000/fill_cont?query={userSignup{id,googleId,icon,username,email,age}}`)
   }
 
-  const test2 = async () => {
-    console.log("dont be silly")
-    const predata = await fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"water")}`)
-    let data = await predata.json()
-    let puppetImage = data.data.puppeteer
-    console.log('data')
-    console.log(data)
-    SET_SPIN_BOTTLE_IMG( { payload: puppetImage } )
+  const test2 = () => {
+    console.log('test2')
   }
 
     const testuser = { username: 'test', email: 'test', password: 'test', age: 'test', GOOGLE_ID: 'GOOGLE_ID' }
 
-    const spinbottlefunc = () => {
-        TOGGLE_SPIN_BOTTLE_SEARCHING()
+    const spinbottlefunc = async () => {
+          const loadingicons:string[] = [cup, drink, bottle, bottles, mouseWaterCup]
+          const randomIcon = MathRandom(loadingicons)
+          console.log('randomIcon')
+          console.log(randomIcon)          
+
+          let allURL = await allUrl()
+          let ENV = allURL.ENVdata.data.ENV
+          let API:string = ENV.API
+          let APIsplit = API.split('***')
+          let localAPI = APIsplit[0]
+          let prodAPI = APIsplit[1]
+
+          const PuppetPromise = new Promise( (resolve, reject) => {
+            let terms:string[] = ["ocean", "burger", "wendys", "burgerking", "water", "river", "seacreature", "fish"]
+            let randomTerm = MathRandom(terms)
+            console.log(randomTerm)
+              TOGGLE_SPIN_BOTTLE_SEARCHING()
+              resolve(fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"${randomTerm}")}`))    
+              reject(SET_SPIN_BOTTLE_IMG( { payload: randomIcon || '/water_img/squid.png' }))  
+          })
+          PuppetPromise.then(async (data:any) => {
+              if (data) {
+                data = await data.json()
+                console.log('data')
+                console.log(data)
+                let imgSrc:string = data.data.puppeteer
+                SET_SPIN_BOTTLE_IMG( { payload: imgSrc })
+                TOGGLE_SPIN_BOTTLE_SEARCHING()
+              } else {
+                TOGGLE_SPIN_BOTTLE_SEARCHING()
+                SET_SPIN_BOTTLE_IMG( { payload: "/water_img/bite.png"})
+              }
+          })
+          // const predata = await fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"${randomTerm}")}`)
+
+
+          // const predata = await fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"${randomTerm}")}`)
+          // let data = await predata.json()
+          // let puppetImage = data.data.puppeteer
+          // console.log('data')
+          // console.log(data)
+          // SET_SPIN_BOTTLE_IMG( { payload: puppetImage } )
+          
+                                                  
+
+      // TOGGLE_SPIN_BOTTLE_SEARCHING()
+      // console.log("dont be silly")
+      
+
+
+
     }
 
   return (
     <div className="navbar-container" 
-    // style={{
-    //   display: GOOGLE_LINK_ACCT_SCREEN ? "flex" : "",
-    //   flexDirection: GOOGLE_LINK_ACCT_SCREEN ? "row" : "row",
-    //   justifyContent: GOOGLE_LINK_ACCT_SCREEN ? "center" : "space-between",
-    //   alignItems: GOOGLE_LINK_ACCT_SCREEN ? "center" : "center"
-    // }}
     >
     <div className="logo">
     <img style={{ border: 'none' }} className={bothElemById} id="navbar-droplet" src={smallDroplet} />    
-
-
     
-    <img onClick={spinbottlefunc} className={pathname === "/loginoutgoogle" && !SPIN_BOTTLE_SEARCHING ? "msg-bottle-animation" : "" } style={{ border: 'none' }} id="msg-bottle"  src={msgBottle} />
+    <img onClick={spinbottlefunc} className={pathname === "/loginoutgoogle" && !SPIN_BOTTLE_SEARCHING ? "Msg-Bottle-Animation" :  "" } style={{ border: 'none' }} id="msg-bottle"  src={msgBottle} />
+    {/* <img onClick={spinbottlefunc} className={pathname === "/loginoutgoogle" && !SPIN_BOTTLE_SEARCHING ? "msg-bottle-animation" :  "msg-bottle-animation-slow" } style={{ border: 'none' }} id="msg-bottle"  src={msgBottle} /> */}
 
 
       <button onClick={test2} style={{ margin: '1em', backgroundColor: 'coral', border: 'salmon', transform: 'scale(2.0)' }}> </button> 
