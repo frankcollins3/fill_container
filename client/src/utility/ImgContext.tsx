@@ -199,10 +199,8 @@ export function ImgProvider({ children }: Props) {
     const [ink, setInk] = useState<string>(`${imagePrefix}ink.png`);
     const [inkBottle, setInkBottle] = useState<string>(`${imagePrefix}ink-bottle.png`);
     const [puppeteerSearchTerms, setPuppeteerSearchTerms] = useState<string[]>(["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark"])
-    // puppeteerSearchTerms: ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark"]
-    
-
-        // * user functionality ends above
+                
+    // * user functionality ends above
         
     const value = {
     gameOn,
@@ -273,7 +271,3 @@ export function ImgProvider({ children }: Props) {
         </>
     );
 }
-
-
-
-
