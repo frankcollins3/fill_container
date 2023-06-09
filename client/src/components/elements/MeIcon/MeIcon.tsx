@@ -4,6 +4,7 @@ import {useState, useEffect} from 'react'
 import "./meicon.css"
 import CSS from '../../../utility/CSS'
 import MathRandom from '../../../utility/MathRandom'
+import attributeJQ from '../../../utility/attributeJQ'
 import Boop from '../../../utility/ParentchildParent/Boop'
 import Boooooop from '../../../utility/ParentchildParent/Boooooop'
 import {useImage} from '../../../utility/ImgContext'
@@ -91,52 +92,52 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
       setMoveBoat(true) 
     }
 
-    const TextInput = (event:any) => {
-        TOGGLE_SPIN_BOTTLE_SHOW_INPUT()
-      let value:string = `lightblue${event.target.value}`
-      console.log('value')
-      console.log(value)
-      
-      const loadingicons:string[] = [cup, drink, bottle, bottles, mouseWaterCup]
-          const randomIcon = MathRandom(loadingicons)
-          console.log('randomIcon')
-          console.log(randomIcon)  
-          const PuppetPromise = new Promise( (resolve, reject) => {
-            let terms:string[] = ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark", ]
-            let randomTerm = MathRandom(terms)
-            console.log(randomTerm)
-              TOGGLE_SPIN_BOTTLE_SEARCHING()
-              resolve(fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"light-blue-${value}")}`))    
-              // resolve(fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"${MathRandom(puppeteerSearchTerms)}")}`))    
-              reject(SET_SPIN_BOTTLE_IMG( { payload: randomIcon || '/water_img/squid.png' }))  
-          })
-          PuppetPromise.then(async (data:any) => {
-              if (data) {
-                data = await data.json()
-                console.log('data')
-                console.log(data)
-                let imgSrc:string = data.data.puppeteer
-                SET_SPIN_BOTTLE_IMG( { payload: imgSrc })
-                TOGGLE_SPIN_BOTTLE_SEARCHING()
-              } else {
-                TOGGLE_SPIN_BOTTLE_SEARCHING()
-                SET_SPIN_BOTTLE_IMG( { payload: "/water_img/bite.png"})
-              }
-          })
-        }
+        const FakeClick = (event: any) => { 
+          let key: string = event.key;
+          console.log('key');
+          console.log(key);
+        
+          let value: string = event.target.value;
+          console.log('value');
+          console.log(value);
 
-        const FakeClick = (event:any) => { 
-          let key:string = event.key
-          console.log('key')
-          console.log(key)
+   
+                
+          if (key === 'Enter') {
+            
+            TOGGLE_SPIN_BOTTLE_SHOW_INPUT()
+            let value:string = `lightblue${event.target.value}`
+            console.log('value')
+            console.log(value)
+            
+            const loadingicons:string[] = [cup, drink, bottle, bottles, mouseWaterCup]
+                const randomIcon = MathRandom(loadingicons)
+                console.log('randomIcon')
+                console.log(randomIcon)  
+                const PuppetPromise = new Promise( (resolve, reject) => {
+                  let terms:string[] = ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark", ]
+                  let randomTerm = MathRandom(terms)
+                  console.log(randomTerm)
+                    TOGGLE_SPIN_BOTTLE_SEARCHING()
+                    resolve(fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"light-blue-${value}")}`))    
+                    // resolve(fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"${MathRandom(puppeteerSearchTerms)}")}`))    
+                    reject(SET_SPIN_BOTTLE_IMG( { payload: randomIcon || '/water_img/squid.png' }))  
+                })
+                PuppetPromise.then(async (data:any) => {
+                    if (data) {
+                      data = await data.json()
+                      console.log('data')
+                      console.log(data)
+                      let imgSrc:string = data.data.puppeteer
+                      SET_SPIN_BOTTLE_IMG( { payload: imgSrc })
+                      TOGGLE_SPIN_BOTTLE_SEARCHING()
+                    } else {
+                      TOGGLE_SPIN_BOTTLE_SEARCHING()
+                      SET_SPIN_BOTTLE_IMG( { payload: "/water_img/bite.png"})
+                    }
+                })
 
-          let value:string = event.target.value
-          console.log('value')
-          console.log(value)
 
-          if (event.target.value === 'Enter') {
-            console.log(`enter us hitting: ${value}`)
-            event.target.click() 
           }
         }
 
@@ -160,12 +161,12 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                     {
                           SPIN_BOTTLE_SHOW_INPUT 
                           ?
+                          <img className={ SPIN_BOTTLE_SEARCHING ? "Move-Boat" : '' } id="boat" style={{ position: 'relative', height: '10em', width: '10em' }} src={ boat || '/water_img/mouse_droplet.png'}/>
+                          :
                           <div className="column">
 
-                          <input id="PuppeteerSearch" onFocus={iFocus} onChange={FakeClick} onMouseEnter={FakeFocus} style={{ color: 'blanchedalmond' }} type="text"/>
+                          <input id="PuppeteerSearch" onFocus={iFocus} onKeyDown={FakeClick} onMouseEnter={FakeFocus} style={{ color: 'blanchedalmond' }} type="text"/>
                           </div>
-                          :
-                          <img className={ SPIN_BOTTLE_SEARCHING ? "Move-Boat" : '' } id="boat" style={{ position: 'relative', height: '10em', width: '10em' }} src={ boat || '/water_img/mouse_droplet.png'}/>
                           
                     }
 
