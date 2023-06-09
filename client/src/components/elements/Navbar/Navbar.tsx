@@ -26,7 +26,10 @@ import ConnectedSignupLoginChecker from '../SignupLoginChecker';
     TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING
    } = props
 
-   const { waterPark, msgBottle, smallDroplet, home, exit, statistics, settings, } = useImage()
+   const { 
+    waterPark, mantaRay, aquaJogging, whale,
+     msgBottle, smallDroplet, home, exit, statistics, settings, 
+  } = useImage()
 
   // let navbardropletJQ = $('.navbar-droplet')
   // let msgbottleJQ = $('.msg-bottle')
@@ -35,10 +38,7 @@ import ConnectedSignupLoginChecker from '../SignupLoginChecker';
   let location = window.location
   let href:string = location.href;
   let pathname:string = location.pathname;
-
-  console.log('pathname')
-  console.log(pathname)
-
+  
 
   let navbardropletJQ:any;
   let navbardropletID:string
@@ -113,27 +113,13 @@ const homeclick = () => { window.location.href = "/"}
   }
 
   const test2 = async () => {
-    // const iconFromStorage:any|undefined = localStorage.getItem('icon') !== undefined ? localStorage.getItem('icon') : ''
-    // let icon:string = 'icon'
-    // const iconFromStorage:any|undefined = localStorage.getItem('icon') 
-    // const failure = "-____-"    
-    // const retrieveIcon = await PromiseFunc(iconFromStorage, failure)
-    // console.log('retrieveIcon')
-    // console.log(retrieveIcon)
-    let myfriend = "niceone"
-    console.log('myfriend')
-    console.log(myfriend)
-    // const response = await axios.post('http://localhost:5000/pokemon?query={allDataAllPokemon(id:103){name,poke_id,type,moves,abilities}}');
-    const predata = await fetch('http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"water")}');
-
-    // const predata = await fetch(`http://localhost:5000/fill_cont?query=(searchTerm:${encodeURIComponent("water")}){puppeteer}`)
-    const data = await predata.json()
+    console.log("dont be silly")
+    const predata = await fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"water")}`)
+    let data = await predata.json()
+    let puppetImage = data.data.puppeteer
     console.log('data')
     console.log(data)
-
-    let waterpuppet = data.data.puppeteer;
-    SET_SPIN_BOTTLE_IMG( { payload: waterpuppet })
-    
+    SET_SPIN_BOTTLE_IMG( { payload: puppetImage } )
   }
 
     const testuser = { username: 'test', email: 'test', password: 'test', age: 'test', GOOGLE_ID: 'GOOGLE_ID' }
@@ -169,11 +155,9 @@ const homeclick = () => { window.location.href = "/"}
     </div>
       
       <div className="logo">
-        {/* <Boop rotation={10} timing={150}> */}
           <img onClick={homeclick} src={home} />
           <img onClick={statclick} src={statistics} />
           <img onClick={settingsclick} src={settings} />          
-          {/* <LogInOutGoogle user={testuser}/> */}
           <img onClick={doorclick} src={exit} />           
       </div>
  
