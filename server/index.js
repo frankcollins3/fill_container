@@ -216,37 +216,74 @@ const RootQueryType = new GraphQLObjectType({
   description: 'Root Query',
   fields: () => ({
     puppeteer: {
-      type: new GraphQLList(GraphQLString),    
+      type: GraphQLString,
       description: 'Invoke Puppeteer',
-      resolve: async () => {
-          let promises = [
-            puppeteer.launch({headless: false}).then(async(browser) => {            
-              // puppeteer.launch({headless: true}).then(async(browser) => {            
-                  const page = await browser.newPage();
-                  await page.goto('file:///Users/medium/Desktop/alert.html');  
+      args: {
+        searchTerm: { type: GraphQLString }
+      },
+      resolve: async (parent, args) => {        
+        const { searchTerm } = args
 
-                  return await page.evaluate(async() => {
-                    // const tree = document.valuetree;
-                    const tree = await window.valuetree
-                      window.valuetree.branch_3 = "yew"
-                    // const treearray = await window.valuearray
-                    alert(`branch 1: ${tree.branch_1}`);
-                    alert(`branch 2: ${tree.branch_2}`);
-                    alert(`branch 3: ${tree.branch_3}`);
-                    return [
-                      `branch 1: ${tree.branch_1}`,
-                      `branch 2: ${tree.branch_2}`,
-                      `branch 3: ${tree.branch_3}`
-                    ]                    
-                  })
-              
-                  // await browser.close();
-                })
-              ];              
+        const browser = await puppeteer.launch({headless: true});
+        const page = await browser.newPage();
+        
+        // Navigate to Google Images
+        await page.goto(`https://www.google.com/search?q=${encodeURIComponent("water")}&tbm=isch`);
+        // await page.goto(`https://www.google.com/search?q=${encodeURIComponent(searchTerm)}&tbm=isch`);
+        
+        // Wait for the images to load
+        // await page.waitForSelector('.rg_i');
+        await page.waitForSelector('.rg_i', { timeout: 60000 })
+      
+        // Evaluate the page and extract the first image URL
+        return imageUrl = await page.evaluate(() => {
+          const image = document.querySelector('.rg_i');
+          const url = image.getAttribute('data-src') || image.getAttribute('src');
+          
+          return url;
+        });
+        
+        await browser.close();
 
-              return await Promise.all(promises)      
+
+        // let { searchTerm } = args;
+        // return searchTerm
+        // return searchTerm
       }
-    },    
+    },
+  //   puppeteer: {
+  //     type: GraphQLString,    
+  //     // type: new GraphQLList(GraphQLString),    
+  //     description: 'Invoke Puppeteer',
+  //     args:  {
+  //       searchTerm: GraphQLString
+  //     },  
+  //     resolve: async (parent, args) => {
+  //       let { searchTerm } = args;
+
+  //       const puppeteer = require('puppeteer');
+
+  //     async function fetchImage(searchTerm) {
+  //       const browser = await puppeteer.launch({headless: false});
+  //       const page = await browser.newPage();
+        
+  //       // Navigate to Google Images
+  //       await page.goto(`https://www.google.com/search?q=${encodeURIComponent(searchTerm)}&tbm=isch`);
+  //       // const response = await axios.post('http://localhost:5000/pokemon?query={allDataAllPokemon(id:103){name,poke_id,type,moves,abilities}}');
+        
+  //       // Wait for the images to load
+  //       await page.waitForSelector('.rg_i');
+
+  //       // Evaluate the page and extract the first image URL
+  //       return imageUrl = await page.evaluate(() => {
+  //         const image = document.querySelector('.rg_i');
+  //         const url = image.getAttribute('data-src') || image.getAttribute('src');
+          
+  //         return url;
+  //       });
+  //     }
+  //   }
+  // },   
     ENV: {      
       type: EnvType,
       description: 'List of Env Variables',
@@ -410,18 +447,17 @@ const RootQueryType = new GraphQLObjectType({
       })
       return encodePromise
       .then(async(encoded) => {
-        let alreadyUsedGoogleId = allusers.some(user => user.googleId === googleId)
+        let alreadyUsedGoogleId = allusers.some(user => user.google_id === googleId)
         let alreadyUsedGoogleIcon = allusers.some(user => user.icon === icon)
         
-
         return await prisma.users.update({
         // const updateUser = await prisma.users.update({
           where: {
             id: myid
           },
           data: {          
-            google_id: alreadyUsedGoogleId ? googleId : 'Google Id already linked Up!',          // access .map() ----> let argsArray = [googleId, icon]   [0] = googleId  [1] = icon
-            icon: alreadyUsedGoogleIcon ? icon : "Good icon is used for another account",
+            google_id: alreadyUsedGoogleId ? 'Google Account in Use. Profile can Fix.' : googleId,          // access .map() ----> let argsArray = [googleId, icon]   [0] = googleId  [1] = icon
+            icon: alreadyUsedGoogleIcon ? "Good icon is used for another account" : icon,
           },
         }).then( (updatedUser) => {        
           const u = updatedUser
@@ -458,7 +494,7 @@ const RootQueryType = new GraphQLObjectType({
       // let server_google_clientId = process.env.REACT_APP_GOOGLE_ID
       return server_google_clientId || "hey you guys"
     }
-  },
+  }
   }) 
 })
 
@@ -532,3 +568,36 @@ app.use('/anotherdata', anotherDataRouter);
 app.listen(PORT || 5000, () => console.log(`Drink up on Port: ${PORT}`))
 
 module.exports = app;
+
+
+
+
+
+// puppeteer: {
+//   type: new GraphQLList(GraphQLString),    
+//   description: 'Invoke Puppeteer',
+//   resolve: async () => {
+//       let promises = [
+//         puppeteer.launch({headless: false}).then(async(browser) => {            
+//               const page = await browser.newPage();
+//               await page.goto('file:///Users/medium/Desktop/alert.html');  
+
+//               return await page.evaluate(async() => {
+//                 // const tree = document.valuetree;
+//                 const tree = await window.valuetree
+//                   window.valuetree.branch_3 = "yew"
+//                 // const treearray = await window.valuearray
+//                 alert(`branch 1: ${tree.branch_1}`);
+//                 alert(`branch 2: ${tree.branch_2}`);
+//                 alert(`branch 3: ${tree.branch_3}`);
+//                 return [
+//                   `branch 1: ${tree.branch_1}`,
+//                   `branch 2: ${tree.branch_2}`,
+//                   `branch 3: ${tree.branch_3}`
+//                 ]                    
+//               })              
+//             })
+//           ];              
+//           return await Promise.all(promises)      
+//   }
+// },    
