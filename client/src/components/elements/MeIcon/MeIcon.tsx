@@ -8,11 +8,14 @@ import Boooooop from '../../../utility/ParentchildParent/Boooooop'
 import {useImage} from '../../../utility/ImgContext'
 // import LetterLife from '../../../utility/ParentchildParent/LetterLife'
 import $ from 'jquery'
+import ConnectedSignupLoginChecker from '../SignupLoginChecker'
+
+import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING,} from '../../../redux/actions'
 
 
  function MeIcon (props:any) {
 
-    const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket  } = useImage()
+    const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket, puppetCup } = useImage()
     
     let img;
 
@@ -24,11 +27,18 @@ import $ from 'jquery'
       
     }, [])
 
-    const { FLIP_FLOP_ICON } = props
+    const {
+       FLIP_FLOP_ICON, SPIN_BOTTLE_IMG, SPIN_BOTTLE_SEARCHING,
+       SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING,
+     } = props
+
     const boat2= `/water_img/`
 
 
     const [bathingSuit, setBathingSuit] = useState<boolean>(false)
+    const [moveBoat, setMoveBoat] = useState(false)
+    const [flipCoin, setFlipCoin] = useState(false)
+    const boatClassArr = ['Move-Boat', 'Move-BoatR']
 
 
     let googleUrl:string = props.GOOGLE_IMAGE_URL
@@ -74,25 +84,44 @@ import $ from 'jquery'
         
     }
 
+    const moveboat = () =>  {
+      let numbers = [1,2,3,4,5,6,7,8,9,10]
+      let randomNumber = Math.floor(Math.random() * numbers.length)
+      console.log('randomNumber')
+      console.log(randomNumber)
+      console.log('flipCoin')
+      console.log(flipCoin)
+      if (randomNumber >= 5) {
+        
+        setFlipCoin(!flipCoin)
+      }
+      setMoveBoat(true) 
+    }
+    
+
+    const dontMoveBoat = () =>  setMoveBoat(false) 
 
     const renderMeIcon = () => {
         return (
             <>
-              <div
-              className={Leftie}>
-                    <img style={{  height: '10em', width: '10em' }} src={ boat || '/water_img/mouse_droplet.png'}/>
-                    {/* <img style={{  height: '10em', width: '10em' }} src="/water_img/boat.png"/> */}
+<div style={{ backgroundImage: `url('${puppetCup}')` }} className={Leftie} onMouseEnter={moveboat} onMouseLeave={dontMoveBoat}>
+
+{/* <div style={{ height: '100%', width: '100%', backgroundImage: `url('${puppetCup}')`, backgroundRepeat: 'no-repeat' }}> */}
+                    <img className={ SPIN_BOTTLE_SEARCHING ? "Move-Boat" : '' } id="boat" style={{ position: 'relative', height: '10em', width: '10em' }} src={ boat || '/water_img/mouse_droplet.png'}/>
+
               </div>  
                     {/* if there is a current user and they hover over the icon it will become a window so one can see into the profile  */}
 
               <div className={Rightie}>                        
+              
                     {
                       FLIP_FLOP_ICON
                             ?
-                            <div>
+                            <>
+
                               
                             <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>
-                            <img onClick={test} style={{ transform: `rotate(0deg)` }} src="/water_img/bottles.png" />
+                            <img style={{ transform: `rotate(0deg)` }} src="/water_img/bottles.png" />
                             </Boooooop>
 
                           <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                         
@@ -103,9 +132,13 @@ import $ from 'jquery'
                     <img src={shark}></img>
                           </Boooooop>
 
-                          <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
+                    <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
                     <img src={panda}></img>
-                          </Boooooop>
+                    </Boooooop>
+
+                    <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
+                    <img src={target}></img>
+                    </Boooooop>
 
                     <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
                     <img src={turtle}></img>
@@ -119,17 +152,13 @@ import $ from 'jquery'
                     <img src={pool}></img>
                     </Boooooop>
                                         
-                    <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
-                    <img src={target}></img>
-                    </Boooooop>
 
                     <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
                     <img src={bucket}></img>
                     </Boooooop>   
-                            </div>
+                            </>
                             :                        
                         <>                        
-
                           <Boop rotateAngle={45} speed={800}>
                             <img onClick={test} style={{ transform: `rotate(0deg)` }} src="/water_img/bottles.png" />
                             </Boop>
@@ -146,6 +175,12 @@ import $ from 'jquery'
                         <Boop rotateAngle={45} speed={800}>                        
                             <img src={panda}></img>
                           </Boop>
+                      <div className="column">
+                    <Boop rotateAngle={45} speed={800} >                        
+                    <img style={{ display: SPIN_BOTTLE_SEARCHING ? "none" : ""}}  src={SPIN_BOTTLE_IMG || target}></img>
+                    </Boop>  
+                      <pre style={{ display: SPIN_BOTTLE_SEARCHING ? "" : "none" }}> Pouring. Please Wait.  </pre>
+                        </div>  
 
                     <Boop rotateAngle={45} speed={800}>                        
                     <img src={turtle}></img>
@@ -158,18 +193,14 @@ import $ from 'jquery'
                     <Boop rotateAngle={45} speed={800}>                        
                     <img src={pool}></img>
                     </Boop>
-
-                    <Boop rotateAngle={45} speed={800} >                        
-                    <img src={target}></img>
-                    </Boop>    
-
+                 
                       <Boop rotateAngle={45} speed={800}>                        
                     <img src={bucket}></img>
                       </Boop>   
                         
                       </>
-                            }          
-              </div>  
+                            }
+            </div>  
             </>
         )
     }
@@ -179,10 +210,33 @@ import $ from 'jquery'
 
 const mapStateToProps = (state:any) => ({
     ICON_NOT_INPUT: state.ICON_NOT_INPUT,
-    FLIP_FLOP_ICON: state.FLIP_FLOP_ICON
+    FLIP_FLOP_ICON: state.FLIP_FLOP_ICON,
+    SPIN_BOTTLE_IMG: state.SPIN_BOTTLE_IMG,
+    SPIN_BOTTLE_SEARCHING: state.SPIN_BOTTLE_SEARCHING,
     // NON_GOOGLE_IMG_URL: '',                      state doesn't matter since this page is navigated. one would need redux-persist. I'm using regular redux, GraphQl/prisma/postgres and localStorage to persist
 })
 
-const ConnectedMeIcon = connect(mapStateToProps)(MeIcon)
+const mapDispatchToProps = (dispatch:any) => ({
+    SET_SPIN_BOTTLE_IMG: (action:any) => dispatch(SET_SPIN_BOTTLE_IMG(action)),
+    TOGGLE_SPIN_BOTTLE_SEARCHING: () => dispatch(TOGGLE_SPIN_BOTTLE_SEARCHING())
+})
+
+const ConnectedMeIcon = connect(mapStateToProps, mapDispatchToProps)(MeIcon)
 
 export default ConnectedMeIcon
+                            
+                        
+
+                
+
+
+                 
+
+
+             
+
+
+         
+                    
+                                     
+              
