@@ -1,16 +1,15 @@
 //        /Navbar.tsx ------->      const settingsclick = () => { } else { TOGGLE_HYDRO_SETTINGS() } }   ----> gear.png.click()   TOGGLE_HYDRO_SETTINGS() make the settings sidebar appear or navigate page to do so
 export const TOGGLE_HYDRO_SETTINGS = () => { return { type: 'TOGGLE_HYDRO_SETTINGS', } };
 
-// 
-// export const SET_LOG_IN_OUT_TYPE = (action) => {
-//     return {
-//       type: "SET_LOG_IN_OUT_TYPE",
-//       payload: action.payload
-//     }
-// };
-
 //      /LogInOutGoogle.tsx   ---------->         const showHideLoginSignupBtn = () => {          TOGGLE_LOGIN_SIGNUP_BTN()           ------>     <img onClick={showHideLoginSignupBtn}
 export const TOGGLE_LOGIN_SIGNUP_BTN = () => { return { type: "TOGGLE_LOGIN_SIGNUP_BTN" } }
+
+export const SET_LOG_IN_OUT_FLASH_MSG = (action) => {
+  return {
+    type: "SET_LOG_IN_OUT_FLASH_MSG",
+    payload: action.payload
+  }
+}
 
 //      /LogInOutGoogle.tsx -------------->      const showform = (event:any) => {let targetid:string = event.target.id  TOGGLE_SHOW_FORM({payload: targetid}) }   ----> this also toggles state above.
 export const TOGGLE_SHOW_FORM = (action) => {
@@ -43,6 +42,17 @@ export const SET_PASSWORD_INPUT = (action) => {
     payload: action.payload
   }
 }
+
+export const TOGGLE_USERNAME_INPUT_HOVER = () => { return { type: "TOGGLE_USERNAME_INPUT_HOVER" } }
+export const TOGGLE_PASSWORD_INPUT_HOVER = () => { return { type: "TOGGLE_PASSWORD_INPUT_HOVER" } }
+export const TOGGLE_EMAIL_INPUT_HOVER = () => { return { type: "TOGGLE_EMAIL_INPUT_HOVER" } }
+export const TOGGLE_AGE_INPUT_HOVER = () => { return { type: "TOGGLE_AGE_INPUT_HOVER" } }
+
+      // case "TOGGLE_USERNAME_INPUT_HOVER": return { ...state, USERNAME_INPUT_HOVER: !USERNAME_INPUT_HOVER }
+      // case "TOGGLE_EMAIL_INPUT_HOVER": return { ...state, PASSWORD_INPUT_HOVER: !PASSWORD_INPUT_HOVER }
+      // case "TOGGLE_AGE_INPUT_HOVER": return { ...state, PASSWORD_INPUT_HOVER: !PASSWORD_INPUT_HOVER }
+      // case "TOGGLE_EMAIL_INPUT_HOVER": return { ...state, EMAIL_INPUT_HOVER: !EMAIL_INPUT_HOVER }
+      // case "TOGGLE_AGE_INPUT_HOVER": return { ...state, AGE_INPUT_HOVER: !AGE_INPUT_HOVER }
 
 export const TOGGLE_PASSWORD_SHOW = () => { return { type: "TOGGLE_PASSWORD_SHOW" } }
 
@@ -138,4 +148,17 @@ export const SET_USER_SELECT_IMG_URL = (action) => {
   }
 }
 
+// ^ ^ login redux ^ ^                v v ICON state v v 
+
 export const TOGGLE_ICON_NOT_INPUT = () => { return  { type: "TOGGLE_ICON_NOT_INPUT" } }
+
+export const TOGGLE_FLIP_FLOP_ICON = () => { return { type: "TOGGLE_FLIP_FLOP_ICON" } }
+
+export const SET_SPIN_BOTTLE_IMG = (action) => {
+  return {
+    type: "SET_SPIN_BOTTLE_IMG",
+    payload: action.payload
+  }
+}
+
+export const TOGGLE_SPIN_BOTTLE_SEARCHING = () => { return { type: "TOGGLE_SPIN_BOTTLE_SEARCHING"} }
