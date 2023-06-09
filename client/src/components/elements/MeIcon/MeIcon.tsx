@@ -37,25 +37,6 @@ import $ from 'jquery'
     const Rightie = ["Right-Cont", "Cont"].join(" ")
 
 
-
-
-    const Boop = ({ children }: { children: JSX.Element }) => {
-        return (
-          <div className="boop">
-            {React.Children.map(children, (child, index) => {
-                const styledChild = React.cloneElement(child, {
-                    style: {
-                        border: '5px solid green'
-                    },
-
-                });
-                
-              return styledChild;
-            })}
-          </div>
-        );
-      }
-
     const LetterLift= ({ children }: { children: JSX.Element }) => {
         return (
           <div className="boop">
@@ -101,58 +82,93 @@ import $ from 'jquery'
               className={Leftie}>
                     <img style={{  height: '10em', width: '10em' }} src={ boat || '/water_img/mouse_droplet.png'}/>
                     {/* <img style={{  height: '10em', width: '10em' }} src="/water_img/boat.png"/> */}
-                    
-                        
               </div>  
                     {/* if there is a current user and they hover over the icon it will become a window so one can see into the profile  */}
+
               <div className={Rightie}>                        
-                    {/* <Boop rotateAngle={15} speed={500}> */}
-                    <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>
-                    <img onClick={test} style={{ transform: `rotate(0deg)` }} src="/water_img/bottles.png" />
-                    </Boooooop>
-                    {/* </Boop> */}
+                    {
+                      FLIP_FLOP_ICON
+                            ?
+                            <div>
+                              
+                            <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>
+                            <img onClick={test} style={{ transform: `rotate(0deg)` }} src="/water_img/bottles.png" />
+                            </Boooooop>
 
-                    {/* <Boop rotateAngle={15} speed={500}> */}
-                    <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                         
-                    <img onMouseEnter={()=> setBathingSuit(!bathingSuit)} src={bathingSuit ? bikini: pants}></img>
-                    </Boooooop>                         
-                    {/* </Boop>                 */}
+                          <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                         
+                          <img onMouseEnter={()=> setBathingSuit(!bathingSuit)} src={bathingSuit ? bikini: pants}></img>
+                          </Boooooop>  
 
-                    {/* <Boooooop rotateAngle={15} speed={500}>                         */}
-                    <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
+                          <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
                     <img src={shark}></img>
-                    {/* </Boooooop> */}
-                    </Boooooop>
+                          </Boooooop>
 
-                    <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
+                          <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
                     <img src={panda}></img>
-                    </Boooooop>
-
+                          </Boooooop>
 
                     <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
                     <img src={turtle}></img>
                     </Boooooop>
 
-
                     <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
-                    <img src={dolphin}></img>
-                    </Boooooop>
-
+                   <img src={dolphin}></img>
+                    </Boooooop> 
 
                     <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
                     <img src={pool}></img>
                     </Boooooop>
-                    
-                    
-                    
+                                        
                     <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
                     <img src={target}></img>
                     </Boooooop>
-                    
-                    
+
                     <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
                     <img src={bucket}></img>
-                    </Boooooop>                    
+                    </Boooooop>   
+                            </div>
+                            :                        
+                        <>                        
+
+                          <Boop rotateAngle={45} speed={800}>
+                            <img onClick={test} style={{ transform: `rotate(0deg)` }} src="/water_img/bottles.png" />
+                            </Boop>
+
+                          <Boop rotateAngle={45} speed={800}>                         
+                          <img onMouseEnter={()=> setBathingSuit(!bathingSuit)} src={bathingSuit ? bikini: pants}></img>
+                          </Boop>  
+
+                        
+                    <Boop rotateAngle={45} speed={800}>                        
+                    <img src={shark}></img>
+                          </Boop>
+
+                        <Boop rotateAngle={45} speed={800}>                        
+                            <img src={panda}></img>
+                          </Boop>
+
+                    <Boop rotateAngle={45} speed={800}>                        
+                    <img src={turtle}></img>
+                    </Boop>
+                          
+                  <Boop rotateAngle={45} speed={800}>                        
+                   <img src={dolphin}></img>
+                    </Boop> 
+
+                    <Boop rotateAngle={45} speed={800}>                        
+                    <img src={pool}></img>
+                    </Boop>
+
+                    <Boop rotateAngle={45} speed={800} >                        
+                    <img src={target}></img>
+                    </Boop>    
+
+                      <Boop rotateAngle={45} speed={800}>                        
+                    <img src={bucket}></img>
+                      </Boop>   
+                        
+                      </>
+                            }          
               </div>  
             </>
         )
