@@ -3,18 +3,16 @@ import React, { useState, useEffect } from 'react';
 import './navbar.css';
 import { animated, useSpring } from 'react-spring';
 import $ from 'jquery'
-import LogInOutGoogle from '../LogInOutGoogle/LogInOutGoogle'
-import store from '../../../redux/store'
 
 import CSS from '../../../utility/CSS'
-import timeoutFunc from '../../../utility/timeoutFunc'
 import PromiseFunc from '../../../utility/PromiseFunc'
 import allUrl from '../../../utility/fetch/allDBurl'
-import userSignup from '../../../utility/fetch/userSignup'
+import Boop from '../../../utility/ParentchildParent/Boop'
+import {useImage} from '../../../utility/ImgContext'
+import linkUserWithGoogle from '../../../utility/fetch/linkUserWithGoogle'
 
-import { TOGGLE_HYDRO_SETTINGS } from '../../../redux/actions'
+import { TOGGLE_HYDRO_SETTINGS, SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING } from '../../../redux/actions'
 import ConnectedSignupLoginChecker from '../SignupLoginChecker';
-
 // import $ from 'jquery'
 
 // import Profile from '../Profile';
@@ -22,10 +20,13 @@ import ConnectedSignupLoginChecker from '../SignupLoginChecker';
   const dispatch = useDispatch()
 
   const { 
-    USERNAME_INPUT, PASSWORD_INPUT, EMAIL_INPUT, AGE_INPUT, GOOGLE_IMG_URL, GOOGLE_ID_INPUT,
-    HYDRO_SETTINGS, LOG_IN_OUT_TYPE, GOOGLE_LINK_ACCT_SCREEN,
-    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE,
+    USERNAME_INPUT, PASSWORD_INPUT, EMAIL_INPUT, AGE_INPUT, GOOGLE_IMG_URL, GOOGLE_ID_INPUT, SPIN_BOTTLE_IMG,
+
+    HYDRO_SETTINGS, LOG_IN_OUT_TYPE, GOOGLE_LINK_ACCT_SCREEN, SPIN_BOTTLE_SEARCHING,
+    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING
    } = props
+
+   const { waterPark, msgBottle, smallDroplet, home, exit, statistics, settings, } = useImage()
 
   // let navbardropletJQ = $('.navbar-droplet')
   // let msgbottleJQ = $('.msg-bottle')
@@ -34,6 +35,9 @@ import ConnectedSignupLoginChecker from '../SignupLoginChecker';
   let location = window.location
   let href:string = location.href;
   let pathname:string = location.pathname;
+
+  console.log('pathname')
+  console.log(pathname)
 
 
   let navbardropletJQ:any;
@@ -49,39 +53,6 @@ import ConnectedSignupLoginChecker from '../SignupLoginChecker';
 
 //   const Boop = ({ rotation, timing, children }) => {
     const [isBooped, setIsBooped] = useState(false);
-
-    // const style = useSpring({
-    //   display: 'inline-block',
-    //   backfaceVisibility: 'hidden',
-    //   transform: isBooped ? `rotate(${rotation}deg)` : `rotate(0deg)`,
-    //   config: {
-    //     tension: 300,
-    //     friction: 10,
-    //   },
-    // });
-
-    // useEffect(() => {
-    //   if (!isBooped) {
-    //     return;
-    //   }
-    //   const timeoutId = window.setTimeout(() => {
-    //     setIsBooped(false);
-    //   }, timing);
-    //   return () => {
-    //     window.clearTimeout(timeoutId);
-    //   };
-    // }, [isBooped, timing]);
-
-    // const trigger = () => {
-      // setIsBooped(true);
-    // };
-
-    // return (
-    //   <animated.div onMouseEnter={trigger} style={style}>
-        // {children}
-    //   </animated.div>
-    // );
-  // };
 
   useEffect( () => {
     navbardropletJQ = $('#navbar-droplet')[0]
@@ -121,45 +92,55 @@ const homeclick = () => { window.location.href = "/"}
 // "Frank Collins"
 
   const test = async () => {
-    console.log("test click")
     let urlbank = await allUrl()
     let env = urlbank.ENVdata.data.ENV
     let miz:string = "mastermizery".replace(/\s/g, '')
     let googleId:string = '117827387775507687118'.replace(/\s/g, '')
     let icon:string = 'https://lh3.googleusercontent.com/a/AAcHTtd_55dRY1mQ1-GP5R4PHEgjmSRGTZNK7aGM8-82=s96-c'.replace(/\s/g, '')
     await localStorage.setItem("icon", icon)
-    let storageIcon = await localStorage.getItem("icon")
-    console.log('storageIcon')
-    console.log(storageIcon)
-
-    console.log('icon')
-    console.log(icon)
-
-    
+    let storageIcon = await localStorage.getItem("icon")    
     let href:string = `http://localhost:5000/`
+
     let args = `(name:"mastermizery",googleId:"117827387775507687118",imageUrl:"https://lh3.googleusercontent.com/a/AAcHTtd_55dRY1mQ1-GP5R4PHEgjmSRGTZNK7aGM8-82=s96-c")`
 
-const predata = await fetch(`http://localhost:5000/fill_cont?query={linkUserWithGoogle(username:"${encodeURIComponent(`${miz}`)}",googleId:"${encodeURIComponent(`${storageIcon}`)}",icon:"${encodeURIComponent(`${icon}`)}"){id,googleId,icon,username,email,age}}`)   // W O R K S !!!!!
-
-// const predata = await fetch(`http://localhost:5000/fill_cont?query={linkUserWithGoogle(username:"${encodeURIComponent(`${miz}`)}",googleId:"${encodeURIComponent(`${googleId}`)}",icon:"${encodeURIComponent(`${icon}`)}"){id,googleId,icon,username,email,age}}`)   // W O R K S !!!!!
-    const data = await predata.json()
+    // const predata = await fetch(`http://localhost:5000/fill_cont?query={linkUserWithGoogle(username:"${encodeURIComponent(`${miz}`)}",icon:"${encodeURIComponent(`${storageIcon}`)}",googleId:"${encodeURIComponent(`${googleId}`)}"){id,googleId,icon,username,email,age}}`)   // W O R K S !!!!!
+    let predata = await linkUserWithGoogle(miz, googleId, storageIcon)
+    
+    const data = await predata
     console.log('data')
     console.log(data)
     // const predata = await fetch(`http://localhost:5000/fill_cont?query={userSignup{id,googleId,icon,username,email,age}}`)
   }
 
   const test2 = async () => {
-    let icon:string = 'icon'
-    const iconFromStorage:any|undefined = localStorage.getItem('icon') 
     // const iconFromStorage:any|undefined = localStorage.getItem('icon') !== undefined ? localStorage.getItem('icon') : ''
-    const failure = "-____-"    
-    const retrieveIcon = await PromiseFunc(iconFromStorage, failure)
-    console.log('retrieveIcon')
-    console.log(retrieveIcon)
+    // let icon:string = 'icon'
+    // const iconFromStorage:any|undefined = localStorage.getItem('icon') 
+    // const failure = "-____-"    
+    // const retrieveIcon = await PromiseFunc(iconFromStorage, failure)
+    // console.log('retrieveIcon')
+    // console.log(retrieveIcon)
+    let myfriend = "niceone"
+    console.log('myfriend')
+    console.log(myfriend)
+    // const response = await axios.post('http://localhost:5000/pokemon?query={allDataAllPokemon(id:103){name,poke_id,type,moves,abilities}}');
+    const predata = await fetch('http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"water")}');
 
+    // const predata = await fetch(`http://localhost:5000/fill_cont?query=(searchTerm:${encodeURIComponent("water")}){puppeteer}`)
+    const data = await predata.json()
+    console.log('data')
+    console.log(data)
+
+    let waterpuppet = data.data.puppeteer;
+    SET_SPIN_BOTTLE_IMG( { payload: waterpuppet })
+    
   }
 
     const testuser = { username: 'test', email: 'test', password: 'test', age: 'test', GOOGLE_ID: 'GOOGLE_ID' }
+
+    const spinbottlefunc = () => {
+        TOGGLE_SPIN_BOTTLE_SEARCHING()
+    }
 
   return (
     <div className="navbar-container" 
@@ -171,11 +152,15 @@ const predata = await fetch(`http://localhost:5000/fill_cont?query={linkUserWith
     // }}
     >
     <div className="logo">
-    <img style={{ border: 'none' }} className={bothElemById} id="navbar-droplet" src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_big_g.png" : "/water_img/small_droplet.png"} />    
+    <img style={{ border: 'none' }} className={bothElemById} id="navbar-droplet" src={smallDroplet} />    
 
-    <img style={{ border: 'none' }} className={bothElemById} id="msg-bottle"  src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_red_o.png" : "/water_img/msg-bottle.png"} />
-    <button onClick={test} style={{ margin: '1em', backgroundColor: 'limegreen', border: '1px dashed hotpink', transform: 'scale(2.0)' }}> </button>
-    <button onClick={test2} style={{ margin: '1em', backgroundColor: 'coral', border: 'salmon', transform: 'scale(2.0)' }}> </button>
+
+    
+    <img onClick={spinbottlefunc} className={pathname === "/loginoutgoogle" && !SPIN_BOTTLE_SEARCHING ? "msg-bottle-animation" : "" } style={{ border: 'none' }} id="msg-bottle"  src={msgBottle} />
+
+
+      <button onClick={test2} style={{ margin: '1em', backgroundColor: 'coral', border: 'salmon', transform: 'scale(2.0)' }}> </button> 
+    
     </div>
 
     <div className="middle-navbar">
@@ -185,18 +170,12 @@ const predata = await fetch(`http://localhost:5000/fill_cont?query={linkUserWith
       
       <div className="logo">
         {/* <Boop rotation={10} timing={150}> */}
-          <img onClick={homeclick} src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_yellow_o.png" : "/water_img/home.png"} />
-          <img onClick={statclick} src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_lil_g.png" : "/water_img/statistics.png"} />
-          <img onClick={settingsclick} src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_l.png" : "/water_img/settings.png"} />
-
-          
+          <img onClick={homeclick} src={home} />
+          <img onClick={statclick} src={statistics} />
+          <img onClick={settingsclick} src={settings} />          
           {/* <LogInOutGoogle user={testuser}/> */}
-          <img onClick={doorclick} src={ GOOGLE_LINK_ACCT_SCREEN ? "/google_img/google_e.png" : "/water_img/exit.png"} />
-          
- 
-        {/* </Boop> */}
+          <img onClick={doorclick} src={exit} />           
       </div>
-      {/* <Profile /> */}
  
     </div>
   );
@@ -214,12 +193,15 @@ const mapStateToProps = (state:any) => ({
     GOOGLE_ID_INPUT: state.GOOGLE_ID_INPUT,
     EMAIL_INPUT: state.EMAIL_INPUT,
     AGE_INPUT: state.AGE_INPUT,
-    GOOGLE_IMG_URL: state.GOOGLE_IMG_URL
+    GOOGLE_IMG_URL: state.GOOGLE_IMG_URL,
+    SPIN_BOTTLE_SEARCHING: state.SPIN_BOTTLE_SEARCHING,
     
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
-    TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS())
+    TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
+    SET_SPIN_BOTTLE_IMG: (action:any) => dispatch(SET_SPIN_BOTTLE_IMG(action)),
+    TOGGLE_SPIN_BOTTLE_SEARCHING: () => dispatch(TOGGLE_SPIN_BOTTLE_SEARCHING())
 })
 
 const ConnectedNavbar = connect(mapStateToProps, mapDispatchToProps)(Navbar)
