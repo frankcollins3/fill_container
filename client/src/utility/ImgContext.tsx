@@ -61,9 +61,10 @@ type imgContextType = {
     bottles: string;
     cup: string;
     drink: string;
+    puppeteerSearchTerms: string[]    
 };
 
-// enact values which will remain static
+// define values which will remain static
 const imgDefaults: imgContextType = {
     bottle: `${imagePrefix}bottle.png`,
     bottles: `${imagePrefix}bottles.png`,
@@ -122,7 +123,8 @@ const imgDefaults: imgContextType = {
     squidOrHook: `${imagePrefix}squidOrhook.png`,
     ink: `${imagePrefix}ink.png`,
     inkBottle:`${imagePrefix}ink-bottle.png`,
-    
+    puppeteerSearchTerms: ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark"]
+    // let terms:string[] = ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark", ]
 };
 
 // createContext
@@ -196,7 +198,8 @@ export function ImgProvider({ children }: Props) {
     const [squidOrHook, setSquidOrHook] = useState<string>(`${imagePrefix}squidOrHook.png`);
     const [ink, setInk] = useState<string>(`${imagePrefix}ink.png`);
     const [inkBottle, setInkBottle] = useState<string>(`${imagePrefix}ink-bottle.png`);
-    
+    const [puppeteerSearchTerms, setPuppeteerSearchTerms] = useState<string[]>(["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark"])
+    // puppeteerSearchTerms: ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark"]
     
 
         // * user functionality ends above
@@ -259,6 +262,7 @@ export function ImgProvider({ children }: Props) {
     squidOrHook,
     ink,
     inkBottle,    
+    puppeteerSearchTerms
     };
 
     return (
