@@ -28,8 +28,9 @@ export default async function allDBurl () {
         allDBsettingsURL: '',
         allDBusersURL: '',
         allDBdataURL: '',
+        userSignupURL: '',
         ENVdata: env_data,
-        userSignup: '',
+        puppeteerWater: '',
     }
 
     const applyAPI = () => {
@@ -38,7 +39,8 @@ export default async function allDBurl () {
             urlObject.allDBsettingsURL = `${API}fill_cont?query={allDBsettings{id,age,height,weight,reminder,activity,start_time,end_time,users_id}}`;
             urlObject.allDBusersURL = `${API}fill_cont?query={allDBusers{id,googleId,icon,username,email,password,age}}`
             urlObject.allDBdataURL = `${API}fill_cont?query={allDBdata{google_id,date,progress,weekday,status,users_id}}`
-            urlObject.userSignup = `${API}fill_cont?query={userSignup{id,googleId,icon,username,email,age}}`        // no password            
+            urlObject.userSignupURL = `${API}fill_cont?query={userSignup{id,googleId,icon,username,email,age}}`        // no password            
+            urlObject.puppeteerWater = `${API}fill_cont?query={puppeteer(searchTerm:"water")}`
             // urlObject.data = `${API}fill_cont?query={singledata(users_id:1){google_id,progress,weekday,date,status,users_id}}`            
         } else {
             // let test_query = `{allDBsettings{id,age,height,weight,reminder,activity,start_time,end_time,users_id}}`
