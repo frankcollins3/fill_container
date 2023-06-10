@@ -8,6 +8,7 @@ type RegexContextType = {
     RhasNums: RegExp;
     RnoWhiteSpace: RegExp;
     MsplitAtDot: RegExp;
+    McharAfterComma: RegExp
   }
   
   type RegexDefaults = {
@@ -18,6 +19,7 @@ type RegexContextType = {
     RhasNums: RegExp
     RnoWhiteSpace: RegExp;
     MsplitAtDot: RegExp;
+    McharAfterComma: RegExp
   }
   
   const regexDefaults: RegexDefaults = {
@@ -27,12 +29,13 @@ type RegexContextType = {
     RhasCaps: /[A-Z]/g,
     RhasNums: /[A-Z]/g,
     RnoWhiteSpace: /\s/g,
-    MsplitAtDot: /@([^.]*)\./        
+    MsplitAtDot: /@([^.]*)\./,        
+    McharAfterComma: /,(.*)/
   };
 
       const RegexContext = createContext<RegexContextType>(regexDefaults)
       
-    export function useRegex() {
+    export  default function useRegex() {
         return useContext(RegexContext)
     }
 
@@ -48,6 +51,7 @@ type RegexContextType = {
         const [RhasNums, setHasNums] = useState<RegExp>(/[A-Z]/g)                                    // replace
         const [RnoWhiteSpace, setNoWhiteSpace] = useState<RegExp>(/\s/g)                             // replace
         const [MsplitAtDot, setSplitAtDot] = useState<RegExp>(/@([^.]*)\./)      // match
+        const [McharAfterComma, setMCharAfterComma] = useState<RegExp>(/,(.*)/)      // match
         
         const value = {
             RstringAfterPeriod,
@@ -57,6 +61,7 @@ type RegexContextType = {
             RhasNums,
             RnoWhiteSpace,
             MsplitAtDot,       
+            McharAfterComma
         };
 
         return (
@@ -64,8 +69,4 @@ type RegexContextType = {
                 {children}
             </RegexContext.Provider>
         )
-    }
-
-
-        
-  
+    }   
