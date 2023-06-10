@@ -6,9 +6,10 @@ type RegexContextType = {
     RreturnNumbers: RegExp;
     RhasCaps: RegExp;
     RhasNums: RegExp;
+    RdotAtEscape: RegExp;
     RnoWhiteSpace: RegExp;
     MsplitAtDot: RegExp;
-    McharAfterComma: RegExp
+    McharAfterComma: RegExp;
   }
   
   type RegexDefaults = {
@@ -17,6 +18,7 @@ type RegexContextType = {
     RreturnNumbers: RegExp;
     RhasCaps: RegExp;
     RhasNums: RegExp
+    RdotAtEscape: RegExp;
     RnoWhiteSpace: RegExp;
     MsplitAtDot: RegExp;
     McharAfterComma: RegExp
@@ -28,9 +30,10 @@ type RegexContextType = {
     RreturnNumbers: /[0\-9]/g,
     RhasCaps: /[A-Z]/g,
     RhasNums: /[A-Z]/g,
+    RdotAtEscape: /[\@\.]/g,
     RnoWhiteSpace: /\s/g,
     MsplitAtDot: /@([^.]*)\./,        
-    McharAfterComma: /,(.*)/
+    McharAfterComma: /,(.*)/,
   };
 
       const RegexContext = createContext<RegexContextType>(regexDefaults)
@@ -49,19 +52,21 @@ type RegexContextType = {
         const [RreturnNumbers, setReturnNumbers] = useState<RegExp>(/[0\-9]/g)                       // replace
         const [RhasCaps, setHasCaps] = useState<RegExp>(/[A-Z]/g)                                    // replace
         const [RhasNums, setHasNums] = useState<RegExp>(/[A-Z]/g)                                    // replace
+        const [RdotAtEscape, setRDotAtEscape] = useState<RegExp>(/[\@\.]/g)      // match          if (splitEmail !== null) {       const matchedValue = splitEmail[0];      }
         const [RnoWhiteSpace, setNoWhiteSpace] = useState<RegExp>(/\s/g)                             // replace
         const [MsplitAtDot, setSplitAtDot] = useState<RegExp>(/@([^.]*)\./)      // match
-        const [McharAfterComma, setMCharAfterComma] = useState<RegExp>(/,(.*)/)      // match
-        
+        const [McharAfterComma, setMCharAfterComma] = useState<RegExp>(/,(.*)/)      // match          if (splitEmail !== null) {       const matchedValue = splitEmail[0];      }
+                            
         const value = {
             RstringAfterPeriod,
             RreturnLettersAthruZ,
             RreturnNumbers,
             RhasCaps,
             RhasNums,
+            RdotAtEscape,
             RnoWhiteSpace,
             MsplitAtDot,       
-            McharAfterComma
+            McharAfterComma,
         };
 
         return (
@@ -69,4 +74,4 @@ type RegexContextType = {
                 {children}
             </RegexContext.Provider>
         )
-    }   
+    }
