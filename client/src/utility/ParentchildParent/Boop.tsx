@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import $ from 'jquery'
+import ConnectedSignupLoginChecker from 'src/components/elements/SignupLoginChecker';
 
 interface Props {
   rotateAngle: number,
@@ -38,18 +39,21 @@ const Boop = ({ rotateAngle, speed, children, setImg, iconScreenFlag, showBoat, 
 
   const boopBehaviorEnter = (event:any) => {
     let src:string = event.target.src
-    targetElemRef.current = event.target
-    let backSlice = src.slice(src.length - 20) 
+    let afterLastSlash = src.substring(src.lastIndexOf('/'), src.length)      
     let url:string = src.slice(0, src.length - 19)
-    let newurl:string = `${url}water_img/bikini.png`    
-    let imagepath = src.slice()
+    targetElemRef.current = event.target
     setIsRotated(true);
-      if (backSlice === '/water_img/pants.png') {
-        console.log("hey were over here")
-        $(event.target).attr('src', `${url}water_img/bikini.png`)
-      } else if (backSlice === '/water_img/bikini.png') {
-        $(event.target).attr('src', `${url}water_img/pants.png`)
-      }
+    let backSlice = src.slice(src.length - 20) 
+    if (afterLastSlash === '/pants.png') {
+      console.log('that it does pants')
+      $(event.target).attr('src', `${url}water_img/bikini.png`)
+    }
+
+    if (afterLastSlash === '/bikini.png') {
+      let url2:string = src.slice(0, src.length - 20)
+      $(event.target).attr('src', `${url2}water_img/pants.png`)      
+    }
+    
     }
   
   const boopBehaviorLeave = () => { setIsRotated(false); };
