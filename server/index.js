@@ -206,9 +206,7 @@ const SettingsType = new GraphQLObjectType({
           DATABASE_URL: { type: new GraphQLNonNull(GraphQLString) },          
           API: { type: new GraphQLNonNull(GraphQLString) },
           NODE_ENV: { type: GraphQLString },
-        GOOGLE_ID: { type: GraphQLString },
-          // EUSER: { type: GraphQLString }
-          // EUSER: { id, googleId, username, password, email, age }
+        GOOGLE_ID: { type: GraphQLString },          
         })})
 
 const RootQueryType = new GraphQLObjectType({
@@ -225,14 +223,12 @@ const RootQueryType = new GraphQLObjectType({
       resolve: async (parent, args) => {
         const { searchTerm, } = args;
         const backupArr = ['/water_img/water-park.png', '/water_img/manta-ray.png', '/water_img/aqua-jogging.png', '/water_img/whale.png'];
-        let randomValue = backupArr[Math.floor(Math.random() * backupArr.length )]        
-        
-
+        let randomValue = backupArr[Math.floor(Math.random() * backupArr.length )].trim()
         const browser = await puppeteer.launch({headless: true});
         const page = await browser.newPage();
         
         // Navigate to Google Images
-        await page.goto(`https://www.google.com/search?q=${encodeURIComponent("water")}&tbm=isch`);
+        await page.goto(`https://www.google.com/search?q="${searchTerm}"}&tbm=isch`);
         // await page.goto(`https://www.google.com/search?q=${encodeURIComponent(searchTerm)}&tbm=isch`);
         
         // Wait for the images to load
@@ -244,7 +240,7 @@ const RootQueryType = new GraphQLObjectType({
           const image = document.querySelector('.rg_i');
           const url = image.getAttribute('data-src') || image.getAttribute('src');
           
-          return url || randomvalue
+          return url;
         });
         
         // await browser.close();
@@ -354,42 +350,9 @@ const RootQueryType = new GraphQLObjectType({
         })
       }
   },
-  // linkUserWithGoogle: {
-  //     type: UsersType,
-  //     description: 'App Provides choice for user/human: | Sign-up with username | Google --> This query links: username, password, email with google.',
-  //     args: {
-  //       username: { type: GraphQLString },
-  //       // id: { type: GraphQLInt },
-  //       googleId: { type: GraphQLString },
-  //       // icon: { type: GraphQLString }
-  //     },
-  //     resolve: async (parent, args) => {  // There will be 2 functions that perform this query. 1 for username and 1 for id.     
-  //       if (args.username) {
-  //         const { username, googleId } = args
-  //           return prisma.users.findFirst({
-  //             where: {
-  //               username: username
-  //             }
-  //           }).then(async(newUser) => {
-  //             console.log('newUser serverside')
-  //             console.log(newUser)
-  //             const googleUpdateUser = await prisma.users.update({
-  //               where: {
-  //                 googleId: newUser.username
-  //               },
-  //               data: {
-  //                 googleId: newUser.googleId
-  //               }
-  //             })
-  //           }).then(async(updatedUser) => {    // const { id, googleId, icon, username, password, email, age } = updatedUser
-  //             return { id: 101, googleId: 'updateID', icon: 'updateIcon', username: 'updateusername', password: 'updatepassword', email: 'updateemail', age: 101 }
-  //           })
-  //       }
-  //     }
-  // },
   linkUserWithGoogle: {
     type: UsersType,
-    description: 'List of Settings',
+    description: 'User already signed up -> They also want to link account -> add googleId and googleIcon to DB.',
     args: {
       username: { type: GraphQLString },
       googleId: { type: GraphQLString },
@@ -432,6 +395,36 @@ const RootQueryType = new GraphQLObjectType({
       })            
     }
   },  
+  NonGoogleIconUpdate: {
+    type: GraphQLString,
+    // type: UsersType,
+    description: 'User just signed up. They rejected link Google, now They pick a profileIcon for which to update User',
+    args: {
+      id: { type: GraphQLInt },
+      icon: { type: GraphQLString }
+    },
+    resolve: async (parent, args) => {
+      const { id, icon } = args;
+      const users = await prisma.users.findMany()
+      let me = allusers.find(user => user.username === id)
+      let myID = me.id
+
+      // let me = allusers.filter(user => user.username === username)
+
+      return await prisma.users.update({
+        // const updateUser = await prisma.users.update({
+          where: {
+            id: myID
+          },
+          data: {          
+            icon: icon
+          },
+        }).then( (updatedUser) => {        
+          const u = updatedUser
+        return { id: u.id, googleId: u.google_id, icon: u.icon, username: u.username, password: u.password, email: u.email, age: u.age }      
+        })        
+    }
+  },
 
   singledata: {    
     type: DataType,
