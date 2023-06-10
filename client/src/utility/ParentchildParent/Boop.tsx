@@ -17,13 +17,10 @@ const Boop = ({ rotateAngle, speed, children, setImg, iconScreenFlag, showBoat, 
 
   const [isRotated, setIsRotated] = useState(false);
 
-
   useEffect(() => {
     let halfFassed:number = speed / 2 
     if (isRotated) {
-      // Apply the rotation after a short delay to allow the transition to take effect
       const timeoutId = setTimeout(() => {
-        // targetElemRef.current ? targetElemRef.current.style.border = "5px solid green" : []
         let elemCurrent = targetElemRef.current
         if (elemCurrent) {
           setTimeout( () => elemCurrent.style.transform = `rotate(${rotateAngle}deg)`, speed)
@@ -50,10 +47,11 @@ const Boop = ({ rotateAngle, speed, children, setImg, iconScreenFlag, showBoat, 
       if (backSlice === '/water_img/pants.png') {
         console.log("hey were over here")
         $(event.target).attr('src', `${url}water_img/bikini.png`)
+      } else if (backSlice === '/water_img/bikini.png') {
+        $(event.target).attr('src', `${url}water_img/pants.png`)
       }
     }
   
-
   const boopBehaviorLeave = () => { setIsRotated(false); };
 
   const elemClick = (event:any) => { 
