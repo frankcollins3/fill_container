@@ -6,9 +6,10 @@ interface Props {
   speed: number,
   children: JSX.Element,
   setImg: any
+  iconScreenFlag: any
 }
 
-const Boop = ({ rotateAngle, speed, children, setImg }: Props) => {
+const Boop = ({ rotateAngle, speed, children, setImg, iconScreenFlag }: Props) => {
   
   const targetElemRef:any = useRef(null)
 
@@ -43,7 +44,22 @@ const Boop = ({ rotateAngle, speed, children, setImg }: Props) => {
 
   const boopBehaviorLeave = () => { setIsRotated(false); };
 
-  const elemClick = (event:any) => { setImg({ payload: event.target.src }) }
+  const elemClick = (event:any) => { 
+    let src:string = event.target.src    
+    let length:number = src.length
+    let hrefCheck:string = src.slice(0, 4);
+    let imgCheck:string = src.slice(length - 3, length)    
+    if (hrefCheck === 'http' && imgCheck === 'png' || imgCheck === 'jpeg') {
+      setImg({ payload: event.target.src }) 
+      iconScreenFlag()
+      $(event.target)
+      .css('border', '5px solid hotpink')
+      .animate({
+        top: '100px'
+      }, 500)       
+    }
+    return
+  }
 
   return (
     <div className="boop">
