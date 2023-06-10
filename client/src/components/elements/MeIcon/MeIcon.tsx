@@ -11,29 +11,28 @@ import {useImage} from '../../../utility/ImgContext'
 // import LetterLife from '../../../utility/ParentchildParent/LetterLife'
 import $ from 'jquery'
 import ConnectedSignupLoginChecker from '../SignupLoginChecker'
+import ReusableImage from '../../../components/elements/ReusableImage'
 
-import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT} from '../../../redux/actions'
+import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC } from '../../../redux/actions'
 
 
  function MeIcon (props:any) {
 
-    const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket, puppetCup, cup, drink, bottle, bottles, mouseWaterCup, puppeteerSearchTerms } = useImage()
+    const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket, puppetCup, cup, drink, bottle, bottles, mouseWaterCup, puppeteerSearchTerms, ReusableImageObject } = useImage()
     
     let img;
 
     useEffect( () => {
       (async() => {
-        
 
       })()
       
     }, [])
 
     const {
-       FLIP_FLOP_ICON, SPIN_BOTTLE_IMG, SPIN_BOTTLE_SEARCHING, SPIN_BOTTLE_SHOW_INPUT,
-       SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT,
+       FLIP_FLOP_ICON, SPIN_BOTTLE_IMG, SPIN_BOTTLE_SEARCHING, SPIN_BOTTLE_SHOW_INPUT, GOOGLE_IMG_URL, NON_GOOGLE_IMG_URL, SELECT_ICON_SCREEN, PRE_SELECTED_ICON_SRC,
+       SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC,
      } = props
-
 
     const [bathingSuit, setBathingSuit] = useState<boolean>(false)
     const [moveBoat, setMoveBoat] = useState(false)
@@ -43,7 +42,6 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
 
     const Leftie = ["Left-Cont", "Cont"].join(" ")
     const Rightie = ["Right-Cont", "Cont"].join(" ")
-
 
     const LetterLift= ({ children }: { children: JSX.Element }) => {
         return (
@@ -62,33 +60,10 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
         );
       }
 
-    // const LetterLift = ({ children}: { children: JSX.Element}) => {
-    //     return (
-    //         <div>
-    //             {React.Children.map(children, (child, index) => {
-    //                 const styledChild =React.cloneElement(child, {
-    //                     style; {
-    //                         border: '5px solid orange'
-    //                     },
-
-    //                 });
-    //                 return styledChild
-    //             })}
-    //         </div>
-    //     )
-    // }
-
-    const test = () => {
-        
-    }
-
     const moveboat = () =>  {
       let numbers = [1,2,3,4,5,6,7,8,9,10]
       let randomNumber = Math.floor(Math.random() * numbers.length)
-      if (randomNumber >= 5) {
-        
-        setFlipCoin(!flipCoin)
-      }
+      if (randomNumber >= 5) { setFlipCoin(!flipCoin) }
       setMoveBoat(true) 
     }
 
@@ -101,14 +76,17 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
           console.log('value');
           console.log(value);
 
-   
-                
+          if (key === ' ') {
+            console.log('youre spacin out!')
+            $('#PuppeteerSearch')
+            .val('')
+            attributeJQ('#PuppeteerSearch', 'value', '')         
+      }
+                   
           if (key === 'Enter') {
             
             TOGGLE_SPIN_BOTTLE_SHOW_INPUT()
-            let value:string = `lightblue${event.target.value}`
-            console.log('value')
-            console.log(value)
+            let value:string = `lightblue${event.target.value}`            
             
             const loadingicons:string[] = [cup, drink, bottle, bottles, mouseWaterCup]
                 const randomIcon = MathRandom(loadingicons)
@@ -130,14 +108,13 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                       console.log(data)
                       let imgSrc:string = data.data.puppeteer
                       SET_SPIN_BOTTLE_IMG( { payload: imgSrc })
+                      SET_NON_GOOGLE_IMG_URL( { payload: imgSrc })
                       TOGGLE_SPIN_BOTTLE_SEARCHING()
                     } else {
                       TOGGLE_SPIN_BOTTLE_SEARCHING()
                       SET_SPIN_BOTTLE_IMG( { payload: "/water_img/bite.png"})
                     }
                 })
-
-
           }
         }
 
@@ -149,119 +126,96 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
           event.target.style.border = "1px dashed #73defe";
         }
 
+        const dontMoveBoat = () =>  setMoveBoat(false) 
+
+        const clickboat = () => {
+            // console.log('FLIP_FLOP_ICON')
+            // console.log(FLIP_FLOP_ICON)
+
+            // console.log('GOOGLE_IMG_URL')
+            // console.log(GOOGLE_IMG_URL)          
+            console.log('NON_GOOGLE_IMG_URL')
+            console.log(NON_GOOGLE_IMG_URL)
+        }
+
+        
   
-    const dontMoveBoat = () =>  setMoveBoat(false) 
 
     const renderMeIcon = () => {
         return (
             <>
 <div style={{ backgroundImage: `url('${puppetCup}')` }} className={Leftie} onMouseEnter={moveboat} onMouseLeave={dontMoveBoat}>
 
-{/* <div style={{ height: '100%', width: '100%', backgroundImage: `url('${puppetCup}')`, backgroundRepeat: 'no-repeat' }}> */}
                     {
                           SPIN_BOTTLE_SHOW_INPUT 
                           ?
-                          <img className={ SPIN_BOTTLE_SEARCHING ? "Move-Boat" : '' } id="boat" style={{ position: 'relative', height: '10em', width: '10em' }} src={ boat || '/water_img/mouse_droplet.png'}/>
+                          <img onClick={clickboat} className={ SPIN_BOTTLE_SEARCHING ? "Move-Boat" : '' } id="boat" style={{ position: 'relative', height: '10em', width: '10em' }} src={ boat || '/water_img/mouse_droplet.png'}/>
                           :
                           <div className="column">
 
                           <input id="PuppeteerSearch" onFocus={iFocus} onKeyDown={FakeClick} onMouseEnter={FakeFocus} style={{ color: 'blanchedalmond' }} type="text"/>
-                          </div>
-                          
+                          </div>                          
                     }
 
               </div>  
-                    {/* if there is a current user and they hover over the icon it will become a window so one can see into the profile  */}
+                    
 
-              <div className={Rightie}>                        
-              
-                    {
-                      FLIP_FLOP_ICON
-                            ?
-                            <>
 
+              <div id={SELECT_ICON_SCREEN ? "column" : ""} className={Rightie}>                                                     
+                      {
+                        SELECT_ICON_SCREEN 
+                              ?
+                              <img src={NON_GOOGLE_IMG_URL}/>
+                              :
+                              <>                        
+                              <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL} iconScreenFlag={TOGGLE_SELECT_ICON_SCREEN}>
+                                <img style={{ transform: `rotate(0deg)` }} src="/water_img/bottles.png" />
+                                </Boop>
+    
+                              {/* <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL}>                         
+                              <img onMouseEnter={()=> setBathingSuit(!bathingSuit)} src={bathingSuit ? bikini: pants}></img>
+                              </Boop>  
+    
+                            
+                        <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL}>                        
+                              <img src={shark}></img>
+                              </Boop>
+    
+                            <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL}>                        
+                                <img src={panda}></img>
+                              </Boop>
+                          <div className="column">
+                        <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL}>                        
+                        <img style={{ display: SPIN_BOTTLE_SEARCHING ? "none" : ""}}  src={SPIN_BOTTLE_IMG || target}></img>
+                        </Boop>  
+                          <pre style={{ display: SPIN_BOTTLE_SEARCHING ? "" : "none" }}> Pouring. Please Wait.  </pre>
+                            </div>  
+    
+                        <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL}>                        
+                        <img src={turtle}></img>
+                        </Boop>
                               
-                            <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>
-                            <img style={{ transform: `rotate(0deg)` }} src="/water_img/bottles.png" />
-                            </Boooooop>
-
-                          <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                         
-                          <img onMouseEnter={()=> setBathingSuit(!bathingSuit)} src={bathingSuit ? bikini: pants}></img>
-                          </Boooooop>  
-
-                          <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
-                    <img src={shark}></img>
-                          </Boooooop>
-
-                    <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
-                    <img src={panda}></img>
-                    </Boooooop>
-
-                    <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
-                    <img src={target}></img>
-                    </Boooooop>
-
-                    <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
-                    <img src={turtle}></img>
-                    </Boooooop>
-
-                    <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
-                   <img src={dolphin}></img>
-                    </Boooooop> 
-
-                    <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
-                    <img src={pool}></img>
-                    </Boooooop>
-                                        
-
-                    <Boooooop rotateAngle={45} speed={800} keepGoing={FLIP_FLOP_ICON}>                        
-                    <img src={bucket}></img>
-                    </Boooooop>   
-                            </>
-                            :                        
-                        <>                        
-                          <Boop rotateAngle={45} speed={800}>
-                            <img onClick={test} style={{ transform: `rotate(0deg)` }} src="/water_img/bottles.png" />
-                            </Boop>
-
-                          <Boop rotateAngle={45} speed={800}>                         
-                          <img onMouseEnter={()=> setBathingSuit(!bathingSuit)} src={bathingSuit ? bikini: pants}></img>
-                          </Boop>  
-
-                        
-                    <Boop rotateAngle={45} speed={800}>                        
-                    <img src={shark}></img>
-                          </Boop>
-
-                        <Boop rotateAngle={45} speed={800}>                        
-                            <img src={panda}></img>
-                          </Boop>
-                      <div className="column">
-                    <Boop rotateAngle={45} speed={800} >                        
-                    <img style={{ display: SPIN_BOTTLE_SEARCHING ? "none" : ""}}  src={SPIN_BOTTLE_IMG || target}></img>
-                    </Boop>  
-                      <pre style={{ display: SPIN_BOTTLE_SEARCHING ? "" : "none" }}> Pouring. Please Wait.  </pre>
-                        </div>  
-
-                    <Boop rotateAngle={45} speed={800}>                        
-                    <img src={turtle}></img>
-                    </Boop>
+                      <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL}>                        
+                       <img src={dolphin}></img>
+                        </Boop> 
+    
+                        <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL}>                        
+                        <img src={pool}></img>
+                        </Boop> */}
+                     
                           
-                  <Boop rotateAngle={45} speed={800}>                        
-                   <img src={dolphin}></img>
-                    </Boop> 
-
-                    <Boop rotateAngle={45} speed={800}>                        
-                    <img src={pool}></img>
-                    </Boop>
-                 
-                      <Boop rotateAngle={45} speed={800}>                        
-                    <img src={bucket}></img>
-                      </Boop>   
-                        
-                      </>
-                            }
+                        <img src={bucket}></img>
+                          
+                          {/* <Boop rotateAngle={45} speed={800} setImg={SET_GOOGLE_IMG_URL}>                        
+                        <img src={bucket}></img>
+                          </Boop>    */}
+                          </>
+                      }
+                    
+ 
             </div>  
+                            
+                        
             </>
         )
     }
@@ -275,13 +229,21 @@ const mapStateToProps = (state:any) => ({
     SPIN_BOTTLE_IMG: state.SPIN_BOTTLE_IMG,
     SPIN_BOTTLE_SHOW_INPUT: state.SPIN_BOTTLE_SHOW_INPUT,
     SPIN_BOTTLE_SEARCHING: state.SPIN_BOTTLE_SEARCHING,
+    GOOGLE_IMG_URL: state.GOOGLE_IMG_URL,
+    NON_GOOGLE_IMG_URL: state.NON_GOOGLE_IMG_URL,
+    SELECT_ICON_SCREEN: state.SELECT_ICON_SCREEN,
+    PRE_SELECTED_ICON_SRC: state.PRE_SELECTED_ICON_SRC
     // NON_GOOGLE_IMG_URL: '',                      state doesn't matter since this page is navigated. one would need redux-persist. I'm using regular redux, GraphQl/prisma/postgres and localStorage to persist
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
     SET_SPIN_BOTTLE_IMG: (action:any) => dispatch(SET_SPIN_BOTTLE_IMG(action)),
     TOGGLE_SPIN_BOTTLE_SEARCHING: () => dispatch(TOGGLE_SPIN_BOTTLE_SEARCHING()),
-    TOGGLE_SPIN_BOTTLE_SHOW_INPUT: () => dispatch(TOGGLE_SPIN_BOTTLE_SHOW_INPUT())
+    TOGGLE_SPIN_BOTTLE_SHOW_INPUT: () => dispatch(TOGGLE_SPIN_BOTTLE_SHOW_INPUT()),
+    SET_GOOGLE_IMG_URL: (action:any) => dispatch(SET_GOOGLE_IMG_URL(action)),
+    SET_NON_GOOGLE_IMG_URL: (action:any) => dispatch(SET_NON_GOOGLE_IMG_URL(action)),    
+    TOGGLE_SELECT_ICON_SCREEN: () => dispatch(TOGGLE_SELECT_ICON_SCREEN()),
+    SET_PRE_SELECTED_ICON_SRC: (action:any) => dispatch(SET_PRE_SELECTED_ICON_SRC(action))
 })
 
 const ConnectedMeIcon = connect(mapStateToProps, mapDispatchToProps)(MeIcon)
