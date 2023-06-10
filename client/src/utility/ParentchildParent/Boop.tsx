@@ -6,10 +6,12 @@ interface Props {
   speed: number,
   children: JSX.Element,
   setImg: any
-  iconScreenFlag: any
+  iconScreenFlag: any,
+  showBoat: any,
+  boat: boolean
 }
 
-const Boop = ({ rotateAngle, speed, children, setImg, iconScreenFlag }: Props) => {
+const Boop = ({ rotateAngle, speed, children, setImg, iconScreenFlag, showBoat, boat }: Props) => {
   
   const targetElemRef:any = useRef(null)
 
@@ -52,6 +54,7 @@ const Boop = ({ rotateAngle, speed, children, setImg, iconScreenFlag }: Props) =
     if (hrefCheck === 'http' && imgCheck === 'png' || imgCheck === 'jpeg') {
       setImg({ payload: event.target.src }) 
       iconScreenFlag()
+      if (boat === false) showBoat()
       $(event.target)
       .css('border', '5px solid hotpink')
       .animate({
