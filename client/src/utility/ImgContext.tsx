@@ -10,6 +10,7 @@ type imgContextType = {
     clock: string;     
     calendar: string   
     mouseWaterCup: string;
+    fullCup: string;
     closeWhite: string;
     close: string;
     confirmation: string;
@@ -80,6 +81,7 @@ const imgDefaults: imgContextType = {
     clock: `${imagePrefix}clock.png`,     
     calendar: `${imagePrefix}calenar.png`, 
     mouseWaterCup: `${imagePrefix}mouseWaterCup.png`,
+    fullCup: `${imagePrefix}fullCup.png`,
     closeWhite: `${imagePrefix}close-white.png`,
     close: `${imagePrefix}close.png`,
     confirmation: `${imagePrefix}confirmation.png`,
@@ -156,6 +158,7 @@ export function ImgProvider({ children }: Props) {
     const [clock, setClock] = useState<string>(`${imagePrefix}clock.png`);
     const [calendar, setCalendar] = useState<string>(`${imagePrefix}calendar.png`);
     const [mouseWaterCup, setMouseWaterCup] = useState<string>(`${imagePrefix}mouseWaterCup.png`);
+    const [fullCup, setFullCup] = useState<string>(`${imagePrefix}fullCup.png`);
     const [closeWhite, setCloseWhite] = useState<string>(`${imagePrefix}close-white.png`);
     const [close, setClose] = useState<string>(`${imagePrefix}close.png`);
     const [confirmation, setConfirmation] = useState<string>(`${imagePrefix}confirmation.png`);
@@ -220,6 +223,7 @@ export function ImgProvider({ children }: Props) {
     clock,     
     calendar,  
     mouseWaterCup,
+    fullCup,
     closeWhite,
     close,
     confirmation,
