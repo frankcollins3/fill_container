@@ -396,8 +396,8 @@ const RootQueryType = new GraphQLObjectType({
     }
   },  
   NonGoogleIconUpdate: {
-    type: GraphQLString,
-    // type: UsersType,
+    // type: GraphQLString,
+    type: UsersType,
     description: 'User just signed up. They rejected link Google, now They pick a profileIcon for which to update User',
     args: {
       id: { type: GraphQLInt },
@@ -406,22 +406,23 @@ const RootQueryType = new GraphQLObjectType({
     resolve: async (parent, args) => {
       const { id, icon } = args;
       const users = await prisma.users.findMany()
-      let me = allusers.find(user => user.username === id)
-      let myID = me.id
+      let myId = users.find(user => user.id === id)
 
       // let me = allusers.filter(user => user.username === username)
 
       return await prisma.users.update({
         // const updateUser = await prisma.users.update({
           where: {
-            id: myID
+            id: 1
           },
           data: {          
             icon: icon
           },
         }).then( (updatedUser) => {        
           const u = updatedUser
-        return { id: u.id, googleId: u.google_id, icon: u.icon, username: u.username, password: u.password, email: u.email, age: u.age }      
+        return { id: u.id, icon: u.icon }      
+        // return { id: u.id, googleId: u.google_id, icon: u.icon, username: u.username, password: u.password, email: u.email, age: u.age }      
+        // return { id: u.id, googleId: u.google_id, icon: u.icon, username: u.username, password: u.password, email: u.email, age: u.age }      
         })        
     }
   },
