@@ -4,10 +4,11 @@ import $ from 'jquery'
 interface Props {
   rotateAngle: number,
   speed: number,
-  children: JSX.Element
+  children: JSX.Element,
+  setImg: any
 }
 
-const Boop = ({ rotateAngle, speed, children }: Props) => {
+const Boop = ({ rotateAngle, speed, children, setImg }: Props) => {
   
   const targetElemRef:any = useRef(null)
 
@@ -40,9 +41,9 @@ const Boop = ({ rotateAngle, speed, children }: Props) => {
     setIsRotated(true);
   };
 
-  const boopBehaviorLeave = () => {
-    setIsRotated(false);
-  };
+  const boopBehaviorLeave = () => { setIsRotated(false); };
+
+  const elemClick = (event:any) => { setImg({ payload: event.target.src }) }
 
   return (
     <div className="boop">
@@ -53,7 +54,8 @@ const Boop = ({ rotateAngle, speed, children }: Props) => {
             margin: 0
           },
           onMouseEnter: boopBehaviorEnter,
-          onMouseLeave: boopBehaviorLeave
+          onMouseLeave: boopBehaviorLeave,
+          onClick: elemClick
         });
 
         return styledChild;
