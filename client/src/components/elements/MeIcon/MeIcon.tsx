@@ -18,7 +18,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
 
  function MeIcon (props:any) {
 
-    const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket, puppetCup, cup, drink, bottle, bottles, mouseWaterCup, puppeteerSearchTerms, ReusableImageObject } = useImage()
+    const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket, puppetCup, cup, drink, bottle, bottles, mouseWaterCup, puppeteerSearchTerms, ReusableImageObject, confirmation, close } = useImage()
     
     let img;
 
@@ -37,11 +37,13 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
     const [bathingSuit, setBathingSuit] = useState<boolean>(false)
     const [moveBoat, setMoveBoat] = useState(false)
     const [flipCoin, setFlipCoin] = useState(false)
+    const [psiHover, setPsiHover] = useState(false)
 
     let googleUrl:string = props.GOOGLE_IMAGE_URL
 
     const Leftie = ["Left-Cont", "Cont"].join(" ")
     const Rightie = ["Right-Cont", "Cont"].join(" ")
+    const PSI = $('#Pre-Selected-Icon')
 
     const LetterLift= ({ children }: { children: JSX.Element }) => {
         return (
@@ -107,9 +109,10 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                       console.log('data')
                       console.log(data)
                       let imgSrc:string = data.data.puppeteer
-                      SET_SPIN_BOTTLE_IMG( { payload: imgSrc })
-                      SET_NON_GOOGLE_IMG_URL( { payload: imgSrc })
-                      TOGGLE_SPIN_BOTTLE_SEARCHING()
+                      await SET_SPIN_BOTTLE_IMG( { payload: imgSrc })
+                      await SET_NON_GOOGLE_IMG_URL( { payload: imgSrc })
+                      await TOGGLE_SPIN_BOTTLE_SEARCHING()
+                      await TOGGLE_SELECT_ICON_SCREEN()
                     } else {
                       TOGGLE_SPIN_BOTTLE_SEARCHING()
                       SET_SPIN_BOTTLE_IMG( { payload: "/water_img/bite.png"})
@@ -138,7 +141,9 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
             console.log(NON_GOOGLE_IMG_URL)
         }
 
-        
+        const FakeBoop = () => {          
+          setPsiHover(!psiHover)
+        }
   
 
     const renderMeIcon = () => {
@@ -165,7 +170,17 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                       {
                         SELECT_ICON_SCREEN 
                               ?
-                              <img src={NON_GOOGLE_IMG_URL}/>
+                              <>
+
+                              <img onClick={() => TOGGLE_SELECT_ICON_SCREEN() } className={psiHover ? "psiHoverAnimation" : ""} id="Pre-Selected-Icon" src={NON_GOOGLE_IMG_URL}/>
+                             
+                              
+
+                                <div className="row">
+                                  <img onMouseEnter={()=> $('#Pre-Selected-Icon').css('opacity', '0.1')} onMouseLeave={()=> $('#Pre-Selected-Icon').css('opacity', '1.0')} style={{ margin: '0 1em'}} src={close}></img>
+                                  <img onMouseEnter={FakeBoop} style={{ margin: '0 1em'}} src={confirmation}></img>
+                                </div>
+                              </>
                               :
                               <>                        
                               <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL} iconScreenFlag={TOGGLE_SELECT_ICON_SCREEN}>
@@ -249,19 +264,3 @@ const mapDispatchToProps = (dispatch:any) => ({
 const ConnectedMeIcon = connect(mapStateToProps, mapDispatchToProps)(MeIcon)
 
 export default ConnectedMeIcon
-                            
-                        
-
-                
-
-
-                 
-
-
-             
-
-
-         
-                    
-                                     
-              
