@@ -66,8 +66,10 @@ const initialState = {
     // icons  
     ICON_NOT_INPUT: false,  // this is kind of login it is the boolean that decides if the  <Route element={} will be the <ConnectedLogInOutGoogle> or the <ConnectedMeIcon>
     FLIP_FLOP_ICON: false,
+    SPIN_BOTTLE_SHOW_INPUT: false,
     SPIN_BOTTLE_IMG: '',
     SPIN_BOTTLE_SEARCHING: false,
+    SELECT_ICON_SCREEN: false
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -280,7 +282,16 @@ const initialState = {
           ...state,
           SPIN_BOTTLE_SEARCHING: !state.SPIN_BOTTLE_SEARCHING
         }
-        
+      case "TOGGLE_SPIN_BOTTLE_SHOW_INPUT":
+        return {
+          ...state,
+          SPIN_BOTTLE_SHOW_INPUT: !state.SPIN_BOTTLE_SHOW_INPUT
+        }
+      case "TOGGLE_SELECT_ICON_SCREEN": 
+        return {
+          ...state,
+          SELECT_ICON_SCREEN: !state.SELECT_ICON_SCREEN
+        }        
 
       default:
         return state;
