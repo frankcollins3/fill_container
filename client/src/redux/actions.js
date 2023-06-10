@@ -162,3 +162,16 @@ export const SET_SPIN_BOTTLE_IMG = (action) => {
 }
 
 export const TOGGLE_SPIN_BOTTLE_SEARCHING = () => { return { type: "TOGGLE_SPIN_BOTTLE_SEARCHING"} }
+
+export const TOGGLE_SPIN_BOTTLE_SHOW_INPUT = () => { return { type: "TOGGLE_SPIN_BOTTLE_SHOW_INPUT" } }
+
+export const TOGGLE_SELECT_ICON_SCREEN = () => { return { type: "TOGGLE_SELECT_ICON_SCREEN" } }
+
+export const SET_PRE_SELECTED_ICON_SRC = (action) => {
+    return {
+      type: "SET_PRE_SELECTED_ICON_SRC",
+      payload: action.payload
+    }
+}
+
+export const TOGGLE_PSI_HOVER = () => { return { type: "TOGGLE_PSI_HOVER" } }
