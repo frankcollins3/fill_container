@@ -20,9 +20,9 @@ import Dashboard from './components/elements/Dashboard/Dashboard'
 import ConnectedCredits from './components/elements/Credits/Credits.tsx'
 import ConnectedLogInOutGoogle from './components/elements/LogInOutGoogle/LogInOutGoogle'
 import ConnectedMeIcon from './components/elements/MeIcon/'
-import ConnectedLetterLifth1 from './components/elements/LetterLifth1/'
 import HomeTS from './components/webpage/home/homeTS'
-import {ImgProvider} from './utility/ImgContext'
+import {ImgProvider} from './utility/Contexts/ImgContext'
+import {RegexProvider} from './utility/Contexts/RegexMenu'
 
 
 // <GoogleLogin> and googleAPI components and variables.
@@ -36,21 +36,6 @@ import store from './redux/store'
 function App( props:any ) {
   const dispatch = useDispatch()
   setCursor($('*'))   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   const { 
     HYDRO_SETTINGS, LOG_IN_OUT_TYPE, CURRENT_USER, GOOGLE_IMAGE_URL, ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG, FLIP_FLOP_ICON,       // state from mapStateToProps above the export app statement.
@@ -92,7 +77,6 @@ function App( props:any ) {
   const onSuccess = (res:any) =>  { console.log(res.profileObj) }
   const onFailure = (res:any) => { console.log("hey failure") }
 
-
   const renderApp = () => {
       return (
         <div className="main">        
@@ -102,8 +86,9 @@ function App( props:any ) {
     {/* <Route path={'/settings'} element={ < Settings /> } /> */}
     {/*   settings needs redux state. [ SETTINGS_DISPLAY | TOGGLE_SETTINGS_DISPLAY ]   */}
     
-    <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedLogInOutGoogle/> : <ConnectedMeIcon googleImageUrl={GOOGLE_IMAGE_URL}/>  } />
-    {/* <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedMeIcon /> : <ConnectedLogInOutGoogle/>  } /> */}
+    {/* <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedLogInOutGoogle/> : <ConnectedMeIcon googleImageUrl={GOOGLE_IMAGE_URL}/>  } /> */}
+    <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedMeIcon /> : <ConnectedLogInOutGoogle/>  } />
+
     <Route path={'/dashboard'} element={ < Dashboard /> } />
     </Routes>
     </Router>  
@@ -111,11 +96,10 @@ function App( props:any ) {
       )
   }
 
-  
-
   return (
     // <GoogleUserContext.Provider value={googleUser} >
     <ImgProvider>
+    <RegexProvider>
     <div className="App">
       <div className="navbar">              
         <Navbar />
@@ -135,7 +119,8 @@ function App( props:any ) {
         <ConnectedCredits  />    
       </div>
     </div>
-    </ImgProvider>
+          </RegexProvider>
+        </ImgProvider>
     // </GoogleUserContext.Provider>
   );
 }
@@ -156,8 +141,6 @@ const mapStateToProps = (state:any) => ({
 
     ICON_NOT_INPUT: state.ICON_NOT_INPUT,
     FLIP_FLOP_ICON: state.FLIP_FLOP_ICON
-
-
 });
 
 // global redux actions. these are the state-mutating actions being mapped to props
