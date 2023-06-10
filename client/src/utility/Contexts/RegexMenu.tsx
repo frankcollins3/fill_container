@@ -10,6 +10,7 @@ type RegexContextType = {
     RnoWhiteSpace: RegExp;
     MsplitAtDot: RegExp;
     McharAfterComma: RegExp;
+    McharBeforeAt: RegExp;
   }
   
   type RegexDefaults = {
@@ -21,7 +22,8 @@ type RegexContextType = {
     RdotAtEscape: RegExp;
     RnoWhiteSpace: RegExp;
     MsplitAtDot: RegExp;
-    McharAfterComma: RegExp
+    McharAfterComma: RegExp;
+    McharBeforeAt: RegExp;
   }
   
   const regexDefaults: RegexDefaults = {
@@ -34,6 +36,7 @@ type RegexContextType = {
     RnoWhiteSpace: /\s/g,
     MsplitAtDot: /@([^.]*)\./,        
     McharAfterComma: /,(.*)/,
+    McharBeforeAt: /^(.*?)@/,
   };
 
       const RegexContext = createContext<RegexContextType>(regexDefaults)
@@ -56,6 +59,7 @@ type RegexContextType = {
         const [RnoWhiteSpace, setNoWhiteSpace] = useState<RegExp>(/\s/g)                             // replace
         const [MsplitAtDot, setSplitAtDot] = useState<RegExp>(/@([^.]*)\./)      // match
         const [McharAfterComma, setMCharAfterComma] = useState<RegExp>(/,(.*)/)      // match          if (splitEmail !== null) {       const matchedValue = splitEmail[0];      }
+        const [McharBeforeAt, setMCharBeforeAt] = useState<RegExp>(/^(.*?)@/)
                             
         const value = {
             RstringAfterPeriod,
@@ -67,6 +71,7 @@ type RegexContextType = {
             RnoWhiteSpace,
             MsplitAtDot,       
             McharAfterComma,
+            McharBeforeAt
         };
 
         return (
