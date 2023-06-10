@@ -42,10 +42,11 @@ interface Props {
 function SignupInput (props: Props) {
 
     const [passwordShowClick, setPasswordShowClick] = useState<boolean>(false)
+    const [dontSet, setDontSet] = useState<boolean>(false)
 
     const dispatch = useDispatch()
 
-    const  { RhasNums, MsplitAtDot, McharAfterComma } = useRegex()
+    const  { RhasNums, MsplitAtDot, McharAfterComma, McharBeforeAt, RdotAtEscape } = useRegex()
 
     let RegexObject:any;    
 
@@ -70,29 +71,64 @@ const { inputType, USERNAME_INPUT, PASSWORD_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_
         if (inputType === 'username') {            
             inputHandler(event, SET_USERNAME_INPUT)
         }
+
         if (inputType === 'email') {
             const splitHelper = event.target.value.split('@.')
 
-            let splitEmail:any = value.match(MsplitAtDot)  //               /@([^.]*)\./
+            if (value[value.length-1] === '.') {
+                let splitEmail:any = value.match(MsplitAtDot)
+                console.log('splitEmail')
+                console.log(splitEmail)
+                if (splitEmail != null) {
+                    const matchedValue:string = splitEmail[0]
+                    const premail:any = value.match(McharBeforeAt)
+                    const emailNoAt:string = premail[0]
+                    console.log('matchedvalue')
+                    console.log(matchedValue)
 
-            if (splitEmail !== null) {
-                console.log('aaaye')
-                const matchedValue = splitEmail[0];
-                console.log(matchedValue); // Output: the matched email string
-              }
-            // splitEmail !== null || splitEmail !== undefined && splitEmail[0] ? console.log(splitEmail[0]) : console.log('hey null!')
+                    if (matchedValue?.includes('g') && matchedValue.includes('m') && matchedValue.includes('a') && matchedValue.includes('i') && matchedValue.includes('l') && matchedValue !== '@gmail.') {
+                        setDontSet(true)
+                        console.log('G M A I L in the string but it doesnt === GMAIL')
+                        let remail:string = `${emailNoAt}gmail.com`
+                        console.log('remail')
+                        console.log(remail)
+                        setTimeout( () => SET_EMAIL_INPUT( {payload: remail } ), 500)                         
+                    } 
+                    else {
+                        setDontSet(false)
+                        inputHandler(event, SET_EMAIL_INPUT)
+                    }
+                }
+            }
+                        dontSet ? console.log('aaye') : inputHandler(event, SET_EMAIL_INPUT)
+            }                
 
-    //         let emailString:string = splitEmail?.toString().trim()
-    //         console.log('emailString')
-    //         console.log(`emailStr: ${emailString} ${typeof emailString} ${emailString.length}`)
-    // if (emailString?.includes('g') && splitEmail.includes('m') && splitEmail.includes('a') && splitEmail.includes('i') && splitEmail.includes('l') && emailString !== 'gmail') {
-    //             console.log("the letters includes gmail but there is a typo")
-    //         }
-            console.log('splitEmail')
-            console.log(splitEmail)
-            inputHandler(event, SET_EMAIL_INPUT)
-            
-        }
+
+
+            // if (splitEmail !== null) {
+            //     const typoPromise = new Promise( (resolve, reject) => {
+            //         const matchedValue:string = splitEmail[0]
+            //         const premail:any = value.match(McharBeforeAt)
+            //         const emailNoAt:string = premail[0]
+            //         if (matchedValue?.includes('g') && matchedValue.includes('m') && matchedValue.includes('a') && matchedValue.includes('i') && matchedValue.includes('l') && matchedValue !== 'gmail.') {
+            //             console.log('G M A I L in the string but it doesnt === GMAIL')
+            //             let remail:string = `${emailNoAt}gmail.com`
+            //             console.log('remail')
+            //             console.log(remail)
+            //             SET_EMAIL_INPUT({payload: remail})                         
+            //         } else {
+            //             console.log(`GMAIL splitEmail ${splitEmail}`)
+            //         }                    
+            //     })
+            //     typoPromise
+            //     .then( () => {
+
+            //     })
+            // } else {
+            // }
+
+
+                
         if (inputType === 'age') {
             inputHandler(event, SET_AGE_INPUT)
         }
