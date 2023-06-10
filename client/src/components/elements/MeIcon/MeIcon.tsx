@@ -44,6 +44,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
     const Leftie = ["Left-Cont", "Cont"].join(" ")
     const Rightie = ["Right-Cont", "Cont"].join(" ")
     const PSI = $('#Pre-Selected-Icon')
+    const Rejection = $('#PreSelectRejection')
 
     const LetterLift= ({ children }: { children: JSX.Element }) => {
         return (
@@ -141,9 +142,30 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
             console.log(NON_GOOGLE_IMG_URL)
         }
 
-        const FakeBoop = () => {          
-          setPsiHover(!psiHover)
+        const HoverClose = () => {
+          CSS($(PSI), 'opacity', '0.1')
+          CSS($('#PreSelectConfirmation'), 'opacity', '0.1')
         }
+        
+        const UnHoverClose = () => {
+          CSS($(PSI), 'opacity', '1.0')
+          CSS($('#PreSelectConfirmation'), 'opacity', '1.0')
+        }
+        
+        const FakeBoop = () => {     
+          setPsiHover(!psiHover)
+        }        
+
+        const StopBoop = () => { 
+          setPsiHover(!psiHover)
+          CSS($('#PreSelectRejection'), 'opacity', '1.0')          
+        }
+
+        
+        // const StopBoop = () => {          
+        //   setPsiHover(!psiHover)
+        //   CSS($('#PreSelectrejection'), 'opacity', '0.1')          
+        // }
   
 
     const renderMeIcon = () => {
@@ -172,13 +194,13 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                               ?
                               <>
 
-                              <img onClick={() => TOGGLE_SELECT_ICON_SCREEN() } className={psiHover ? "psiHoverAnimation" : ""} id="Pre-Selected-Icon" src={NON_GOOGLE_IMG_URL}/>
+                              <img className={psiHover ? "psiHoverAnimation" : ""} id="Pre-Selected-Icon" src={NON_GOOGLE_IMG_URL}/>
                              
                               
 
                                 <div className="row">
-                                  <img onMouseEnter={()=> $('#Pre-Selected-Icon').css('opacity', '0.1')} onMouseLeave={()=> $('#Pre-Selected-Icon').css('opacity', '1.0')} style={{ margin: '0 1em'}} src={close}></img>
-                                  <img onMouseEnter={FakeBoop} style={{ margin: '0 1em'}} src={confirmation}></img>
+                                  <img id="PreSelectRejection" onClick={() => TOGGLE_SELECT_ICON_SCREEN() } onMouseEnter={HoverClose} onMouseLeave={UnHoverClose} style={{ margin: '0 1em', opacity: psiHover ? "0.1" : "1.0"}} src={close}></img>
+                                  <img id="PreSelectConfirmation" onMouseEnter={FakeBoop} onMouseLeave={FakeBoop} style={{ margin: '0 1em'}} src={confirmation}></img>
                                 </div>
                               </>
                               :
@@ -264,3 +286,19 @@ const mapDispatchToProps = (dispatch:any) => ({
 const ConnectedMeIcon = connect(mapStateToProps, mapDispatchToProps)(MeIcon)
 
 export default ConnectedMeIcon
+                            
+                        
+
+                
+
+
+                 
+
+
+             
+
+
+         
+                    
+                                     
+              
