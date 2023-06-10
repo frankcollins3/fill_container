@@ -40,14 +40,26 @@ const Boop = ({ rotateAngle, speed, children, setImg, iconScreenFlag, showBoat, 
   }, [isRotated, rotateAngle]);
 
   const boopBehaviorEnter = (event:any) => {
+    let src:string = event.target.src
     targetElemRef.current = event.target
+    let backSlice = src.slice(src.length - 20) 
+    let url:string = src.slice(0, src.length - 19)
+    let newurl:string = `${url}water_img/bikini.png`    
+    let imagepath = src.slice()
     setIsRotated(true);
-  };
+      if (backSlice === '/water_img/pants.png') {
+        console.log("hey were over here")
+        $(event.target).attr('src', `${url}water_img/bikini.png`)
+      }
+    }
+  
 
   const boopBehaviorLeave = () => { setIsRotated(false); };
 
   const elemClick = (event:any) => { 
     let src:string = event.target.src    
+    console.log('src')
+    console.log(src)
     let length:number = src.length
     let hrefCheck:string = src.slice(0, 4);
     let imgCheck:string = src.slice(length - 3, length)    
