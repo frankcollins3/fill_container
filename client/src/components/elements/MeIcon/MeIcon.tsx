@@ -13,12 +13,12 @@ import $ from 'jquery'
 import ConnectedSignupLoginChecker from '../SignupLoginChecker'
 import ReusableImage from '../../../components/elements/ReusableImage'
 
-import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC } from '../../../redux/actions'
+import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE } from '../../../redux/actions'
 
 
  function MeIcon (props:any) {
 
-    const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket, puppetCup, cup, drink, bottle, bottles, mouseWaterCup, puppeteerSearchTerms, ReusableImageObject, confirmation, close } = useImage()
+    const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket, puppetCup, cup, drink, bottle, bottles, mouseWaterCup, fullCup, puppeteerSearchTerms, ReusableImageObject, confirmation, close,  } = useImage()
     
     let img;
 
@@ -30,14 +30,14 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
     }, [])
 
     const {
-       FLIP_FLOP_ICON, SPIN_BOTTLE_IMG, SPIN_BOTTLE_SEARCHING, SPIN_BOTTLE_SHOW_INPUT, GOOGLE_IMG_URL, NON_GOOGLE_IMG_URL, SELECT_ICON_SCREEN, PRE_SELECTED_ICON_SRC,
-       SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC,
+       FLIP_FLOP_ICON, SPIN_BOTTLE_IMG, SPIN_BOTTLE_SEARCHING, SPIN_BOTTLE_SHOW_INPUT, GOOGLE_IMG_URL, NON_GOOGLE_IMG_URL, SELECT_ICON_SCREEN, PRE_SELECTED_ICON_SRC, PSI_HOVER, GLASS_SCREEN_B4_NAV, GLASS_HALF_FULL_DB_CHOICE,
+       SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE,
      } = props
 
     const [bathingSuit, setBathingSuit] = useState<boolean>(false)
     const [moveBoat, setMoveBoat] = useState(false)
     const [flipCoin, setFlipCoin] = useState(false)
-    const [psiHover, setPsiHover] = useState(false)
+    // const [psiHover, setPsiHover] = useState(false)
 
     let googleUrl:string = props.GOOGLE_IMAGE_URL
 
@@ -46,38 +46,16 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
     const PSI = $('#Pre-Selected-Icon')
     const Rejection = $('#PreSelectRejection')
 
-    const LetterLift= ({ children }: { children: JSX.Element }) => {
-        return (
-          <div className="boop">
-            {React.Children.map(children, (child, index) => {
-                const styledChild = React.cloneElement(child, {
-                    style: {
-                        border: '5px solid green'
-                    },
-
-                });
-                
-              return styledChild;
-            })}
-          </div>
-        );
-      }
-
-    const moveboat = () =>  {
-      let numbers = [1,2,3,4,5,6,7,8,9,10]
-      let randomNumber = Math.floor(Math.random() * numbers.length)
-      if (randomNumber >= 5) { setFlipCoin(!flipCoin) }
-      setMoveBoat(true) 
-    }
+        const moveboat = () =>  {
+          let numbers = [1,2,3,4,5,6,7,8,9,10]
+          let randomNumber = Math.floor(Math.random() * numbers.length)
+          if (randomNumber >= 5) { setFlipCoin(!flipCoin) }
+          setMoveBoat(true) 
+        }
 
         const FakeClick = (event: any) => { 
-          let key: string = event.key;
-          console.log('key');
-          console.log(key);
-        
+          let key: string = event.key;          
           let value: string = event.target.value;
-          console.log('value');
-          console.log(value);
 
           if (key === ' ') {
             console.log('youre spacin out!')
@@ -86,15 +64,11 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
             attributeJQ('#PuppeteerSearch', 'value', '')         
       }
                    
-          if (key === 'Enter') {
-            
+          if (key === 'Enter') {            
             TOGGLE_SPIN_BOTTLE_SHOW_INPUT()
-            let value:string = `lightblue${event.target.value}`            
-            
+            let value:string = `lightblue${event.target.value}`                        
             const loadingicons:string[] = [cup, drink, bottle, bottles, mouseWaterCup]
                 const randomIcon = MathRandom(loadingicons)
-                console.log('randomIcon')
-                console.log(randomIcon)  
                 const PuppetPromise = new Promise( (resolve, reject) => {
                   let terms:string[] = ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark", ]
                   let randomTerm = MathRandom(terms)
@@ -132,41 +106,56 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
 
         const dontMoveBoat = () =>  setMoveBoat(false) 
 
-        const clickboat = () => {
-            // console.log('FLIP_FLOP_ICON')
-            // console.log(FLIP_FLOP_ICON)
-
-            // console.log('GOOGLE_IMG_URL')
-            // console.log(GOOGLE_IMG_URL)          
-            console.log('NON_GOOGLE_IMG_URL')
-            console.log(NON_GOOGLE_IMG_URL)
-        }
-
         const HoverClose = () => {
-          CSS($(PSI), 'opacity', '0.1')
+          CSS($('#Pre-Selected-Icon'), 'opacity', '0.1')
           CSS($('#PreSelectConfirmation'), 'opacity', '0.1')
         }
         
         const UnHoverClose = () => {
-          CSS($(PSI), 'opacity', '1.0')
+          CSS($('#Pre-Selected-Icon'), 'opacity', '1.0')
           CSS($('#PreSelectConfirmation'), 'opacity', '1.0')
         }
         
         const FakeBoop = () => {     
-          setPsiHover(!psiHover)
+          TOGGLE_PSI_HOVER()
         }        
-
+        
         const StopBoop = () => { 
-          setPsiHover(!psiHover)
+          TOGGLE_PSI_HOVER()
           CSS($('#PreSelectRejection'), 'opacity', '1.0')          
         }
 
-        
-        // const StopBoop = () => {          
-        //   setPsiHover(!psiHover)
-        //   CSS($('#PreSelectrejection'), 'opacity', '0.1')          
-        // }
-  
+        const clickElem = (event:any) => { 
+          let src:string = event.target.src    
+          let length:number = src.length
+          let hrefCheck:string = src.slice(0, 4);
+          let imgCheck:string = src.slice(length - 3, length)    
+          if (hrefCheck === 'http' && imgCheck === 'png' || imgCheck === 'jpeg') {
+            SET_NON_GOOGLE_IMG_URL({ payload: event.target.src }) 
+            TOGGLE_SELECT_ICON_SCREEN()
+            if (SPIN_BOTTLE_SHOW_INPUT) TOGGLE_SPIN_BOTTLE_SHOW_INPUT()
+            $(event.target)
+            .css('border', '5px solid hotpink')
+            .animate({
+              top: '100px'
+            }, 500)       
+          }
+          return
+        }
+
+        //     GLASS_SCREEN_B4_NAV: false,
+        // GLASS_HALF_FULL_DB_CHOICE: false,
+
+        const SelectIcon = () => {
+            // const username = localStorage.getItem('user')
+            // add the src data to localStorage  User or use GraphQL to update with DB.
+            console.log('NON_GOOGLE_IMG_URL')
+            console.log(NON_GOOGLE_IMG_URL)
+            TOGGLE_SPIN_BOTTLE_SEARCHING()
+            TOGGLE_GLASS_SCREEN_B4_NAV()
+
+
+        }
 
     const renderMeIcon = () => {
         return (
@@ -176,7 +165,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                     {
                           SPIN_BOTTLE_SHOW_INPUT 
                           ?
-                          <img onClick={clickboat} className={ SPIN_BOTTLE_SEARCHING ? "Move-Boat" : '' } id="boat" style={{ position: 'relative', height: '10em', width: '10em' }} src={ boat || '/water_img/mouse_droplet.png'}/>
+                          <img className={ SPIN_BOTTLE_SEARCHING ? "Move-Boat" : '' } id="boat" style={{ position: 'relative', height: '10em', width: '10em' }} src={ boat || '/water_img/mouse_droplet.png'}/>
                           :
                           <div className="column">
 
@@ -185,67 +174,83 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                     }
 
               </div>  
-                    
-
-
-              <div id={SELECT_ICON_SCREEN ? "column" : ""} className={Rightie}>                                                     
+              {/* //     GLASS_SCREEN_B4_NAV: false,
+    // GLASS_HALF_FULL_DB_CHOICE: false, */}
+              <div id={SELECT_ICON_SCREEN ? "column" : ""} className={Rightie}>      
+                                                            
                       {
                         SELECT_ICON_SCREEN 
                               ?
-                              <>
-
-                              <img className={psiHover ? "psiHoverAnimation" : ""} id="Pre-Selected-Icon" src={NON_GOOGLE_IMG_URL}/>
-                             
                               
+                              <>             
+                                   {
+                                GLASS_SCREEN_B4_NAV 
+                                        ?
+                                        <div className="space-between-row">
+                                          <div className="column">
+                                          <img style={{ height: '100px', width: '100px' }} src={mouseWaterCup}/>
+                                          <pre id="SavePre"> Save a Drop </pre>
+                                          </div>
 
+                                          <div className="column">
+                                          <img style={{ height: '100px', width: '100px' }} src={fullCup}/>
+                                          <pre id="SavePre"> Save it all </pre>
+                                          </div>
+
+                                        </div>
+                                          :                          
+                                    <>                                      
+                              <img className={PSI_HOVER ? "psiHoverAnimation" : ""} id="Pre-Selected-Icon" src={NON_GOOGLE_IMG_URL}/>
+                                                           
                                 <div className="row">
-                                  <img id="PreSelectRejection" onClick={() => TOGGLE_SELECT_ICON_SCREEN() } onMouseEnter={HoverClose} onMouseLeave={UnHoverClose} style={{ margin: '0 1em', opacity: psiHover ? "0.1" : "1.0"}} src={close}></img>
-                                  <img id="PreSelectConfirmation" onMouseEnter={FakeBoop} onMouseLeave={FakeBoop} style={{ margin: '0 1em'}} src={confirmation}></img>
+                                  <img id="PreSelectRejection" onClick={() => TOGGLE_SELECT_ICON_SCREEN() } onMouseEnter={HoverClose} onMouseLeave={UnHoverClose} style={{ margin: '0 1em', opacity: PSI_HOVER ? "0.1" : "1.0" }} src={close}></img>
+                                  <img onClick={SelectIcon} id="PreSelectConfirmation" onMouseEnter={FakeBoop} onMouseLeave={FakeBoop} style={{ margin: '0 1em'}} src={confirmation}></img>
                                 </div>
+                                </>
+                                }                 
                               </>
-                              :
+                              :                         
                               <>                        
-                              <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL} iconScreenFlag={TOGGLE_SELECT_ICON_SCREEN}>
+                              <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL} iconScreenFlag={TOGGLE_SELECT_ICON_SCREEN} showBoat={TOGGLE_SPIN_BOTTLE_SHOW_INPUT} boat={SPIN_BOTTLE_SHOW_INPUT}>
                                 <img style={{ transform: `rotate(0deg)` }} src="/water_img/bottles.png" />
                                 </Boop>
     
-                              {/* <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL}>                         
-                              <img onMouseEnter={()=> setBathingSuit(!bathingSuit)} src={bathingSuit ? bikini: pants}></img>
+                                <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL} iconScreenFlag={TOGGLE_SELECT_ICON_SCREEN} showBoat={TOGGLE_SPIN_BOTTLE_SHOW_INPUT} boat={SPIN_BOTTLE_SHOW_INPUT}>
+                              <img onClick={clickElem} onMouseEnter={()=> setBathingSuit(!bathingSuit)} src={bathingSuit ? bikini: pants}></img>
                               </Boop>  
     
                             
-                        <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL}>                        
+                              <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL} iconScreenFlag={TOGGLE_SELECT_ICON_SCREEN} showBoat={TOGGLE_SPIN_BOTTLE_SHOW_INPUT} boat={SPIN_BOTTLE_SHOW_INPUT}>                      
                               <img src={shark}></img>
                               </Boop>
     
-                            <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL}>                        
+                              <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL} iconScreenFlag={TOGGLE_SELECT_ICON_SCREEN} showBoat={TOGGLE_SPIN_BOTTLE_SHOW_INPUT} boat={SPIN_BOTTLE_SHOW_INPUT}>                
                                 <img src={panda}></img>
                               </Boop>
+
                           <div className="column">
-                        <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL}>                        
+                          <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL} iconScreenFlag={TOGGLE_SELECT_ICON_SCREEN} showBoat={TOGGLE_SPIN_BOTTLE_SHOW_INPUT} boat={SPIN_BOTTLE_SHOW_INPUT}>
                         <img style={{ display: SPIN_BOTTLE_SEARCHING ? "none" : ""}}  src={SPIN_BOTTLE_IMG || target}></img>
                         </Boop>  
                           <pre style={{ display: SPIN_BOTTLE_SEARCHING ? "" : "none" }}> Pouring. Please Wait.  </pre>
                             </div>  
     
-                        <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL}>                        
+                            <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL} iconScreenFlag={TOGGLE_SELECT_ICON_SCREEN} showBoat={TOGGLE_SPIN_BOTTLE_SHOW_INPUT} boat={SPIN_BOTTLE_SHOW_INPUT}>
                         <img src={turtle}></img>
                         </Boop>
                               
-                      <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL}>                        
+                        <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL} iconScreenFlag={TOGGLE_SELECT_ICON_SCREEN} showBoat={TOGGLE_SPIN_BOTTLE_SHOW_INPUT} boat={SPIN_BOTTLE_SHOW_INPUT}>
                        <img src={dolphin}></img>
                         </Boop> 
     
-                        <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL}>                        
+                        <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL} iconScreenFlag={TOGGLE_SELECT_ICON_SCREEN} showBoat={TOGGLE_SPIN_BOTTLE_SHOW_INPUT} boat={SPIN_BOTTLE_SHOW_INPUT}>
                         <img src={pool}></img>
-                        </Boop> */}
-                     
-                          
+                        </Boop>
+                                               
+                        <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL} iconScreenFlag={TOGGLE_SELECT_ICON_SCREEN} showBoat={TOGGLE_SPIN_BOTTLE_SHOW_INPUT} boat={SPIN_BOTTLE_SHOW_INPUT}>
                         <img src={bucket}></img>
-                          
-                          {/* <Boop rotateAngle={45} speed={800} setImg={SET_GOOGLE_IMG_URL}>                        
-                        <img src={bucket}></img>
-                          </Boop>    */}
+                        </Boop>
+
                           </>
                       }
                     
@@ -269,7 +274,10 @@ const mapStateToProps = (state:any) => ({
     GOOGLE_IMG_URL: state.GOOGLE_IMG_URL,
     NON_GOOGLE_IMG_URL: state.NON_GOOGLE_IMG_URL,
     SELECT_ICON_SCREEN: state.SELECT_ICON_SCREEN,
-    PRE_SELECTED_ICON_SRC: state.PRE_SELECTED_ICON_SRC
+    PRE_SELECTED_ICON_SRC: state.PRE_SELECTED_ICON_SRC,
+    PSI_HOVER: state.PSI_HOVER,
+    GLASS_SCREEN_B4_NAV: state.GLASS_SCREEN_B4_NAV,
+    GLASS_HALF_FULL_DB_CHOICE: state.GLASS_HALF_FULL_DB_CHOICE,
     // NON_GOOGLE_IMG_URL: '',                      state doesn't matter since this page is navigated. one would need redux-persist. I'm using regular redux, GraphQl/prisma/postgres and localStorage to persist
 })
 
@@ -280,25 +288,12 @@ const mapDispatchToProps = (dispatch:any) => ({
     SET_GOOGLE_IMG_URL: (action:any) => dispatch(SET_GOOGLE_IMG_URL(action)),
     SET_NON_GOOGLE_IMG_URL: (action:any) => dispatch(SET_NON_GOOGLE_IMG_URL(action)),    
     TOGGLE_SELECT_ICON_SCREEN: () => dispatch(TOGGLE_SELECT_ICON_SCREEN()),
-    SET_PRE_SELECTED_ICON_SRC: (action:any) => dispatch(SET_PRE_SELECTED_ICON_SRC(action))
+    SET_PRE_SELECTED_ICON_SRC: (action:any) => dispatch(SET_PRE_SELECTED_ICON_SRC(action)),
+    TOGGLE_PSI_HOVER: () => dispatch(TOGGLE_PSI_HOVER()),
+    TOGGLE_GLASS_SCREEN_B4_NAV: () => dispatch(TOGGLE_GLASS_SCREEN_B4_NAV()),
+    TOGGLE_GLASS_HALF_FULL_DB_CHOICE: () => dispatch(TOGGLE_GLASS_HALF_FULL_DB_CHOICE())
 })
 
 const ConnectedMeIcon = connect(mapStateToProps, mapDispatchToProps)(MeIcon)
 
-export default ConnectedMeIcon
-                            
-                        
-
-                
-
-
-                 
-
-
-             
-
-
-         
-                    
-                                     
-              
+export default ConnectedMeIcon                                          
