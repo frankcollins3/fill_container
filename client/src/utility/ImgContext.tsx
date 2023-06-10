@@ -62,6 +62,10 @@ type imgContextType = {
     cup: string;
     drink: string;
     puppeteerSearchTerms: string[]    
+    ReusableImageObject: { src: string, size: number, unit: string, className: string | undefined, id: string | undefined, func: any, event: any }
+    
+//  ReusableImage(src: string, size: number, unit: string, className: string | undefined, id: string | undefined, func: any, event: any): React.JSX.Element
+
 };
 
 // define values which will remain static
@@ -123,7 +127,8 @@ const imgDefaults: imgContextType = {
     squidOrHook: `${imagePrefix}squidOrhook.png`,
     ink: `${imagePrefix}ink.png`,
     inkBottle:`${imagePrefix}ink-bottle.png`,
-    puppeteerSearchTerms: ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark"]
+    puppeteerSearchTerms: ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark"],
+    ReusableImageObject: { src: '', size: 0, unit: '', className: '', id: '', func: '', event: ''},
     // let terms:string[] = ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark", ]
 };
 
@@ -141,7 +146,7 @@ type Props = {
 
 export function ImgProvider({ children }: Props) {
     const [gameOn, setGameOn] = useState<string>('not playing');
-
+    const [ReusableImageObject, setReusableImageObject] = useState({ src: '', size: 0, unit: '', className: '', id: '', func: '', event: ''})
     const [bg, setBg] = useState<string>(`${imagePrefix}bg.png`);
     const [bottle, setBottle] = useState<string>(`${imagePrefix}bottle.png`);
     const [bottles, setBottles] = useState<string>(`${imagePrefix}bottles.png`);
@@ -199,8 +204,10 @@ export function ImgProvider({ children }: Props) {
     const [ink, setInk] = useState<string>(`${imagePrefix}ink.png`);
     const [inkBottle, setInkBottle] = useState<string>(`${imagePrefix}ink-bottle.png`);
     const [puppeteerSearchTerms, setPuppeteerSearchTerms] = useState<string[]>(["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark"])
-                
-    // * user functionality ends above
+    // puppeteerSearchTerms: ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark"]
+    
+
+        // * user functionality ends above
         
     const value = {
     gameOn,
@@ -260,7 +267,8 @@ export function ImgProvider({ children }: Props) {
     squidOrHook,
     ink,
     inkBottle,    
-    puppeteerSearchTerms
+    puppeteerSearchTerms,
+    ReusableImageObject
     };
 
     return (
@@ -271,3 +279,7 @@ export function ImgProvider({ children }: Props) {
         </>
     );
 }
+
+
+
+
