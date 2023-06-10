@@ -13,7 +13,7 @@ import linkUserWithGoogle from '../../../utility/fetch/linkUserWithGoogle'
 
 import allUrl from '../../../utility/fetch/allDBurl'
 
-import { TOGGLE_HYDRO_SETTINGS, SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING } from '../../../redux/actions'
+import { TOGGLE_HYDRO_SETTINGS, SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT } from '../../../redux/actions'
 import ConnectedSignupLoginChecker from '../SignupLoginChecker';
 // import $ from 'jquery'
 
@@ -22,21 +22,11 @@ import ConnectedSignupLoginChecker from '../SignupLoginChecker';
   const dispatch = useDispatch()
 
   const { 
-    USERNAME_INPUT, PASSWORD_INPUT, EMAIL_INPUT, AGE_INPUT, GOOGLE_IMG_URL, GOOGLE_ID_INPUT, SPIN_BOTTLE_IMG,
-
-    HYDRO_SETTINGS, LOG_IN_OUT_TYPE, GOOGLE_LINK_ACCT_SCREEN, SPIN_BOTTLE_SEARCHING,
-    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING
+    HYDRO_SETTINGS, LOG_IN_OUT_TYPE, GOOGLE_LINK_ACCT_SCREEN, SPIN_BOTTLE_SEARCHING, ICON_NOT_INPUT, SELECT_ICON_SCREEN,
+    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT,
    } = props
 
-   const { 
-    waterPark, mantaRay, aquaJogging, whale,
-    msgBottle, smallDroplet, home, exit, statistics, settings, mouseWaterCup, cup, drink, bottle, bottles,
-  } = useImage()
-
-
-
-  // let navbardropletJQ = $('.navbar-droplet')
-  // let msgbottleJQ = $('.msg-bottle')
+   const {  msgBottle, smallDroplet, home, exit, statistics, settings, mouseWaterCup, cup, drink, bottle, bottles } = useImage()
 
   const [loginType, setLoginType] = useState("")
   let location = window.location
@@ -82,19 +72,6 @@ const homeclick = () => { window.location.href = "/"}
     } 
   }
 
-  // email
-// "fwc3rd@gmail.com"
-// familyName
-// "Collins"
-// givenName
-// "Frank"
-// googleId
-// "117827387775507687118"
-// imageUrl
-// "https://lh3.googleusercontent.com/a/AAcHTtd_55dRY1mQ1-GP5R4PHEgjmSRGTZNK7aGM8-82=s96-c"
-// name
-// "Frank Collins"
-
   const test = async () => {
     let urlbank = await allUrl()
     let env = urlbank.ENVdata.data.ENV
@@ -135,46 +112,11 @@ const homeclick = () => { window.location.href = "/"}
           let localAPI = APIsplit[0]
           let prodAPI = APIsplit[1]
 
-          const PuppetPromise = new Promise( (resolve, reject) => {
-            let terms:string[] = ["ocean", "burger", "wendys", "burgerking", "water", "river", "seacreature", "fish"]
-            let randomTerm = MathRandom(terms)
-            console.log(randomTerm)
-              TOGGLE_SPIN_BOTTLE_SEARCHING()
-              resolve(fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"${randomTerm}")}`))    
-              reject(SET_SPIN_BOTTLE_IMG( { payload: randomIcon || '/water_img/squid.png' }))  
-          })
-          PuppetPromise.then(async (data:any) => {
-              if (data) {
-                data = await data.json()
-                console.log('data')
-                console.log(data)
-                let imgSrc:string = data.data.puppeteer
-                SET_SPIN_BOTTLE_IMG( { payload: imgSrc })
-                TOGGLE_SPIN_BOTTLE_SEARCHING()
-              } else {
-                TOGGLE_SPIN_BOTTLE_SEARCHING()
-                SET_SPIN_BOTTLE_IMG( { payload: "/water_img/bite.png"})
-              }
-          })
-          // const predata = await fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"${randomTerm}")}`)
+          TOGGLE_SPIN_BOTTLE_SHOW_INPUT()
+        }
 
+    const sike = () => { return }
 
-          // const predata = await fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"${randomTerm}")}`)
-          // let data = await predata.json()
-          // let puppetImage = data.data.puppeteer
-          // console.log('data')
-          // console.log(data)
-          // SET_SPIN_BOTTLE_IMG( { payload: puppetImage } )
-          
-                                                  
-
-      // TOGGLE_SPIN_BOTTLE_SEARCHING()
-      // console.log("dont be silly")
-      
-
-
-
-    }
 
   return (
     <div className="navbar-container" 
@@ -182,11 +124,10 @@ const homeclick = () => { window.location.href = "/"}
     <div className="logo">
     <img style={{ border: 'none' }} className={bothElemById} id="navbar-droplet" src={smallDroplet} />    
     
-    <img onClick={spinbottlefunc} className={pathname === "/loginoutgoogle" && !SPIN_BOTTLE_SEARCHING ? "Msg-Bottle-Animation" :  "" } style={{ border: 'none' }} id="msg-bottle"  src={msgBottle} />
-    {/* <img onClick={spinbottlefunc} className={pathname === "/loginoutgoogle" && !SPIN_BOTTLE_SEARCHING ? "msg-bottle-animation" :  "msg-bottle-animation-slow" } style={{ border: 'none' }} id="msg-bottle"  src={msgBottle} /> */}
+    
+    <img onClick={SELECT_ICON_SCREEN ? sike : spinbottlefunc} className={pathname === "/loginoutgoogle" && !SPIN_BOTTLE_SEARCHING && ICON_NOT_INPUT ? "Msg-Bottle-Animation" :  "" } style={{ border: 'none' }} id="msg-bottle"  src={msgBottle} />
+    
 
-
-      <button onClick={test2} style={{ margin: '1em', backgroundColor: 'coral', border: 'salmon', transform: 'scale(2.0)' }}> </button> 
     
     </div>
 
@@ -220,13 +161,15 @@ const mapStateToProps = (state:any) => ({
     AGE_INPUT: state.AGE_INPUT,
     GOOGLE_IMG_URL: state.GOOGLE_IMG_URL,
     SPIN_BOTTLE_SEARCHING: state.SPIN_BOTTLE_SEARCHING,
-    
+    ICON_NOT_INPUT: state.ICON_NOT_INPUT,
+    SELECT_ICON_SCREEN: state.SELECT_ICON_SCREEN
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
     TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
     SET_SPIN_BOTTLE_IMG: (action:any) => dispatch(SET_SPIN_BOTTLE_IMG(action)),
-    TOGGLE_SPIN_BOTTLE_SEARCHING: () => dispatch(TOGGLE_SPIN_BOTTLE_SEARCHING())
+    TOGGLE_SPIN_BOTTLE_SEARCHING: () => dispatch(TOGGLE_SPIN_BOTTLE_SEARCHING()),
+    TOGGLE_SPIN_BOTTLE_SHOW_INPUT: () => dispatch(TOGGLE_SPIN_BOTTLE_SHOW_INPUT())
 })
 
 const ConnectedNavbar = connect(mapStateToProps, mapDispatchToProps)(Navbar)
