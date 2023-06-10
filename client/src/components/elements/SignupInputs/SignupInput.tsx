@@ -7,6 +7,7 @@ import "./signupinput.css"
 import inputHandler from '../../../utility/inputHandler'
 import attributeJQ from '../../../utility/attributeJQ'
 import RegexBank from '../../../utility/RegexBank'
+import useRegex from '../../../utility/Contexts/RegexMenu'
 
 // redux acitons
 import { SET_USERNAME_INPUT, SET_EMAIL_INPUT, SET_PASSWORD_INPUT, SET_AGE_INPUT, TOGGLE_INPUT_FOCUS, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, TOGGLE_USERNAME_INPUT_HOVER, TOGGLE_PASSWORD_INPUT_HOVER, TOGGLE_EMAIL_INPUT_HOVER, TOGGLE_AGE_INPUT_HOVER } from '../../../redux/actions'
@@ -44,6 +45,8 @@ function SignupInput (props: Props) {
 
     const dispatch = useDispatch()
 
+    const  { RhasNums, MsplitAtDot, McharAfterComma } = useRegex()
+
     let RegexObject:any;    
 
     useEffect( () => {
@@ -56,29 +59,45 @@ function SignupInput (props: Props) {
     // let inputType:string = props.inputType
 
 const { inputType, USERNAME_INPUT, PASSWORD_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_CLICK, EMAIL_INPUT, AGE_INPUT, SET_USERNAME_INPUT, USERNAME_INPUT_HOVER, PASSWORD_INPUT_HOVER, EMAIL_INPUT_HOVER, AGE_INPUT_HOVER,
-    SET_PASSWORD_INPUT, SET_EMAIL_INPUT, SET_AGE_INPUT, TOGGLE_INPUT_FOCUS, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, TOGGLE_USERNAME_INPUT_HOVER, TOGGLE_PASSWORD_INPUT_HOVER, TOGGLE_EMAIL_INPUT_HOVER, TOGGLE_AGE_INPUT_HOVER} = props
+        SET_PASSWORD_INPUT, SET_EMAIL_INPUT, SET_AGE_INPUT, TOGGLE_INPUT_FOCUS, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, TOGGLE_USERNAME_INPUT_HOVER, TOGGLE_PASSWORD_INPUT_HOVER, TOGGLE_EMAIL_INPUT_HOVER, TOGGLE_AGE_INPUT_HOVER
+      } = props
 
-    console.log('props from SignupInput')
-    console.log(props)
 
     // inputHandler(event, SET_AGE_INPUT)
 
     const inputOnChange = (event:any) => {
-        console.log('event from usernameinputhandler')
-        console.log(event)
+        let value:string = event.target.value
         if (inputType === 'username') {            
             inputHandler(event, SET_USERNAME_INPUT)
         }
         if (inputType === 'email') {
+            const splitHelper = event.target.value.split('@.')
+
+            let splitEmail:any = value.match(MsplitAtDot)  //               /@([^.]*)\./
+
+            if (splitEmail !== null) {
+                console.log('aaaye')
+                const matchedValue = splitEmail[0];
+                console.log(matchedValue); // Output: the matched email string
+              }
+            // splitEmail !== null || splitEmail !== undefined && splitEmail[0] ? console.log(splitEmail[0]) : console.log('hey null!')
+
+    //         let emailString:string = splitEmail?.toString().trim()
+    //         console.log('emailString')
+    //         console.log(`emailStr: ${emailString} ${typeof emailString} ${emailString.length}`)
+    // if (emailString?.includes('g') && splitEmail.includes('m') && splitEmail.includes('a') && splitEmail.includes('i') && splitEmail.includes('l') && emailString !== 'gmail') {
+    //             console.log("the letters includes gmail but there is a typo")
+    //         }
+            console.log('splitEmail')
+            console.log(splitEmail)
             inputHandler(event, SET_EMAIL_INPUT)
+            
         }
         if (inputType === 'age') {
             inputHandler(event, SET_AGE_INPUT)
         }
         if (inputType === 'password') {
             let hasNums4 = RegexObject.hasNums.test(parseInt(PASSWORD_INPUT))        
-            let target = event.target
-            let value:any = target.value  // cant use string because we'll be looping over it     
             const statePromise = new Promise( (resolve, reject) => {
                 resolve([ SET_PASSWORD_INPUT({payload: value}) ])
             })                 
@@ -92,26 +111,26 @@ const { inputType, USERNAME_INPUT, PASSWORD_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_
 
     const inputfocus = async () => {
         
-
-        if (inputType === 'password') {
-                if (!PASSWORD_INPUT_HOVER) {
-                    SET_PASSWORD_INPUT( { payload: '' } )                        
-                    TOGGLE_PASSWORD_INPUT_HOVER()
-                }
-        }
-        if (inputType === 'username') {
-                if (!USERNAME_INPUT_HOVER) {
-                    SET_USERNAME_INPUT( { payload: 'U' } )    // hey who are U?               (get lucky on these little ideas that pop up)
-                    TOGGLE_USERNAME_INPUT_HOVER()
-                }                
+        // if (inputType === 'password') {
+        //         if (!PASSWORD_INPUT_HOVER) {
+        //             SET_PASSWORD_INPUT( { payload: '' } )                        
+        //             TOGGLE_PASSWORD_INPUT_HOVER()
+        //         }
+        // }
+        // if (inputType === 'username') {
+        //         if (!USERNAME_INPUT_HOVER) {
+        //             SET_USERNAME_INPUT( { payload: 'U' } )    // hey who are U?               (get lucky on these little ideas that pop up)
+        //             TOGGLE_USERNAME_INPUT_HOVER()
+        //         }                
             
-        }
-        if (inputType === 'email') {            
-                if (!EMAIL_INPUT_HOVER) {
-                    SET_EMAIL_INPUT( { payload: '@' } )    // hey who are U?               (get lucky on these little ideas that pop up)        
-                    TOGGLE_EMAIL_INPUT_HOVER()
-                }            
-        }
+        // }
+        // if (inputType === 'email') {            
+        //         if (!EMAIL_INPUT_HOVER) {
+        //             SET_EMAIL_INPUT( { payload: '@' } )    // hey who are U?               (get lucky on these little ideas that pop up)        
+        //             TOGGLE_EMAIL_INPUT_HOVER()
+        //         }            
+        // }
+        
         TOGGLE_INPUT_FOCUS( { payload: inputType } )                
     }
         
