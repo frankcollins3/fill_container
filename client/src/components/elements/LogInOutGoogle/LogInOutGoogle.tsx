@@ -227,6 +227,7 @@ import $ from 'jquery'
                     resolve(localURL)
                     reject([])
                 })
+
 //  client/utility/fetch/userSignup --------> redux state holds the USERNAME_INPUT, AGE_INPUT etc -------->  func toggle redux state: <GoogleLogin> to appear ----> onSuccess={onLinkSuccess} which were in now.
                 urlPROMISE.then( (urldata:any) => {
                     let localNODE_ENV = urldata.ENVdata.data.ENV.NODE_ENV                    
@@ -236,12 +237,18 @@ import $ from 'jquery'
                         reject([])
                     })
                     saveUserPROMISE.then(async(userdata:any) => {                         
+                        console.log('userdata signup in the login')
+                        let clonedobject = { clone: {...userdata}, icon: ''}
+
+                        // let userStringObject = `GID:${u.googleId},icon:${u.icon},username:${u.username},password:${u.password},age:${u.age},id:${u.id}`
+                        localStorage.setItem("user", JSON.stringify(clonedobject))
+                        
                         // UPDATE TO        G       O       O       G       L       E               !!!!!!!!!!!!!!!!!!!
                         TOGGLE_NO_LINK_GOOGLE_BTN_CLICK()
                         setTimeout( () => {
-                            lazyJQanimate($('#link-google'), 'link-google')     
-                            lazyJQanimate($('#googleconfirmation'), 'googleconfirmation')                            
-                            lazyJQanimate('#googlereject', 'googlereject')      
+                            lazyJQanimate($('#link-google'), 'link-google', 'reject')     
+                            lazyJQanimate($('#googleconfirmation'), 'googleconfirmation', 'reject')                            
+                            lazyJQanimate('#googlereject', 'googlereject', 'reject')      
                         })
                     })
                 })
@@ -282,8 +289,7 @@ import $ from 'jquery'
                                 
                 console.log('userUpdatedWithGoogle')
                 console.log(userUpdatedWithGoogle)
-
-                // let updatedUserObject = { googleId: u.googleId, icon: u.icon, username: u.username, password: u.password, age: u.age, id: u.id }
+            
                 let userStringObject = `GID:${u.googleId},icon:${u.icon},username:${u.username},password:${u.password},age:${u.age},id:${u.id}`
 
                 await localStorage.setItem("user", userStringObject)
@@ -295,15 +301,14 @@ import $ from 'jquery'
                 }, 2000)
 
             }
-
-            //  linkGoogleConfirm is the signup function
+        
             const linkGoogleConfirm = async () => {                
                 const urlPROMISE = new Promise((resolve, reject) => {
                     let localURL = allDBurl()
                     resolve(localURL)
                     reject([])
                 })
-//  client/utility/fetch/userSignup --------> redux state holds the USERNAME_INPUT, AGE_INPUT etc -------->  func toggle redux state: <GoogleLogin> to appear ----> onSuccess={onLinkSuccess} which were in now.
+                
                 urlPROMISE.then( (urldata:any) => {
                     let localNODE_ENV = urldata.ENVdata.data.ENV.NODE_ENV                    
                     const saveUserPROMISE = new Promise( (resolve, reject) => {
@@ -315,10 +320,13 @@ import $ from 'jquery'
                         // UPDATE TO        G       O       O       G       L       E               !!!!!!!!!!!!!!!!!!!
                         TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()
                         setTimeout( () => {
-                            lazyJQanimate($('#link-google'), 'link-google')     
-                            lazyJQanimate($('#googleconfirmation'), 'googleconfirmation')                            
-                            lazyJQanimate('#googlereject', 'googlereject')      
+                            lazyJQanimate($('#link-google'), 'link-google', 'signup')     
+                            lazyJQanimate($('#googleconfirmation'), 'googleconfirmation', 'signup')                            
+                            lazyJQanimate('#googlereject', 'googlereject', 'signup')      
                         })
+                        setTimeout( () => {
+                            window.location.href = "/"
+                        }, 2000)
                     })
                 })
             }
@@ -328,13 +336,11 @@ import $ from 'jquery'
                 TOGGLE_PASSWORD_SHOW_CLICK()             
             }
 
-
             return (
                 <div className="login-container">                                                                    
                         <img onClick={showHideLoginSignupBtn} style={{ cursor: 'pointer', border: 'none', display: SUBMIT_INPUT_DATA ? "none" : "" }} src="/water_img/hand.png"/>                
                 {/* // clientId: clientId || '569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com', */}            
     <img onClick={submitFaucetClick} style={{ transform: 'scale(0.50)', display: SUBMIT_INPUT_DATA ? "none" : "" }} className="submit-faucet" src={"/water_img/faucet.png"}/>
-
                     
                 {
                     SUBMIT_INPUT_DATA === false
@@ -343,7 +349,6 @@ import $ from 'jquery'
                     display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', 
                     height: '300px', width: '200px',                 
                 }}>
-
                    
                     {
                         LOGIN_SIGNUP_BTN 
@@ -366,7 +371,6 @@ import $ from 'jquery'
                         <SignupInput inputType={'email'}/>
                         <SignupInput inputType={'age'}/>
                         <SignupInput inputType={'password'}/>                        
-                        {/* <ConnectedAgeInput/> */}
 
                         {
                             INPUT_FOCUS === 'password' 
@@ -392,9 +396,7 @@ import $ from 'jquery'
                         <div className="Form-Container">
                         <ConnectedEmailInput/>
                         <ConnectedPasswordInput/>                        
-                        <form onMouseEnter={formhover}>
-                            {/* <input onMouseEnter={ghosttext} onChange={usernameinputhandler} id="username" type="text"></input>
-                            <input onMouseEnter={ghosttext} onChange={passwordinputhandler} id="password" type="text"></input> */}
+                        <form onMouseEnter={formhover}>                            
                             <button> forgot password? possible empty cup lol </button>
                         </form>
                         </div>
@@ -405,8 +407,6 @@ import $ from 'jquery'
                 :
                 <pre></pre>
                 }
-
-                {/* this means that the user signed up and the data has been validated. this is a middle point that asks if the user wants to link google account. */}
 
                 {
                     SUBMIT_INPUT_DATA                     
@@ -431,7 +431,7 @@ import $ from 'jquery'
                     onFailure={onFailure}
                     isSignedIn={true}
                     cookiePolicy={'single_host_origin'}
-                    buttonText=""
+                    buttonText=""                    
                     >
                     </GoogleLogin> 
                          :
@@ -448,13 +448,13 @@ import $ from 'jquery'
 
                 <div                  
                  id="NoLinkGoogleBtn" className="row">
-                <pre id={ NO_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "poppinsLight"} style={{ fontStyle: 'italic'}}> just </pre>
-                <pre id={ NO_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "poppinsLight"} style={{ display: NO_LINK_GOOGLE_BTN_HOVER ? "none" : "", fontStyle: 'italic'}}> Drop </pre>
+                <pre id={ NO_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "hide"} style={{ }}> just </pre>
+                <pre id={ NO_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "hide"} style={{ display: NO_LINK_GOOGLE_BTN_HOVER ? "none" : ""}}> Drop </pre>
                 <img  style={{ display: NO_LINK_GOOGLE_BTN_HOVER ? "" : "none", border: 'none', transform: 'scale(0.5)' }} src="/water_img/mouse_droplet.png"/>
-                <pre id={ NO_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "poppinsLight"} style={{ fontStyle: 'italic'}}> me </pre>
-                <pre id={ NO_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "poppinsLight"} style={{ fontStyle: 'italic'}}> into </pre>
-                <pre id={ NO_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "poppinsLight"} style={{ fontStyle: 'italic'}}> the </pre>
-                <pre id={ NO_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "poppinsLight"} style={{ fontStyle: 'italic'}}> app </pre>
+                <pre id={ NO_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "hide"} style={{ }}> me </pre>
+                <pre id={ NO_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "hide"} style={{  }}> into </pre>
+                <pre id={ NO_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "hide"} style={{  }}> the </pre>
+                <pre id={ NO_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "hide"} style={{  }}> app </pre>
                 {/* <pre> just Drop me into the App</pre> */}
                 </div>
 
@@ -463,18 +463,18 @@ import $ from 'jquery'
                 <div className="column">
                 <img id="googleconfirmation" onClick={linkGoogleConfirm} onMouseEnter={yesLinkGoogleHoverToggleDrop} onMouseLeave={yesLinkGoogleHoverToggleDrop} src="/water_img/confirmation.png"/>
                 <div className="row">
-                <pre id={ YES_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "poppinsLight"} style={{ color: YES_LINK_GOOGLE_BTN_HOVER ? "silver" : "", fontWeight: YES_LINK_GOOGLE_BTN_HOVER ? "bolder" : "normal" }}> sign </pre>
-                <pre id={ YES_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "poppinsLight"} style={{ color: YES_LINK_GOOGLE_BTN_HOVER ? "silver" : "", fontWeight: YES_LINK_GOOGLE_BTN_HOVER ? "bolder" : "normal" }}> up </pre>
-                <pre id={ YES_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "poppinsLight"} style={{ display: YES_LINK_GOOGLE_BTN_HOVER ? "none" : "" }}> and </pre>
-                <pre id={ YES_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "poppinsLight"} style={{ display: YES_LINK_GOOGLE_BTN_HOVER ? "none" : "" }}> link </pre>
+                <pre id={ YES_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "hide"} style={{ color: YES_LINK_GOOGLE_BTN_HOVER ? "silver" : "" }}> sign </pre>
+                <pre id={ YES_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "hide"} style={{ color: YES_LINK_GOOGLE_BTN_HOVER ? "silver" : "" }}> up </pre>
+                <pre id={ YES_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "hide"} style={{ display: YES_LINK_GOOGLE_BTN_HOVER ? "none" : "" }}> and </pre>
+                <pre id={ YES_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "hide"} style={{ display: YES_LINK_GOOGLE_BTN_HOVER ? "none" : "" }}> link </pre>
 
-                <pre id={ YES_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "poppinsLight"} style={{ letterSpacing: '0.0125em'}}>
+                <pre id={ YES_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "hide"} style={{ letterSpacing: '0.0125em'}}>
                 <span style={{ textTransform: YES_LINK_GOOGLE_BTN_HOVER ? "uppercase" : "lowercase" }} id={YES_LINK_GOOGLE_BTN_HOVER ? "gspan" : ""}> g </span>
-                <span id={YES_LINK_GOOGLE_BTN_HOVER ? "red_o_span" : ""}> o </span>
-                <span id={YES_LINK_GOOGLE_BTN_HOVER ? "yellow_o_span" : ""}> o </span>
-                <span id={YES_LINK_GOOGLE_BTN_HOVER ? "lil_g_span" : ""}> g </span>
-                <span id={YES_LINK_GOOGLE_BTN_HOVER ? "google_l" : ""}> l </span>
-                <span id={YES_LINK_GOOGLE_BTN_HOVER ? "e_span" : ""}> e </span>
+                <span id={YES_LINK_GOOGLE_BTN_HOVER ? "red_o_span" : "hide"}> o </span>
+                <span id={YES_LINK_GOOGLE_BTN_HOVER ? "yellow_o_span" : "hide"}> o </span>
+                <span id={YES_LINK_GOOGLE_BTN_HOVER ? "lil_g_span" : "hide"}> g </span>
+                <span id={YES_LINK_GOOGLE_BTN_HOVER ? "google_l" : "hide"}> l </span>
+                <span id={YES_LINK_GOOGLE_BTN_HOVER ? "e_span" : "hide"}> e </span>
                 </pre>                
                 {/* <pre> just Drop me into the App</pre> */}
                 </div>
