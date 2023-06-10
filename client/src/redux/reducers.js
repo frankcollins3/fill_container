@@ -69,7 +69,9 @@ const initialState = {
     SPIN_BOTTLE_SHOW_INPUT: false,
     SPIN_BOTTLE_IMG: '',
     SPIN_BOTTLE_SEARCHING: false,
-    SELECT_ICON_SCREEN: false
+    SELECT_ICON_SCREEN: false,
+    PRE_SELECTED_ICON_SRC: '',
+    PSI_HOVER: false
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -292,6 +294,17 @@ const initialState = {
           ...state,
           SELECT_ICON_SCREEN: !state.SELECT_ICON_SCREEN
         }        
+      case "SET_PRE_SELECTED_ICON_SRC":
+        return {
+          ...state,
+          PRE_SELECTED_ICON_SRC: action.payload
+        }
+
+      case "TOGGLE_PSI_HOVER":
+        return {
+          ...state,
+          PSI_HOVER: state.PSI_HOVER === true ? false : true 
+        }
 
       default:
         return state;
