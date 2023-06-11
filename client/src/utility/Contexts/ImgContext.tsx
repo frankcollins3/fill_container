@@ -64,6 +64,21 @@ type imgContextType = {
     drink: string;
     puppeteerSearchTerms: string[]    
     ReusableImageObject: { src: string, size: number, unit: string, className: string | undefined, id: string | undefined, func: any, event: any }
+    TestUser: { email: string; googleId: string; icon: string; id: number, password: string, username: string; }
+
+
+// email
+// "me@gmail.com"
+// googleId
+// ""
+// icon
+// "http://localhost:3000/water_img/bikini.png"
+// id 
+// 3
+// password
+// "$2a$13$a5A9TNr3j43FpOMMa83jqucfvNohMlh8LE2AWWBnn6inDMOeru6zO"
+// username
+// "wetsand"
     
 //  ReusableImage(src: string, size: number, unit: string, className: string | undefined, id: string | undefined, func: any, event: any): React.JSX.Element
 
@@ -131,7 +146,7 @@ const imgDefaults: imgContextType = {
     inkBottle:`${imagePrefix}ink-bottle.png`,
     puppeteerSearchTerms: ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark"],
     ReusableImageObject: { src: '', size: 0, unit: '', className: '', id: '', func: '', event: ''},
-    // let terms:string[] = ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark", ]
+    TestUser: { email: 'testwaters@gmail.com', googleId: 'testgoogle', icon: '/water_img/hand.png', id: 777, password: 'fullcup', username: 'testwaters'  }    
 };
 
 // createContext
@@ -207,7 +222,7 @@ export function ImgProvider({ children }: Props) {
     const [ink, setInk] = useState<string>(`${imagePrefix}ink.png`);
     const [inkBottle, setInkBottle] = useState<string>(`${imagePrefix}ink-bottle.png`);
     const [puppeteerSearchTerms, setPuppeteerSearchTerms] = useState<string[]>(["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark"])
-    // puppeteerSearchTerms: ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark"]
+    const [TestUser, setTestUser] = useState<any>({email: 'testwaters@gmail.com', googleId: 'testgoogle', icon: '/water_img/hand.png', id: 777, password: 'fullcup', username: 'testwaters' })
     
 
         // * user functionality ends above
@@ -272,7 +287,8 @@ export function ImgProvider({ children }: Props) {
     ink,
     inkBottle,    
     puppeteerSearchTerms,
-    ReusableImageObject
+    ReusableImageObject,
+    TestUser
     };
 
     return (
