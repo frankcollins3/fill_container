@@ -1,11 +1,12 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useContext} from 'react'
 import "./meicon.css"
 import CSS from '../../../utility/CSS'
 import MathRandom from '../../../utility/MathRandom'
 import attributeJQ from '../../../utility/attributeJQ'
 import deathCertificate from '../../../utility/deathCertificate'
+import addIconToLocalStorageUser from '../../../utility/addIconToLocalStorageUser'
 
 import Boop from '../../../utility/ParentchildParent/Boop'
 import Boooooop from '../../../utility/ParentchildParent/Boooooop'
@@ -15,15 +16,14 @@ import $ from 'jquery'
 import ConnectedSignupLoginChecker from '../SignupLoginChecker'
 import ReusableImage from '../../../components/elements/ReusableImage'
 
-import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE } from '../../../redux/actions'
-
+import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE, TOGGLE_USER_ICON_CONFIRM, SET_LAST_ICON_SELECTION_TEXT} from '../../../redux/actions'
 
  function MeIcon (props:any) {
 
-    const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket, puppetCup, cup, drink, bottle, bottles, mouseWaterCup, fullCup, confirmation, close, clock } = useImage()
-    
+    const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket, puppetCup, cup, drink, bottle, bottles, mouseWaterCup, fullCup, confirmation, close, clock, TestUser } = useImage()
+
     let img;
-    let empty:undefined[] = []
+    let empty:string[]|undefined[] = ['empty']
 
     useEffect( () => {
       (async() => {
@@ -33,8 +33,8 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
     }, [])
 
     const {
-       FLIP_FLOP_ICON, SPIN_BOTTLE_IMG, SPIN_BOTTLE_SEARCHING, SPIN_BOTTLE_SHOW_INPUT, GOOGLE_IMG_URL, NON_GOOGLE_IMG_URL, SELECT_ICON_SCREEN, PRE_SELECTED_ICON_SRC, PSI_HOVER, GLASS_SCREEN_B4_NAV, GLASS_HALF_FULL_DB_CHOICE,
-       SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE,
+       FLIP_FLOP_ICON, SPIN_BOTTLE_IMG, SPIN_BOTTLE_SEARCHING, SPIN_BOTTLE_SHOW_INPUT, GOOGLE_IMG_URL, NON_GOOGLE_IMG_URL, SELECT_ICON_SCREEN, PRE_SELECTED_ICON_SRC, PSI_HOVER, GLASS_SCREEN_B4_NAV, GLASS_HALF_FULL_DB_CHOICE, LAST_ICON_SELECTION_TEXT,
+       SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE, TOGGLE_USER_ICON_CONFIRM, SET_LAST_ICON_SELECTION_TEXT
      } = props
 
     const [bathingSuit, setBathingSuit] = useState<boolean>(false)
@@ -66,8 +66,8 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
             $('#PuppeteerSearch')
             .val('')
             attributeJQ('#PuppeteerSearch', 'value', '')         
-      }
-                   
+          }
+                         
           if (key === 'Enter') {            
             TOGGLE_SPIN_BOTTLE_SHOW_INPUT()
             let value:string = `lightblue${event.target.value}`                        
@@ -88,8 +88,10 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                       console.log('data')
                       console.log(data)
                       let imgSrc:string = data.data.puppeteer
+                      console.log('imgSrc')
+                      console.log(imgSrc)
+                      SET_NON_GOOGLE_IMG_URL({ payload: imgSrc })                      
                       await SET_SPIN_BOTTLE_IMG( { payload: imgSrc })
-                      await SET_NON_GOOGLE_IMG_URL( { payload: imgSrc })
                       await TOGGLE_SPIN_BOTTLE_SEARCHING()
                       await TOGGLE_SELECT_ICON_SCREEN()
                     } else {
@@ -152,53 +154,47 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
             TOGGLE_GLASS_SCREEN_B4_NAV()
         }
 
-        const SaveUserHalf = async () => {
-                              
-          const updateUserIconPromise = new Promise( (resolve:any, reject:any) => {
-              let preUser = localStorage.getItem("user");
-              console.log('preUser')
-              console.log(preUser)              
-              if (preUser !== null) {
-                let userObj = JSON.parse(preUser);
-                userObj.clone.data.userSignup.icon = NON_GOOGLE_IMG_URL
-                resolve(userObj)
-                reject(empty)
-              }
-          })
-          updateUserIconPromise
-          .then( (user:any) => {    
-            console.log('user in the then block')
-            console.log(user)
-            const updatedUserToLocStorPromise = new Promise( (resolve:any, reject:any) => {
-                    let clonedUser = {...user}        
-                    let userString:string = JSON.stringify(clonedUser)                    
-                    localStorage.setItem("wateruser", userString)
-                    let storageConfirmationToken = localStorage.getItem("wateruser") ? "WATER" : ' '
-                    resolve(storageConfirmationToken)
-                    reject()
-            })
-            updatedUserToLocStorPromise
-            .then( (wateruser:any) => {
-              console.log('wateruser')
-              console.log(wateruser)
-            })
-          }).catch( (err:any) => {            
-          })
-
-
-              
+        const SaveUserHalf = async () => {     
+          SET_LAST_ICON_SELECTION_TEXT( {payload: "Save icon for how many Weeks?"})
+             addIconToLocalStorageUser(NON_GOOGLE_IMG_URL)             
+            .then( (wateruser:any) => {                
+              TOGGLE_USER_ICON_CONFIRM()            
+            }).catch( (err:any) => {
+              console.log('err from .catch!')
+            })                   
         }
 
-              
-       
+        const saveForWeeksOnChange = (event:any) => {
+            let value:string = event.target.value
+            console.log('value')
+            console.log(value)
             
 
-
-        const SaveUserFull = () => {
-            console.log("save the full user")
+        }
+            
+        const SaveUserFull = () => {            
+            const saveUserPromise = new Promise( (resolve:any, reject:any) => {
+              let preUser = localStorage.getItem("user");              
+              if (preUser !== null) {
+                let userObj = JSON.parse(preUser);                
+                let storageUserIcon:string = userObj.clone.data.userSignup.icon 
+                storageUserIcon = NON_GOOGLE_IMG_URL // userObj.clone.data.userSignup.icon
+                resolve(fetch(`http://localhost:5000/fill_cont?query={NonGoogleIconUpdate(id:3,icon:"${NON_GOOGLE_IMG_URL}"){id,icon}}`))
+                reject(empty)
+              }
+            })
+            saveUserPromise
+            .then( (updatedUser:any) => {
+              TOGGLE_USER_ICON_CONFIRM()
+              // window.location.href = "/"
+            }).catch( (err) => {
+              
+            })
         }
 
+        const clickboat = () => {                      
 
+        }
 
     const renderMeIcon = () => {
         return (
@@ -208,7 +204,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                     {
                           SPIN_BOTTLE_SHOW_INPUT 
                           ?
-                          <img className={ SPIN_BOTTLE_SEARCHING ? "Move-Boat" : '' } id="boat" style={{ position: 'relative', height: '10em', width: '10em' }} src={ boat || '/water_img/mouse_droplet.png'}/>
+                    <img onClick={clickboat} className={ SPIN_BOTTLE_SEARCHING ? "Move-Boat" : '' } id="boat" style={{ position: 'relative', height: '10em', width: '10em' }} src={ boat || '/water_img/mouse_droplet.png'}/>
                           :
                           <div className="column">
 
@@ -217,27 +213,25 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                     }
 
               </div>  
-              {/* //     GLASS_SCREEN_B4_NAV: false,
-    // GLASS_HALF_FULL_DB_CHOICE: false, */}
+
               <div id={SELECT_ICON_SCREEN ? "column" : ""} className={Rightie}>      
                                                             
                       {
                         SELECT_ICON_SCREEN 
-                              ?
-                              
+                              ?                              
                               <>             
                                    {
                                 GLASS_SCREEN_B4_NAV 
                                         ?
                                         <div className="SaveAllColumn">
-                                          <h3 id="SavePre"> Save Icon? You can Edit in Settings. </h3>
+                                          <h3 id="SavePre"> {LAST_ICON_SELECTION_TEXT ? LAST_ICON_SELECTION_TEXT : 'Save Icon? You can Edit in Settings'} </h3>
+                                          <input onChange={saveForWeeksOnChange} type="text"/>
                                         <div className="space-between-row">                                        
 
                                           <img onClick={SaveUserHalf} onMouseEnter={() => setSaveDropHover(true)} onMouseLeave={() => setSaveDropHover(false)} style={{ cursor: 'pointer', height: '100px', width: '100px' }} src={mouseWaterCup}/>                                                                          
                                           <img onClick={SaveUserFull} style={{ cursor: 'pointer', height: '100px', width: '100px' }} src={fullCup}/>
-                                          </div>                                        
-                                            <img src={clock}/>
-
+                                          </div> 
+                                            <img src={clock}/>                                              
                                         </div>
                                           :                          
                                     <>                                      
@@ -247,7 +241,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                                   <img id="PreSelectRejection" onClick={() => TOGGLE_SELECT_ICON_SCREEN() } onMouseEnter={HoverClose} onMouseLeave={UnHoverClose} style={{ margin: '0 1em', opacity: PSI_HOVER ? "0.1" : "1.0" }} src={close}></img>
                                   <img onClick={SelectIcon} id="PreSelectConfirmation" onMouseEnter={FakeBoop} onMouseLeave={FakeBoop} style={{ margin: '0 1em'}} src={confirmation}></img>
                                 </div>
-                                </>
+                                   </>
                                 }                 
                               </>
                               :                         
@@ -259,8 +253,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                                 <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL} iconScreenFlag={TOGGLE_SELECT_ICON_SCREEN} showBoat={TOGGLE_SPIN_BOTTLE_SHOW_INPUT} boat={SPIN_BOTTLE_SHOW_INPUT}>
                               <img onClick={clickElem} onMouseEnter={()=> setBathingSuit(!bathingSuit)} src={bathingSuit ? bikini: pants}></img>
                               </Boop>  
-    
-                            
+                              
                               <Boop rotateAngle={45} speed={800} setImg={SET_NON_GOOGLE_IMG_URL} iconScreenFlag={TOGGLE_SELECT_ICON_SCREEN} showBoat={TOGGLE_SPIN_BOTTLE_SHOW_INPUT} boat={SPIN_BOTTLE_SHOW_INPUT}>                      
                               <img src={shark}></img>
                               </Boop>
@@ -319,6 +312,8 @@ const mapStateToProps = (state:any) => ({
     PSI_HOVER: state.PSI_HOVER,
     GLASS_SCREEN_B4_NAV: state.GLASS_SCREEN_B4_NAV,
     GLASS_HALF_FULL_DB_CHOICE: state.GLASS_HALF_FULL_DB_CHOICE,
+    USER_ICON_CONFIRM: state.USER_ICON_CONFIRM,
+    LAST_ICON_SELECTION_TEXT: state.LAST_ICON_SELECTION_TEXT
     // NON_GOOGLE_IMG_URL: '',                      state doesn't matter since this page is navigated. one would need redux-persist. I'm using regular redux, GraphQl/prisma/postgres and localStorage to persist
 })
 
@@ -332,7 +327,10 @@ const mapDispatchToProps = (dispatch:any) => ({
     SET_PRE_SELECTED_ICON_SRC: (action:any) => dispatch(SET_PRE_SELECTED_ICON_SRC(action)),
     TOGGLE_PSI_HOVER: () => dispatch(TOGGLE_PSI_HOVER()),
     TOGGLE_GLASS_SCREEN_B4_NAV: () => dispatch(TOGGLE_GLASS_SCREEN_B4_NAV()),
-    TOGGLE_GLASS_HALF_FULL_DB_CHOICE: () => dispatch(TOGGLE_GLASS_HALF_FULL_DB_CHOICE())
+    TOGGLE_GLASS_HALF_FULL_DB_CHOICE: () => dispatch(TOGGLE_GLASS_HALF_FULL_DB_CHOICE()),
+    TOGGLE_USER_ICON_CONFIRM: () => dispatch(TOGGLE_USER_ICON_CONFIRM()),
+    SET_LAST_ICON_SELECTION_TEXT: (action:any) => dispatch(SET_LAST_ICON_SELECTION_TEXT(action))
+
 })
 
 const ConnectedMeIcon = connect(mapStateToProps, mapDispatchToProps)(MeIcon)
