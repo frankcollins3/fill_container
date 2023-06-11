@@ -7,7 +7,7 @@ import MathRandom from '../../../utility/MathRandom'
 import attributeJQ from '../../../utility/attributeJQ'
 import Boop from '../../../utility/ParentchildParent/Boop'
 import Boooooop from '../../../utility/ParentchildParent/Boooooop'
-import {useImage} from '../../../utility/ImgContext'
+import {useImage} from '../../../utility/Contexts/ImgContext'
 // import LetterLife from '../../../utility/ParentchildParent/LetterLife'
 import $ from 'jquery'
 import ConnectedSignupLoginChecker from '../SignupLoginChecker'
@@ -18,7 +18,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
 
  function MeIcon (props:any) {
 
-    const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket, puppetCup, cup, drink, bottle, bottles, mouseWaterCup, fullCup, puppeteerSearchTerms, ReusableImageObject, confirmation, close,  } = useImage()
+    const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket, puppetCup, cup, drink, bottle, bottles, mouseWaterCup, fullCup, confirmation, close, clock } = useImage()
     
     let img;
 
@@ -37,6 +37,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
     const [bathingSuit, setBathingSuit] = useState<boolean>(false)
     const [moveBoat, setMoveBoat] = useState(false)
     const [flipCoin, setFlipCoin] = useState(false)
+    const [saveDropHover, setSaveDropHover] = useState(false)
     // const [psiHover, setPsiHover] = useState(false)
 
     let googleUrl:string = props.GOOGLE_IMAGE_URL
@@ -142,20 +143,41 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
           }
           return
         }
-
-        //     GLASS_SCREEN_B4_NAV: false,
-        // GLASS_HALF_FULL_DB_CHOICE: false,
-
-        const SelectIcon = () => {
-            // const username = localStorage.getItem('user')
-            // add the src data to localStorage  User or use GraphQL to update with DB.
-            console.log('NON_GOOGLE_IMG_URL')
-            console.log(NON_GOOGLE_IMG_URL)
+    
+        const SelectIcon = () => {           
             TOGGLE_SPIN_BOTTLE_SEARCHING()
             TOGGLE_GLASS_SCREEN_B4_NAV()
-
-
         }
+
+        const SaveUserHalf = async () => {
+          try {
+            let preUser = await localStorage.getItem("user");
+            console.log('preUser')
+            console.log(preUser)
+            
+            if (preUser !== null) {
+              let userObj = JSON.parse(preUser);
+              console.log('userObj')
+              console.log(userObj);
+              
+              // Rest of your code here...
+            } else {
+              console.log('User data not found in localStorage.');
+              // Handle the scenario when user data is not available...
+            }
+          } catch (error) {
+            console.log('Error parsing JSON:', error);
+            // Handle the error scenario...
+          }
+        };
+            
+
+
+        const SaveUserFull = () => {
+            console.log("save the full user")
+        }
+
+
 
     const renderMeIcon = () => {
         return (
@@ -186,16 +208,14 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                                    {
                                 GLASS_SCREEN_B4_NAV 
                                         ?
-                                        <div className="space-between-row">
-                                          <div className="column">
-                                          <img style={{ height: '100px', width: '100px' }} src={mouseWaterCup}/>
-                                          <pre id="SavePre"> Save a Drop </pre>
-                                          </div>
+                                        <div className="SaveAllColumn">
+                                          <h3 id="SavePre"> Save Icon? You can Edit in Settings. </h3>
+                                        <div className="space-between-row">                                        
 
-                                          <div className="column">
-                                          <img style={{ height: '100px', width: '100px' }} src={fullCup}/>
-                                          <pre id="SavePre"> Save it all </pre>
-                                          </div>
+                                          <img onClick={SaveUserHalf} onMouseEnter={() => setSaveDropHover(true)} onMouseLeave={() => setSaveDropHover(false)} style={{ cursor: 'pointer', height: '100px', width: '100px' }} src={mouseWaterCup}/>                                                                          
+                                          <img onClick={SaveUserFull} style={{ cursor: 'pointer', height: '100px', width: '100px' }} src={fullCup}/>
+                                          </div>                                        
+                                            <img src={clock}/>
 
                                         </div>
                                           :                          
