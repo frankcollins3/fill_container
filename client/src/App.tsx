@@ -21,9 +21,12 @@ import ConnectedCredits from './components/elements/Credits/Credits.tsx'
 import ConnectedLogInOutGoogle from './components/elements/LogInOutGoogle/LogInOutGoogle'
 import ConnectedMeIcon from './components/elements/MeIcon/'
 import HomeTS from './components/webpage/home/homeTS'
-import {ImgProvider} from './utility/Contexts/ImgContext'
-import {RegexProvider} from './utility/Contexts/RegexMenu'
 
+
+// context Providers!
+import {ImgProvider} from './utility/Contexts/ImgContext'   // src/utility/ContextsImgContext -> <img src={all-img-src-paths-for-the-app}
+import {RegexProvider} from './utility/Contexts/RegexMenu'  // regex bank wrapped around the app.
+import {EnvProvider} from './utility/Contexts/EnvContext'
 
 // <GoogleLogin> and googleAPI components and variables.
 import {GoogleLogin, GoogleLogout} from 'react-google-login'
@@ -43,11 +46,8 @@ function App( props:any ) {
   } = props    // object destructuring props haven't done this before.
 
   let env:any;
-  // let clientId = ''
   let clientId:string;
   let API:string = ''
-  
-  // let globalstate = { HYDRO_SETTINGS, HYDRO_DATA };
   let urlbank:any;
 
   const [googleUser, setGoogleUser] = useState<any>({})
@@ -56,7 +56,6 @@ function App( props:any ) {
   useEffect( () => {
     (async() => {
       urlbank = await allDBurl()
-      // let {HYDRO_DATA, HYDRO_SETTINGS } = await store.getState()
 
       API = urlbank.API      
       env = urlbank.ENVdata.data.ENV   
@@ -86,8 +85,8 @@ function App( props:any ) {
     {/* <Route path={'/settings'} element={ < Settings /> } /> */}
     {/*   settings needs redux state. [ SETTINGS_DISPLAY | TOGGLE_SETTINGS_DISPLAY ]   */}
     
-    {/* <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedLogInOutGoogle/> : <ConnectedMeIcon googleImageUrl={GOOGLE_IMAGE_URL}/>  } /> */}
-    <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedMeIcon /> : <ConnectedLogInOutGoogle/>  } />
+    <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedLogInOutGoogle/> : <ConnectedMeIcon googleImageUrl={GOOGLE_IMAGE_URL}/>  } />
+    {/* <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedMeIcon /> : <ConnectedLogInOutGoogle/>  } /> */}
 
     <Route path={'/dashboard'} element={ < Dashboard /> } />
     </Routes>
@@ -98,6 +97,7 @@ function App( props:any ) {
 
   return (
     // <GoogleUserContext.Provider value={googleUser} >
+    <EnvProvider>
     <ImgProvider>
     <RegexProvider>
     <div className="App">
@@ -121,6 +121,7 @@ function App( props:any ) {
     </div>
           </RegexProvider>
         </ImgProvider>
+        </EnvProvider>
     // </GoogleUserContext.Provider>
   );
 }
