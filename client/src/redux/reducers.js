@@ -71,7 +71,10 @@ const initialState = {
     SPIN_BOTTLE_SEARCHING: false,
     SELECT_ICON_SCREEN: false,
     PRE_SELECTED_ICON_SRC: '',
-    PSI_HOVER: false
+    PSI_HOVER: false,
+    GLASS_SCREEN_B4_NAV: false,
+    GLASS_HALF_FULL_DB_CHOICE: { localHalfFull: false, glassFullDB: false },
+    USER_ICON_CONFIRM: false,
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -304,6 +307,27 @@ const initialState = {
         return {
           ...state,
           PSI_HOVER: state.PSI_HOVER === true ? false : true 
+        }
+
+      case "TOGGLE_GLASS_SCREEN_B4_NAV": 
+      return {
+        ...state,
+        GLASS_SCREEN_B4_NAV: !state.GLASS_SCREEN_B4_NAV
+      }
+
+      case "TOGGLE_GLASS_HALF_FULL_DB_CHOICE":
+        return {
+          ...state,
+          GLASS_HALF_FULL_DB_CHOICE: {
+              localHalfFull: action.payload.localHalfFull === true ? state.GLASS_HALF_FULL_DB_CHOICE.localHalfFull = true : [],
+              glassFullDB: action.payload.localHalfFull === true ? state.GLASS_HALF_FULL_DB_CHOICE.glassFullDB = true : []
+          } 
+          // GLASS_HALF_FULL_DB_CHOICE: action.payload.localHalfFull === true ? GLASS_HALF_FULL_DB_CHOICE.localHalfFull = true || 
+        }
+      case "TOGGLE_USER_ICON_CONFIRM":
+        return {
+          ...state,
+          USER_ICON_CONFIRM: !state.USER_ICON_CONFIRM
         }
 
       default:
