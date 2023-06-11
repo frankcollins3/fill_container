@@ -6,8 +6,8 @@ import "./signupinput.css"
 // utility functions
 import inputHandler from '../../../utility/inputHandler'
 import attributeJQ from '../../../utility/attributeJQ'
-import RegexBank from '../../../utility/RegexBank'
-import useRegex from '../../../utility/Contexts/RegexMenu'
+// import RegexObject from '../../../utility/RegexObject'
+import {useRegex} from '../../../utility/Contexts/RegexMenu'
 
 // redux acitons
 import { SET_USERNAME_INPUT, SET_EMAIL_INPUT, SET_PASSWORD_INPUT, SET_AGE_INPUT, TOGGLE_INPUT_FOCUS, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, TOGGLE_USERNAME_INPUT_HOVER, TOGGLE_PASSWORD_INPUT_HOVER, TOGGLE_EMAIL_INPUT_HOVER, TOGGLE_AGE_INPUT_HOVER } from '../../../redux/actions'
@@ -50,22 +50,13 @@ function SignupInput (props: Props) {
 
     let RegexObject:any;    
 
-    useEffect( () => {
-        (async() => {
-            RegexObject = await RegexBank()                
-        })()
-    })
-
-
-    // let inputType:string = props.inputType
-
 const { inputType, USERNAME_INPUT, PASSWORD_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_CLICK, EMAIL_INPUT, AGE_INPUT, SET_USERNAME_INPUT, USERNAME_INPUT_HOVER, PASSWORD_INPUT_HOVER, EMAIL_INPUT_HOVER, AGE_INPUT_HOVER,
         SET_PASSWORD_INPUT, SET_EMAIL_INPUT, SET_AGE_INPUT, TOGGLE_INPUT_FOCUS, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, TOGGLE_USERNAME_INPUT_HOVER, TOGGLE_PASSWORD_INPUT_HOVER, TOGGLE_EMAIL_INPUT_HOVER, TOGGLE_AGE_INPUT_HOVER
       } = props
 
 
-    // inputHandler(event, SET_AGE_INPUT)
 
+// value={ inputType === "username" ? USERNAME_INPUT : inputType === "email" ? EMAIL_INPUT : inputType === 'password' ? PASSWORD_INPUT: inputType === "age" ? AGE_INPUT : "text" }  <SignupInput age={age}> * * POPULATES STATE! and input value ! ! * * 
     const inputOnChange = (event:any) => {
         let value:string = event.target.value
         if (inputType === 'username') {            
@@ -74,24 +65,16 @@ const { inputType, USERNAME_INPUT, PASSWORD_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_
 
         if (inputType === 'email') {
             const splitHelper = event.target.value.split('@.')
-
             if (value[value.length-1] === '.') {
-                let splitEmail:any = value.match(MsplitAtDot)
-                console.log('splitEmail')
-                console.log(splitEmail)
+                let splitEmail:any = value.match(MsplitAtDot)                
                 if (splitEmail != null) {
                     const matchedValue:string = splitEmail[0]
                     const premail:any = value.match(McharBeforeAt)
-                    const emailNoAt:string = premail[0]
-                    console.log('matchedvalue')
-                    console.log(matchedValue)
-
+                    const emailNoAt:string = premail[0]                
+    //  if the regex-affected string: (all characters between) [ ' @ ' __ '.' ]  Includes all the letters to gmail but is spelled incorrectly:      Fix string and update state. if not update state.
                     if (matchedValue?.includes('g') && matchedValue.includes('m') && matchedValue.includes('a') && matchedValue.includes('i') && matchedValue.includes('l') && matchedValue !== '@gmail.') {
                         setDontSet(true)
-                        console.log('G M A I L in the string but it doesnt === GMAIL')
-                        let remail:string = `${emailNoAt}gmail.com`
-                        console.log('remail')
-                        console.log(remail)
+                        let remail:string = `${emailNoAt}gmail.com`                        
                         // setTimeout( () => SET_EMAIL_INPUT( {payload: remail } ), 500)                         
                         setTimeout( () => {
                             SET_EMAIL_INPUT( { payload: remail}, 500)
@@ -107,38 +90,13 @@ const { inputType, USERNAME_INPUT, PASSWORD_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_
             }
                         dontSet ? console.log('aaye') : inputHandler(event, SET_EMAIL_INPUT)
             }                
-
-
-
-            // if (splitEmail !== null) {
-            //     const typoPromise = new Promise( (resolve, reject) => {
-            //         const matchedValue:string = splitEmail[0]
-            //         const premail:any = value.match(McharBeforeAt)
-            //         const emailNoAt:string = premail[0]
-            //         if (matchedValue?.includes('g') && matchedValue.includes('m') && matchedValue.includes('a') && matchedValue.includes('i') && matchedValue.includes('l') && matchedValue !== 'gmail.') {
-            //             console.log('G M A I L in the string but it doesnt === GMAIL')
-            //             let remail:string = `${emailNoAt}gmail.com`
-            //             console.log('remail')
-            //             console.log(remail)
-            //             SET_EMAIL_INPUT({payload: remail})                         
-            //         } else {
-            //             console.log(`GMAIL splitEmail ${splitEmail}`)
-            //         }                    
-            //     })
-            //     typoPromise
-            //     .then( () => {
-
-            //     })
-            // } else {
-            // }
-
-
                 
         if (inputType === 'age') {
             inputHandler(event, SET_AGE_INPUT)
         }
         if (inputType === 'password') {
-            let hasNums4 = RegexObject.hasNums.test(parseInt(PASSWORD_INPUT))        
+            let hasNums4 = RhasNums.test(PASSWORD_INPUT)
+            // let hasNums4 = RegexObject.hasNums.test(parseInt(PASSWORD_INPUT))        
             const statePromise = new Promise( (resolve, reject) => {
                 resolve([ SET_PASSWORD_INPUT({payload: value}) ])
             })                 
@@ -150,30 +108,7 @@ const { inputType, USERNAME_INPUT, PASSWORD_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_
 
     const ghostText = (event:any) => attributeJQ(event.target, 'value', event.target.id)
 
-    const inputfocus = async () => {
-        
-        // if (inputType === 'password') {
-        //         if (!PASSWORD_INPUT_HOVER) {
-        //             SET_PASSWORD_INPUT( { payload: '' } )                        
-        //             TOGGLE_PASSWORD_INPUT_HOVER()
-        //         }
-        // }
-        // if (inputType === 'username') {
-        //         if (!USERNAME_INPUT_HOVER) {
-        //             SET_USERNAME_INPUT( { payload: 'U' } )    // hey who are U?               (get lucky on these little ideas that pop up)
-        //             TOGGLE_USERNAME_INPUT_HOVER()
-        //         }                
-            
-        // }
-        // if (inputType === 'email') {            
-        //         if (!EMAIL_INPUT_HOVER) {
-        //             SET_EMAIL_INPUT( { payload: '@' } )    // hey who are U?               (get lucky on these little ideas that pop up)        
-        //             TOGGLE_EMAIL_INPUT_HOVER()
-        //         }            
-        // }
-        
-        TOGGLE_INPUT_FOCUS( { payload: inputType } )                
-    }
+    const inputfocus = async () => { TOGGLE_INPUT_FOCUS( { payload: inputType } ) }
         
         const RenderSignupInput = () => {
             return (
