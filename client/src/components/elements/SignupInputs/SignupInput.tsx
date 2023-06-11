@@ -92,7 +92,12 @@ const { inputType, USERNAME_INPUT, PASSWORD_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_
                         let remail:string = `${emailNoAt}gmail.com`
                         console.log('remail')
                         console.log(remail)
-                        setTimeout( () => SET_EMAIL_INPUT( {payload: remail } ), 500)                         
+                        // setTimeout( () => SET_EMAIL_INPUT( {payload: remail } ), 500)                         
+                        setTimeout( () => {
+                            SET_EMAIL_INPUT( { payload: remail}, 500)
+                            // setDontSet(!dontSet)
+                            setDontSet(false) 
+                        }, 500)                        
                     } 
                     else {
                         setDontSet(false)
