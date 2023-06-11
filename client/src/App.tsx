@@ -26,7 +26,6 @@ import HomeTS from './components/webpage/home/homeTS'
 // context Providers!
 import {ImgProvider} from './utility/Contexts/ImgContext'   // src/utility/ContextsImgContext -> <img src={all-img-src-paths-for-the-app}
 import {RegexProvider} from './utility/Contexts/RegexMenu'  // regex bank wrapped around the app.
-import {EnvProvider} from './utility/Contexts/EnvContext'
 
 // <GoogleLogin> and googleAPI components and variables.
 import {GoogleLogin, GoogleLogout} from 'react-google-login'
@@ -36,7 +35,38 @@ import {gapi} from 'gapi-script'
 import { SET_LOG_IN_OUT_FLASH_MSG } from './redux/actions'
 import store from './redux/store'
 
+let env:any;
+let clientId:string;
+let API:string = ''
+let urlbank:any;
+
+const GoogleUserContext = createContext<any>({})
+
+type EnvContext = {
+  DATABASE_URL: string;
+  API: string;
+  NODE_ENV: string;
+  GOOGLE_ID: string;
+}
+
+export const EnvContext = createContext<EnvContext | undefined>(undefined);
+
+export const envContextDefaults: EnvContext = {
+  DATABASE_URL: 'no DB_URL',
+  API: 'no API',
+  NODE_ENV: 'NO_NODE_ENV',
+  GOOGLE_ID: 'NO_GOOGLE_ID',
+};
+
 function App( props:any ) {
+
+  const [envData, setEnvData] = useState<EnvContext>({
+    DATABASE_URL: 'databaseurl',
+    API: API || 'not yet',
+    NODE_ENV: 'no node env',
+    GOOGLE_ID: 'googl id'
+  })
+
   const dispatch = useDispatch()
   setCursor($('*'))   
 
@@ -45,15 +75,10 @@ function App( props:any ) {
     TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_LOG_IN_OUT_FLASH_MSG, 
   } = props    // object destructuring props haven't done this before.
 
-  let env:any;
-  let clientId:string;
-  let API:string = ''
-  let urlbank:any;
 
-  const [googleUser, setGoogleUser] = useState<any>({})
-  const GoogleUserContext = createContext<any>({})
-
+  
   useEffect( () => {
+
     (async() => {
       urlbank = await allDBurl()
 
@@ -97,7 +122,7 @@ function App( props:any ) {
 
   return (
     // <GoogleUserContext.Provider value={googleUser} >
-    <EnvProvider>
+    <EnvContext.Provider value={envData || envContextDefaults}>
     <ImgProvider>
     <RegexProvider>
     <div className="App">
@@ -121,7 +146,7 @@ function App( props:any ) {
     </div>
           </RegexProvider>
         </ImgProvider>
-        </EnvProvider>
+        </EnvContext.Provider>
     // </GoogleUserContext.Provider>
   );
 }
