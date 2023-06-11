@@ -238,7 +238,7 @@ import $ from 'jquery'
                     })
                     saveUserPROMISE.then(async(userdata:any) => {                         
                         console.log('userdata signup in the login')
-                        let clonedobject = { clone: {...userdata}, icon: ''}
+                        let clonedobject = { clone: {...userdata} }
 
                         // let userStringObject = `GID:${u.googleId},icon:${u.icon},username:${u.username},password:${u.password},age:${u.age},id:${u.id}`
                         localStorage.setItem("user", JSON.stringify(clonedobject))
@@ -260,13 +260,9 @@ import $ from 'jquery'
             const onLinkSuccess = async (res:any) => {
                 let RegexMenu = await RegexBank()
                 let noWhiteSpaceRegex = RegexMenu.noWhiteSpace
-                
-                
-
-                console.log('res from onLinkSuccess')
-                console.log(res)
+                                        
                 let googleProfile:any = res.profileObj
-                console.log(res.profileObj) 
+                
                 let googleImgUrl:string = googleProfile.imageUrl
                 let googleId:string = googleProfile.googleId
                 let timer:any
