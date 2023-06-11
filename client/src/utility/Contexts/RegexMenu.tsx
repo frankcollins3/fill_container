@@ -41,7 +41,7 @@ type RegexContextType = {
 
       const RegexContext = createContext<RegexContextType>(regexDefaults)
       
-    export  default function useRegex() {
+    export function useRegex() {
         return useContext(RegexContext)
     }
 
