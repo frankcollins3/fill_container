@@ -5,6 +5,8 @@ import "./meicon.css"
 import CSS from '../../../utility/CSS'
 import MathRandom from '../../../utility/MathRandom'
 import attributeJQ from '../../../utility/attributeJQ'
+import deathCertificate from '../../../utility/deathCertificate'
+
 import Boop from '../../../utility/ParentchildParent/Boop'
 import Boooooop from '../../../utility/ParentchildParent/Boooooop'
 import {useImage} from '../../../utility/Contexts/ImgContext'
@@ -21,6 +23,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
     const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket, puppetCup, cup, drink, bottle, bottles, mouseWaterCup, fullCup, confirmation, close, clock } = useImage()
     
     let img;
+    let empty:undefined[] = []
 
     useEffect( () => {
       (async() => {
@@ -150,26 +153,44 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
         }
 
         const SaveUserHalf = async () => {
-          try {
-            let preUser = await localStorage.getItem("user");
-            console.log('preUser')
-            console.log(preUser)
-            
-            if (preUser !== null) {
-              let userObj = JSON.parse(preUser);
-              console.log('userObj')
-              console.log(userObj);
+                              
+          const updateUserIconPromise = new Promise( (resolve:any, reject:any) => {
+              let preUser = localStorage.getItem("user");
+              console.log('preUser')
+              console.log(preUser)              
+              if (preUser !== null) {
+                let userObj = JSON.parse(preUser);
+                userObj.clone.data.userSignup.icon = NON_GOOGLE_IMG_URL
+                resolve(userObj)
+                reject(empty)
+              }
+          })
+          updateUserIconPromise
+          .then( (user:any) => {    
+            console.log('user in the then block')
+            console.log(user)
+            const updatedUserToLocStorPromise = new Promise( (resolve:any, reject:any) => {
+                    let clonedUser = {...user}        
+                    let userString:string = JSON.stringify(clonedUser)                    
+                    localStorage.setItem("wateruser", userString)
+                    let storageConfirmationToken = localStorage.getItem("wateruser") ? "WATER" : ' '
+                    resolve(storageConfirmationToken)
+                    reject()
+            })
+            updatedUserToLocStorPromise
+            .then( (wateruser:any) => {
+              console.log('wateruser')
+              console.log(wateruser)
+            })
+          }).catch( (err:any) => {            
+          })
+
+
               
-              // Rest of your code here...
-            } else {
-              console.log('User data not found in localStorage.');
-              // Handle the scenario when user data is not available...
-            }
-          } catch (error) {
-            console.log('Error parsing JSON:', error);
-            // Handle the error scenario...
-          }
-        };
+        }
+
+              
+       
             
 
 
