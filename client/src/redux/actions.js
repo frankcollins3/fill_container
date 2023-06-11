@@ -175,3 +175,14 @@ export const SET_PRE_SELECTED_ICON_SRC = (action) => {
 }
 
 export const TOGGLE_PSI_HOVER = () => { return { type: "TOGGLE_PSI_HOVER" } }
+
+export const TOGGLE_GLASS_SCREEN_B4_NAV = () => { return { type: "TOGGLE_GLASS_SCREEN_B4_NAV" } }
+
+export const TOGGLE_GLASS_HALF_FULL_DB_CHOICE = () => { return { type: "TOGGLE_GLASS_HALF_FULL_DB_CHOICE" } }
+
+export const TOGGLE_USER_ICON_CONFIRM = () => { return { type: "TOGGLE_USER_ICON_CONFIRM" } }
+
+
+
+//     GLASS_SCREEN_B4_NAV: false,
+    // GLASS_HALF_FULL_DB_CHOICE: false,
