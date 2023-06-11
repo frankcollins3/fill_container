@@ -12,7 +12,7 @@ export default async function addIconToLocalStorageUser (icon:string) {
                     reject(empty)
                 }
         })
-        updatedUserIconPromise
+        return updatedUserIconPromise
         .then( (user:any) => {
             const updatedUserToLocStorPromise = new Promise( (resolve:any, reject:any) => {
                 let clonedUser = {...user}
