@@ -1,6 +1,6 @@
 // const [hydroData, setHydroData] = useState();              // '/data'
-// const [hydroIntake, setHydroIntake] = useState();
 // const [hydroSchedule, setHydroSchedule] = useState([]);
+// const [hydroIntake, setHydroIntake] = useState();
 // const [hydroSettings, setHydroSettings] = useState();
 // const [reload, setReload] = useState();
 // const [date, setDate] = useState();
@@ -72,7 +72,10 @@ const initialState = {
     YES_LINK_GOOGLE_BTN_HOVER: false,
     LINK_GOOGLE_BTN_CLICK: false,
     NO_LINK_GOOGLE_CLICK: false,
-    ONLINK_GOOGLE_CONFIRM_DATA: { age: 0, email: '', googleId: '', icon: '', id: 0, username: '' },
+    // ONLINK_GOOGLE_CONFIRM_DATA: {},
+    ONLINK_GOOGLE_CONFIRM_DATA:    { u: { age: 0, email: '', googleId: '', icon: '', id: 0, username: '' } },
+    // ONLINK_GOOGLE_CONFIRM_DATA:    { age: 0, email: '', googleId: '', icon: '', id: 0, username: '' },
+
         
     // icons  
     ICON_NOT_INPUT: false,  // this is kind of login it is the boolean that decides if the  <Route element={} will be the <ConnectedLogInOutGoogle> or the <ConnectedMeIcon>
@@ -381,9 +384,15 @@ const initialState = {
         }
       
       case "SET_ONLINK_GOOGLE_CONFIRM_DATA":
+        const u = action.payload.u
         return {
           ...state,
-          ONLIN_GOOGLE_CONFIRM_DATA: action.payload
+          ONLINK_GOOGLE_CONFIRM_DATA: action.payload
+          // ONLINK_GOOGLE_CONFIRM_DATA: {
+          //   u: { id: action.payload.u.id, username: action.payload.u.username, icon: action.payload.u.icon, googleId: action.payload.u.googleId, age: action.payload.u.age }
+          // }
+          // u: { age: 0, email: '', googleId: '', icon: '', id: 0, username: ''
+          // ONLINK_GOOGLE_CONFIRM_DATA: action.payload
         }
       
 
