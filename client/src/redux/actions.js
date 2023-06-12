@@ -217,6 +217,20 @@ export const SET_GOOGLE_ID = (action) => {
   }
 }
 
+export const SET_PUPPETEER_SEARCH_TERM = (action) => {
+  return {
+    type: "SET_PUPPETEER_SEARCH_TERM",
+    payload: action.payload
+  }
+}
+
+export const SET_ONLINK_GOOGLE_CONFIRM_DATA = (action) => {
+  return {
+    type: "SET_ONLINK_GOOGLE_CONFIRM_DATA",
+    payload: action.payload
+  }
+}
+
 
 // ^ ^ END OF ICON STATE ^ ^ ^ 
 
