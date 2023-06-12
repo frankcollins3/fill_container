@@ -72,6 +72,7 @@ const initialState = {
     YES_LINK_GOOGLE_BTN_HOVER: false,
     LINK_GOOGLE_BTN_CLICK: false,
     NO_LINK_GOOGLE_CLICK: false,
+    ONLINK_GOOGLE_CONFIRM_DATA: { age: 0, email: '', googleId: '', icon: '', id: 0, username: '' },
         
     // icons  
     ICON_NOT_INPUT: false,  // this is kind of login it is the boolean that decides if the  <Route element={} will be the <ConnectedLogInOutGoogle> or the <ConnectedMeIcon>
@@ -86,7 +87,8 @@ const initialState = {
     GLASS_HALF_FULL_DB_CHOICE: { localHalfFull: false, glassFullDB: false },
     USER_ICON_CONFIRM: false,
     LAST_ICON_SELECTION_TEXT: "",
-    SAVE_FOR_WEEKS_INPUT_VALUE: ''
+    SAVE_FOR_WEEKS_INPUT_VALUE: '',
+    PUPPETEER_SEARCH_TERM: '',
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -371,6 +373,19 @@ const initialState = {
           ...state,
           GOOGLE_ID: action.payload
         }
+      
+      case "SET_PUPPETEER_SEARCH_TERM":
+        return {
+          ...state,
+          PUPPETEER_SEARCH_TERM: action.payload
+        }
+      
+      case "SET_ONLINK_GOOGLE_CONFIRM_DATA":
+        return {
+          ...state,
+          ONLIN_GOOGLE_CONFIRM_DATA: action.payload
+        }
+      
 
       default:
         return state;
