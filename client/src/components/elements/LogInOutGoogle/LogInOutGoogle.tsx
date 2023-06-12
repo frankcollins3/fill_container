@@ -278,8 +278,12 @@ import { Any } from "react-spring"
                 console.log('u')                
                 console.log(u)
 
+                
                 console.log('ONLINK_GOOGLE_CONFIRM_DATA')
                 console.log(ONLINK_GOOGLE_CONFIRM_DATA)
+
+                
+
                 // SET_ONLINK_GOOGLE_CONFIRM_DATA( {payload: { id: u.id, username: u.username, icon: u.icon, googleId: u.googleId, age: u.age}})                   
 
 
@@ -319,26 +323,24 @@ import { Any } from "react-spring"
                         // resolve(userSignup({ googleId: '', icon: '', username: USERNAME_INPUT, email: EMAIL_INPUT, password: PASSWORD_INPUT, age: AGE_INPUT }, localNODE_ENV))
                         reject([])
                     })
-                    saveUserPROMISE.then(async(userSignup:any) => {  
-                        console.log('userSignup this is easy')
-                        console.log(userSignup)
-                        
-                        const  toggle_link_Promise = new Promise(async(resolve:any, reject:any) => {
-                            let u = userSignup
-                            let newU = {}
-                            await delete u.data.userSignup.password      
-                            console.log('u after the key is altered')                                                                                                          
-                            console.log(u)                                                                                                          
-                            await SET_ONLINK_GOOGLE_CONFIRM_DATA({payload: u })                        
-                            let confirmtoken = ONLINK_GOOGLE_CONFIRM_DATA.length > 1 ? ONLINK_GOOGLE_CONFIRM_DATA : "reject"
-                            resolve(confirmtoken)
-                            // reject(confirmtoken) 
-                        }).then( (noPWuser:any) => {
-                            console.log('noPWuser')
-                            console.log(noPWuser)
-                            TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()
-                            localStorage.setItem('GTOKEN', "GOOGLE")
-                        })
+                    saveUserPROMISE.then(async (userSignup: any) => {
+                        console.log('userSignup this is easy');
+                        console.log(userSignup);
+                      
+                        const toggle_link_Promise = new Promise(async (resolve: any, reject: any) => {
+                          let u = userSignup;
+                          let newU = {};
+                          await delete u.data.userSignup.password;
+                          console.log('u after the key is altered');
+                          console.log(u);
+                          await SET_ONLINK_GOOGLE_CONFIRM_DATA({ payload: u });                      
+                            let confirmtoken = ONLINK_GOOGLE_CONFIRM_DATA ? ONLINK_GOOGLE_CONFIRM_DATA : 'reject';
+                            resolve(confirmtoken);
+                        }).then((noPWuser: any) => {
+                            TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()                            
+                          localStorage.setItem('GTOKEN', 'GOOGLE');
+                        });                      
+                      
 
 
                         // let userStringForLocStorage = JSON.stringify(userSignup)
@@ -566,7 +568,7 @@ const mapStateToProps = (state:any) => ({
     NO_LINK_GOOGLE_BTN_CLICK: state.NO_LINK_GOOGLE_CLICK,
     GOOGLE_IMG_URL: state.GOOGLE_IMG_URL,
     ICON_NOT_INPUT: state.ICON_NOT_INPUT,
-    ONLINK_GOOGLE_CONFIRM: state.ONLINK_GOOGLE_CONFIRM
+    ONLINK_GOOGLE_CONFIRM_DATA: state.ONLINK_GOOGLE_CONFIRM_DATA
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
