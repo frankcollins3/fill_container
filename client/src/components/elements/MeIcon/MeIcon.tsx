@@ -178,7 +178,12 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
               parseInt(key) >= 4 ? SET_SAVE_FOR_WEEKS_INPUT_VALUE( { payload: 4 }) : SET_SAVE_FOR_WEEKS_INPUT_VALUE( { payload: key })
             } else {
               SET_SAVE_FOR_WEEKS_INPUT_VALUE( { payload: ' ' })
-          }                      
+          }                  
+          if (key === 'enter') {
+            console.log('key')
+            console.log(`enter: ${key}`)
+          } 
+             
           }
 
             
@@ -237,7 +242,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                                         ?
                                         <div className="SaveAllColumn">
                                           <h3 id="SavePre"> {LAST_ICON_SELECTION_TEXT ? LAST_ICON_SELECTION_TEXT : 'Save Icon? You can Edit in Settings'} </h3>
-                                          <input value={SAVE_FOR_WEEKS_INPUT_VALUE || ''} style={{ width: '30px', color: 'silver', fontWeight: 'bolder'}} onKeyDown={saveForWeeksOnChange} onChange={emptyfunc} type="text"/>
+                                          <input value={SAVE_FOR_WEEKS_INPUT_VALUE || ''} style={{ display: LAST_ICON_SELECTION_TEXT.length > 1 ? '' : 'none', width: '30px', color: 'silver', fontWeight: 'bolder'}} onKeyDown={saveForWeeksOnChange} onChange={emptyfunc} type="text"/>
                                         <div className="space-between-row">                                        
 
                                           <img onClick={SaveUserHalf} onMouseEnter={() => setSaveDropHover(true)} onMouseLeave={() => setSaveDropHover(false)} style={{ cursor: 'pointer', height: '100px', width: '100px' }} src={mouseWaterCup}/>                                                                          
