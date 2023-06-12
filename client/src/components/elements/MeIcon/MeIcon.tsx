@@ -24,7 +24,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
 
     const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket, puppetCup, cup, drink, bottle, bottles, mouseWaterCup, fullCup, confirmation, close, clock, TestUser } = useImage()
 
-    const { RhasNums } = useRegex()
+    const { RhasNums, RnoBackslash, MprePng } = useRegex()
 
     let img;
     let empty:string[]|undefined[] = ['empty']
@@ -159,7 +159,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
             TOGGLE_GLASS_SCREEN_B4_NAV()
         }
 
-        const SaveUserHalf = async () => {     
+        const SaveUserHalf = async (event:any) => {     
           SET_LAST_ICON_SELECTION_TEXT( {payload: "Save icon for how many Weeks?"})
              addIconToLocalStorageUser(NON_GOOGLE_IMG_URL)             
             .then( (wateruser:any) => {                
@@ -167,11 +167,25 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
             }).catch( (err:any) => {
               console.log('err from .catch!')
             })                   
+            $('.cups').detach()
+            attributeJQ($('.clock'), 'src', boat)
+            attributeJQ($('#boat'), 'src', clock)
+            $('#boat').removeClass('Move-Boat');          
         }
 
-        const saveForWeeksOnChange = (event:any) => {
+        const saveForWeeksOnChange = async (event:any) => {        
+          let currentUser:any = await localStorage.getItem('wateruser')
+          let userJSON = await JSON.parse(currentUser)
+          let preuser = JSON.parse(userJSON.value)
+          let user = preuser.clone.data.userSignup
+          let username = user.username
+                  
+          
           let value:string = event.target.value
           let key:string = event.key
+          
+          console.log('key')
+          console.log(key)
           let oneThruNine = [1,2,3,4,5,6,7,8,9]
           // let oneThruNine = AgeArray.pop()   // from src/utility/UtilityValues        
           if (oneThruNine.includes(parseInt(key))) {
@@ -179,11 +193,32 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
             } else {
               SET_SAVE_FOR_WEEKS_INPUT_VALUE( { payload: ' ' })
           }                  
-          if (key === 'enter') {
+          if (key === 'Enter') {
+
             console.log('key')
             console.log(`enter: ${key}`)
+            console.log('NON_GOOGLE_IMG_URL')
+            console.log(NON_GOOGLE_IMG_URL)
+            let pre_img = NON_GOOGLE_IMG_URL.substring(NON_GOOGLE_IMG_URL.lastIndexOf('/'))
+            let almost_img = pre_img.match(MprePng)
+            let img = almost_img[1].replace(RnoBackslash, "")
+            const dodgeJumpyTimeoutPromise = new Promise( (resolve:any, reject:any) => {
+              SET_LAST_ICON_SELECTION_TEXT({ payload: `${username} ${img} dry out in ${parseInt(value) > 1 ? value : 1 } ${parseInt(value) > 1 ? 'weeks' : 'week'}`})
+              let timer:any;
+              resolve(timer)
+              reject(empty)
+            })
+            dodgeJumpyTimeoutPromise
+            .then( (timer:any) => {
+                timer = setTimeout( () => {
+                  window.location.href = "/"
+                }, 2000)
+            })
+            
+            
+            // SET_LAST_ICON_SELECTION_TEXT({ payload: `${username} ${img} dry out in ${value === '4' || key === '3' || key === '2' ? key : 1 } ${parseInt(key) > 1 ? 'weeks' : 'week'}`})
           } 
-             
+
           }
 
             
@@ -245,10 +280,10 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                                           <input value={SAVE_FOR_WEEKS_INPUT_VALUE || ''} style={{ display: LAST_ICON_SELECTION_TEXT.length > 1 ? '' : 'none', width: '30px', color: 'silver', fontWeight: 'bolder'}} onKeyDown={saveForWeeksOnChange} onChange={emptyfunc} type="text"/>
                                         <div className="space-between-row">                                        
 
-                                          <img onClick={SaveUserHalf} onMouseEnter={() => setSaveDropHover(true)} onMouseLeave={() => setSaveDropHover(false)} style={{ cursor: 'pointer', height: '100px', width: '100px' }} src={mouseWaterCup}/>                                                                          
-                                          <img onClick={SaveUserFull} style={{ cursor: 'pointer', height: '100px', width: '100px' }} src={fullCup}/>
+                                          <img className="cups" onClick={SaveUserHalf} onMouseEnter={() => setSaveDropHover(true)} onMouseLeave={() => setSaveDropHover(false)} style={{ cursor: 'pointer', height: '100px', width: '100px' }} src={mouseWaterCup}/>                                                                          
+                                          <img className="cups" onClick={SaveUserFull} style={{ cursor: 'pointer', height: '100px', width: '100px' }} src={fullCup}/>
                                           </div> 
-                                            <img src={clock}/>                                              
+                                            <img className="clock" src={clock}/>                                              
                                         </div>
                                           :                          
                                     <>                                      
