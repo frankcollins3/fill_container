@@ -8,10 +8,12 @@ type RegexContextType = {
     RhasNums: RegExp;
     RdotAtEscape: RegExp;
     RnoWhiteSpace: RegExp;
+    RnoBackslash: RegExp;
     MsplitAtDot: RegExp;
     McharAfterComma: RegExp;
     McharBeforeAt: RegExp;
     MprePng: RegExp;
+
   }
   
   type RegexDefaults = {
@@ -22,6 +24,7 @@ type RegexContextType = {
     RhasNums: RegExp
     RdotAtEscape: RegExp;
     RnoWhiteSpace: RegExp;
+    RnoBackslash: RegExp;
     MsplitAtDot: RegExp;
     McharAfterComma: RegExp;
     McharBeforeAt: RegExp;
@@ -36,6 +39,7 @@ type RegexContextType = {
     RhasNums: /[0-9]/g,
     RdotAtEscape: /[\@\.]/g,
     RnoWhiteSpace: /\s/g,
+    RnoBackslash: /\//g,
     MsplitAtDot: /@([^.]*)\./,        
     McharAfterComma: /,(.*)/,
     McharBeforeAt: /^(.*?)@/,
@@ -60,6 +64,7 @@ type RegexContextType = {
         const [RhasNums, setHasNums] = useState<RegExp>(/[0-9]/g)                                    // replace
         const [RdotAtEscape, setRDotAtEscape] = useState<RegExp>(/[\@\.]/g)      // match          if (splitEmail !== null) {       const matchedValue = splitEmail[0];      }
         const [RnoWhiteSpace, setNoWhiteSpace] = useState<RegExp>(/\s/g)                             // replace
+        const [RnoBackslash, setRNoBackslash] = useState<RegExp>(/\//g)                             // replace
         const [MsplitAtDot, setSplitAtDot] = useState<RegExp>(/@([^.]*)\./)      // match
         const [McharAfterComma, setMCharAfterComma] = useState<RegExp>(/,(.*)/)      // match          if (splitEmail !== null) {       const matchedValue = splitEmail[0];      }
         const [McharBeforeAt, setMCharBeforeAt] = useState<RegExp>(/^(.*?)@/)
@@ -73,6 +78,7 @@ type RegexContextType = {
             RhasNums,
             RdotAtEscape,
             RnoWhiteSpace,
+            RnoBackslash,
             MsplitAtDot,       
             McharAfterComma,
             McharBeforeAt,
