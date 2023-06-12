@@ -10,6 +10,7 @@
 
 // initial state for redux 
 const initialState = {
+    // 
     HYDRO_SETTINGS: false,            // click gear.png the gear navbar icon and it brings up the sidebar on the main container.
 
     HYDRO_DATA: {                     // fetch(postgres/tables/data)    
@@ -21,6 +22,15 @@ const initialState = {
       status: {},
       users_id: 0
     },
+
+    // 
+      NODE_ENV: '',
+      API: '',  
+      GOOGLE_ID: '',   
+    // 
+      
+
+    // 
 
     // signup state related 
     CURRENT_USER: { id: 0, googleId: '', username: '', email: '', age: '' },
@@ -75,6 +85,8 @@ const initialState = {
     GLASS_SCREEN_B4_NAV: false,
     GLASS_HALF_FULL_DB_CHOICE: { localHalfFull: false, glassFullDB: false },
     USER_ICON_CONFIRM: false,
+    LAST_ICON_SELECTION_TEXT: "",
+    SAVE_FOR_WEEKS_INPUT_VALUE: ''
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -328,6 +340,36 @@ const initialState = {
         return {
           ...state,
           USER_ICON_CONFIRM: !state.USER_ICON_CONFIRM
+        }
+      
+      case "SET_LAST_ICON_SELECTION_TEXT":
+        return {
+          ...state,
+          LAST_ICON_SELECTION_TEXT: action.payload
+        }
+
+      case "SET_SAVE_FOR_WEEKS_INPUT_VALUE":
+        return {
+          ...state,
+          SAVE_FOR_WEEKS_INPUT_VALUE: action.payload
+      }
+
+      case "SET_NODE_ENV":
+        return {
+          ...state,
+          NODE_ENV: action.payload
+        }
+      
+      case "SET_API":
+        return {
+          ...state,
+          API: action.payload
+        }
+
+      case "SET_GOOGLE_ID":
+        return {
+          ...state,
+          GOOGLE_ID: action.payload
         }
 
       default:
