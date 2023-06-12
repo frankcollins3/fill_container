@@ -13,7 +13,7 @@ type RegexContextType = {
     McharAfterComma: RegExp;
     McharBeforeAt: RegExp;
     MprePng: RegExp;
-
+    APIsplit: string
   }
   
   type RegexDefaults = {
@@ -29,6 +29,7 @@ type RegexContextType = {
     McharAfterComma: RegExp;
     McharBeforeAt: RegExp;
     MprePng: RegExp
+    APIsplit: string;
   }
   
   const regexDefaults: RegexDefaults = {
@@ -43,7 +44,8 @@ type RegexContextType = {
     MsplitAtDot: /@([^.]*)\./,        
     McharAfterComma: /,(.*)/,
     McharBeforeAt: /^(.*?)@/,
-    MprePng: /(.+)\.png/
+    MprePng: /(.+)\.png/,
+    APIsplit:  "***"
   };
 
       const RegexContext = createContext<RegexContextType>(regexDefaults)
@@ -69,6 +71,7 @@ type RegexContextType = {
         const [McharAfterComma, setMCharAfterComma] = useState<RegExp>(/,(.*)/)      // match          if (splitEmail !== null) {       const matchedValue = splitEmail[0];      }
         const [McharBeforeAt, setMCharBeforeAt] = useState<RegExp>(/^(.*?)@/)
         const [MprePng, setMPrePng] = useState<RegExp>(/(.+)\.png/)
+        const [APIsplit, setAPISplit] = useState<string>("***")
                             
         const value = {
             RstringAfterPeriod,
@@ -82,7 +85,8 @@ type RegexContextType = {
             MsplitAtDot,       
             McharAfterComma,
             McharBeforeAt,
-            MprePng
+            MprePng,
+            APIsplit
         };
 
         return (
