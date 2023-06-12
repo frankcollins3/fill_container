@@ -182,7 +182,43 @@ export const TOGGLE_GLASS_HALF_FULL_DB_CHOICE = () => { return { type: "TOGGLE_G
 
 export const TOGGLE_USER_ICON_CONFIRM = () => { return { type: "TOGGLE_USER_ICON_CONFIRM" } }
 
+export const SET_LAST_ICON_SELECTION_TEXT = (action) => {
+  return { 
+    type: "SET_LAST_ICON_SELECTION_TEXT",
+    payload: action.payload
+  }
+}
 
+export const SET_SAVE_FOR_WEEKS_INPUT_VALUE = (action) => {
+  return {
+    type: "SET_SAVE_FOR_WEEKS_INPUT_VALUE",
+    payload: action.payload
+  }
+}
+
+export const SET_API = (action) => {
+  return {
+    type: "SET_API",
+    payload: action.payload
+  }
+}
+
+export const SET_NODE_ENV = (action) => {
+  return {
+    type: "SET_NODE_ENV",
+    payload: action.payload
+  }
+}
+
+export const SET_GOOGLE_ID = (action) => {
+  return {
+    type: "SET_GOOGLE_ID",
+    payload: action.payload
+  }
+}
+
+
+// ^ ^ END OF ICON STATE ^ ^ ^ 
 
 //     GLASS_SCREEN_B4_NAV: false,
     // GLASS_HALF_FULL_DB_CHOICE: false,
