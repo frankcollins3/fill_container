@@ -6,24 +6,29 @@ import CSS from '../../../utility/CSS'
 import MathRandom from '../../../utility/MathRandom'
 import attributeJQ from '../../../utility/attributeJQ'
 import deathCertificate from '../../../utility/deathCertificate'
+import {AgeArray} from '../../../utility/UtilityValues'
 import addIconToLocalStorageUser from '../../../utility/addIconToLocalStorageUser'
 
 import Boop from '../../../utility/ParentchildParent/Boop'
 import Boooooop from '../../../utility/ParentchildParent/Boooooop'
 import {useImage} from '../../../utility/Contexts/ImgContext'
+import {useRegex} from '../../../utility/Contexts/RegexMenu'
 // import LetterLife from '../../../utility/ParentchildParent/LetterLife'
 import $ from 'jquery'
 import ConnectedSignupLoginChecker from '../SignupLoginChecker'
 import ReusableImage from '../../../components/elements/ReusableImage'
 
-import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE, TOGGLE_USER_ICON_CONFIRM, SET_LAST_ICON_SELECTION_TEXT} from '../../../redux/actions'
+import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE, TOGGLE_USER_ICON_CONFIRM, SET_LAST_ICON_SELECTION_TEXT, SET_SAVE_FOR_WEEKS_INPUT_VALUE} from '../../../redux/actions'
 
  function MeIcon (props:any) {
 
     const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket, puppetCup, cup, drink, bottle, bottles, mouseWaterCup, fullCup, confirmation, close, clock, TestUser } = useImage()
 
+    const { RhasNums } = useRegex()
+
     let img;
     let empty:string[]|undefined[] = ['empty']
+    const emptyfunc = () => { return }
 
     useEffect( () => {
       (async() => {
@@ -33,8 +38,8 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
     }, [])
 
     const {
-       FLIP_FLOP_ICON, SPIN_BOTTLE_IMG, SPIN_BOTTLE_SEARCHING, SPIN_BOTTLE_SHOW_INPUT, GOOGLE_IMG_URL, NON_GOOGLE_IMG_URL, SELECT_ICON_SCREEN, PRE_SELECTED_ICON_SRC, PSI_HOVER, GLASS_SCREEN_B4_NAV, GLASS_HALF_FULL_DB_CHOICE, LAST_ICON_SELECTION_TEXT,
-       SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE, TOGGLE_USER_ICON_CONFIRM, SET_LAST_ICON_SELECTION_TEXT
+       FLIP_FLOP_ICON, SPIN_BOTTLE_IMG, SPIN_BOTTLE_SEARCHING, SPIN_BOTTLE_SHOW_INPUT, GOOGLE_IMG_URL, NON_GOOGLE_IMG_URL, SELECT_ICON_SCREEN, PRE_SELECTED_ICON_SRC, PSI_HOVER, GLASS_SCREEN_B4_NAV, GLASS_HALF_FULL_DB_CHOICE, LAST_ICON_SELECTION_TEXT, SAVE_FOR_WEEKS_INPUT_VALUE,
+       SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE, TOGGLE_USER_ICON_CONFIRM, SET_LAST_ICON_SELECTION_TEXT, SET_SAVE_FOR_WEEKS_INPUT_VALUE
      } = props
 
     const [bathingSuit, setBathingSuit] = useState<boolean>(false)
@@ -165,13 +170,20 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
         }
 
         const saveForWeeksOnChange = (event:any) => {
-            let value:string = event.target.value
-            console.log('value')
-            console.log(value)
+          let value:string = event.target.value
+          let key:string = event.key
+          let oneThruNine = [1,2,3,4,5,6,7,8,9]
+          // let oneThruNine = AgeArray.pop()   // from src/utility/UtilityValues        
+          if (oneThruNine.includes(parseInt(key))) {
+              parseInt(key) >= 4 ? SET_SAVE_FOR_WEEKS_INPUT_VALUE( { payload: 4 }) : SET_SAVE_FOR_WEEKS_INPUT_VALUE( { payload: key })
+            } else {
+              SET_SAVE_FOR_WEEKS_INPUT_VALUE( { payload: ' ' })
+          }                      
+          }
+
             
 
-        }
-            
+                  
         const SaveUserFull = () => {            
             const saveUserPromise = new Promise( (resolve:any, reject:any) => {
               let preUser = localStorage.getItem("user");              
@@ -225,7 +237,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                                         ?
                                         <div className="SaveAllColumn">
                                           <h3 id="SavePre"> {LAST_ICON_SELECTION_TEXT ? LAST_ICON_SELECTION_TEXT : 'Save Icon? You can Edit in Settings'} </h3>
-                                          <input onChange={saveForWeeksOnChange} type="text"/>
+                                          <input value={SAVE_FOR_WEEKS_INPUT_VALUE || ''} style={{ width: '30px', color: 'silver', fontWeight: 'bolder'}} onKeyDown={saveForWeeksOnChange} onChange={emptyfunc} type="text"/>
                                         <div className="space-between-row">                                        
 
                                           <img onClick={SaveUserHalf} onMouseEnter={() => setSaveDropHover(true)} onMouseLeave={() => setSaveDropHover(false)} style={{ cursor: 'pointer', height: '100px', width: '100px' }} src={mouseWaterCup}/>                                                                          
@@ -313,7 +325,8 @@ const mapStateToProps = (state:any) => ({
     GLASS_SCREEN_B4_NAV: state.GLASS_SCREEN_B4_NAV,
     GLASS_HALF_FULL_DB_CHOICE: state.GLASS_HALF_FULL_DB_CHOICE,
     USER_ICON_CONFIRM: state.USER_ICON_CONFIRM,
-    LAST_ICON_SELECTION_TEXT: state.LAST_ICON_SELECTION_TEXT
+    LAST_ICON_SELECTION_TEXT: state.LAST_ICON_SELECTION_TEXT,
+    SAVE_FOR_WEEKS_INPUT_VALUE: state.SAVE_FOR_WEEKS_INPUT_VALUE
     // NON_GOOGLE_IMG_URL: '',                      state doesn't matter since this page is navigated. one would need redux-persist. I'm using regular redux, GraphQl/prisma/postgres and localStorage to persist
 })
 
@@ -329,8 +342,8 @@ const mapDispatchToProps = (dispatch:any) => ({
     TOGGLE_GLASS_SCREEN_B4_NAV: () => dispatch(TOGGLE_GLASS_SCREEN_B4_NAV()),
     TOGGLE_GLASS_HALF_FULL_DB_CHOICE: () => dispatch(TOGGLE_GLASS_HALF_FULL_DB_CHOICE()),
     TOGGLE_USER_ICON_CONFIRM: () => dispatch(TOGGLE_USER_ICON_CONFIRM()),
-    SET_LAST_ICON_SELECTION_TEXT: (action:any) => dispatch(SET_LAST_ICON_SELECTION_TEXT(action))
-
+    SET_LAST_ICON_SELECTION_TEXT: (action:any) => dispatch(SET_LAST_ICON_SELECTION_TEXT(action)),
+    SET_SAVE_FOR_WEEKS_INPUT_VALUE: (action:any) => dispatch(SET_SAVE_FOR_WEEKS_INPUT_VALUE(action))    
 })
 
 const ConnectedMeIcon = connect(mapStateToProps, mapDispatchToProps)(MeIcon)
