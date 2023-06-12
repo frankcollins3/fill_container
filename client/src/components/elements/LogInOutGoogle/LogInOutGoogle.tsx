@@ -30,7 +30,7 @@ import ConnectedSignupLoginChecker from '../../../components/elements/SignupLogi
 import SignupInput from '../../../components/elements/SignupInputs'
 
 import { connect, useDispatch } from 'react-redux'
-import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG } from '../../../redux/actions'
+import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG, TOGGLE_USER_ICON_CONFIRM } from '../../../redux/actions'
 import $ from 'jquery'
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
 
@@ -43,7 +43,7 @@ import $ from 'jquery'
                                     
             TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER,
             TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, 
-            TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG
+            TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG, TOGGLE_USER_ICON_CONFIRM,
           } = props
 
     const googleLinkBtnClass = ["row", "google-link-btn"].join(" ");
@@ -240,6 +240,7 @@ import $ from 'jquery'
                         console.log('userdata signup in the login')
                         let clonedobject = { clone: {...userdata} }
 
+                        TOGGLE_USER_ICON_CONFIRM()
                         // let userStringObject = `GID:${u.googleId},icon:${u.icon},username:${u.username},password:${u.password},age:${u.age},id:${u.id}`
                         localStorage.setItem("user", JSON.stringify(clonedobject))
                         
@@ -312,17 +313,31 @@ import $ from 'jquery'
                         resolve(userSignup({ googleId: '', icon: '', username: USERNAME_INPUT, email: EMAIL_INPUT, password: PASSWORD_INPUT, age: AGE_INPUT }, localNODE_ENV))
                         reject([])
                     })
-                    saveUserPROMISE.then(async(userdata:any) => {                         
+                    saveUserPROMISE.then(async(userSignup:any) => {         
+
+                        console.log('userSignup')            
+                        console.log(userSignup)            
+
+                                                
+
+                        let userStringForLocStorage = JSON.stringify(userSignup)
+                        localStorage.setItem('wateruser', userStringForLocStorage)
+                        localStorage.setItem('GTOKEN', "GOOGLE")
+                        console.log('userStringForLocStorage')
+                        console.log(userStringForLocStorage)
+                        
+
                         // UPDATE TO        G       O       O       G       L       E               !!!!!!!!!!!!!!!!!!!
                         TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()
-                        setTimeout( () => {
-                            lazyJQanimate($('#link-google'), 'link-google', 'signup')     
-                            lazyJQanimate($('#googleconfirmation'), 'googleconfirmation', 'signup')                            
-                            lazyJQanimate('#googlereject', 'googlereject', 'signup')      
-                        })
-                        setTimeout( () => {
-                            window.location.href = "/"
-                        }, 2000)
+
+                        // setTimeout( () => {
+                        //     lazyJQanimate($('#link-google'), 'link-google', 'signup')     
+                        //     lazyJQanimate($('#googleconfirmation'), 'googleconfirmation', 'signup')                            
+                        //     lazyJQanimate('#googlereject', 'googlereject', 'signup')      
+                        // })
+                        // setTimeout( () => {
+                            // window.location.href = "/"
+                        // }, 2000)
                     })
                 })
             }
@@ -532,7 +547,7 @@ const mapStateToProps = (state:any) => ({
     LINK_GOOGLE_BTN_CLICK: state.LINK_GOOGLE_BTN_CLICK,
     NO_LINK_GOOGLE_BTN_CLICK: state.NO_LINK_GOOGLE_CLICK,
     GOOGLE_IMG_URL: state.GOOGLE_IMG_URL,
-    ICON_NOT_INPUT: state.ICON_NOT_INPUT
+    ICON_NOT_INPUT: state.ICON_NOT_INPUT,
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
@@ -554,7 +569,8 @@ const mapDispatchToProps = (dispatch:any) => ({
     TOGGLE_YES_LINK_GOOGLE_BTN_CLICK: () => dispatch(TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()),
     TOGGLE_NO_LINK_GOOGLE_BTN_CLICK: () => dispatch(TOGGLE_NO_LINK_GOOGLE_BTN_CLICK()),
     SET_GOOGLE_IMG_URL: (action:any) => dispatch(SET_GOOGLE_IMG_URL(action)),
-    TOGGLE_ICON_NOT_INPUT: () => dispatch(TOGGLE_ICON_NOT_INPUT())
+    TOGGLE_ICON_NOT_INPUT: () => dispatch(TOGGLE_ICON_NOT_INPUT()),
+    TOGGLE_USER_ICON_CONFIRM: () => dispatch(TOGGLE_USER_ICON_CONFIRM())
     // TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
 })
 
