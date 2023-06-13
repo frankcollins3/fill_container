@@ -233,8 +233,12 @@ export const SET_ONLINK_GOOGLE_CONFIRM_DATA = (action) => {
   }
 }
 
-
-
+export const SET_EMAIL_OR_USERNAME_LOGIN_INPUT = (action) => {
+  return {
+    type: "SET_EMAIL_OR_USERNAME_LOGIN_INPUT",
+    payload: action.payload
+  }
+}
 
 // ^ ^ END OF ICON STATE ^ ^ ^ 
 
