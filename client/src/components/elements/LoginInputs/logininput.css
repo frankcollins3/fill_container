@@ -1,0 +1,15 @@
+.SignupInput-Container {
+    margin: 0 auto;
+}
+
+ input {
+    border: transparent;
+}
+
+input:focus {
+    border: 1px dashed #73defe;
+}
+
+#password {
+  color: #73defe;
+}
