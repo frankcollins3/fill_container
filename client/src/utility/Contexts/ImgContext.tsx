@@ -69,6 +69,7 @@ type imgContextType = {
     googleLilG: string;
     googleL: string;
     googleE: string;
+    multiColorG: string;
     puppeteerSearchTerms: string[]    
     ReusableImageObject: { src: string, size: number, unit: string, className: string | undefined, id: string | undefined, func: any, event: any }
     TestUser: { email: string; googleId: string; icon: string; id: number, password: string, username: string; }
@@ -157,6 +158,7 @@ const imgDefaults: imgContextType = {
     googleLilG: `${googlePrefix}google_lil_g.png`,
     googleL: `${googlePrefix}google_l.png`,
     googleE: `${googlePrefix}google_e.png`,    
+    multiColorG: `${googlePrefix}multi_color_g`,
     puppeteerSearchTerms: ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark"],
     ReusableImageObject: { src: '', size: 0, unit: '', className: '', id: '', func: '', event: ''},
     TestUser: { email: 'testwaters@gmail.com', googleId: 'testgoogle', icon: '/water_img/hand.png', id: 777, password: 'fullcup', username: 'testwaters'  }    
@@ -240,6 +242,7 @@ export function ImgProvider({ children }: Props) {
     const [googleLilG, setGoogleLilG] = useState<string>(`${googlePrefix}google_lil_g.png`);
     const [googleL, setGoogleL] = useState<string>(`${googlePrefix}google_l.png`);
     const [googleE, setGoogleE] = useState<string>(`${googlePrefix}google_e.png`);
+    const [multiColorG, setMultiColorG] = useState<string>(`${googlePrefix}multi_color_g.png`);
     const [puppeteerSearchTerms, setPuppeteerSearchTerms] = useState<string[]>(["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark"])
     const [TestUser, setTestUser] = useState<any>({email: 'testwaters@gmail.com', googleId: 'testgoogle', icon: '/water_img/hand.png', id: 777, password: 'fullcup', username: 'testwaters' })
     
@@ -311,6 +314,7 @@ export function ImgProvider({ children }: Props) {
     googleLilG,
     googleL,
     googleE,
+    multiColorG,
     puppeteerSearchTerms,
     ReusableImageObject,
     TestUser
