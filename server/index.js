@@ -287,8 +287,34 @@ const RootQueryType = new GraphQLObjectType({
         // let predata = await fetch(`http://localhost:5000/fill_cont?query={userSettings(id:1){id,weight,height,age,reminder,start_time,end_time,reminder,activity,users_id}}`)
         let { id } = args        
         let allsettings = await prisma.settings.findMany()    
+        let settingsLength = allsettings.length + 1
+        let allusers = await prisma.users.findMany()
+        let me = allusers.filter(us => us.id === id)
+        let myage = me[0].age
         let mySettings = allsettings.filter(settings => settings.users_id === id)
-        return { id, weight, height, age, reminder, start_time, end_time, reminder, activity, users_id } = mySettings[0]
+        mySettings = mySettings[0]
+        // if (!mySettings) {
+
+          if (!mySettings.start_time) {
+            return prisma.settings.create({
+              data: {
+                id: settingsLength,
+                weight: 150,
+                height: 75,
+                age: myage,
+                reminder: 4,
+                start_time: 9,
+                end_time: 5,
+                activity: 1,
+                users_id: id
+              }
+            }).then( (data) => {
+              return { id, weight, height, age, start_time, end_time, reminder, activity, users_id } = data
+            })
+          } else {
+              return { id, weight, height, age, start_time, end_time, reminder, activity, users_id } = mySettings          
+          }
+
       }   
     },
   allDBusers: {
@@ -317,7 +343,6 @@ const RootQueryType = new GraphQLObjectType({
         
         reject( ['its', 'okay', 'to', 'be', 'rejected'] )
       })   
-
       return iPromiseIllPush
       .then( () => {
           return bucket.length > 1 ? bucket : [{
