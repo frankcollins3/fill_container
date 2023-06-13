@@ -51,10 +51,14 @@ const initialState = {
     NON_GOOGLE_IMG_URL: '',
     USER_SELECT_IMG_URL: '',
 
+    // state for signup and login
     USERNAME_INPUT_HOVER: false,
     EMAIL_INPUT_HOVER: false,
     AGE_INPUT_HOVER: false,
     PASSWORD_INPUT_HOVER: false,
+    EMAIL_OR_USERNAME_LOGIN_INPUT: 'test_email_pw',
+    PASSWORD_LOGIN_INPUT: 'testpw',
+    // state for signup and login
     
 
     USERNAME_INPUT: "",
@@ -396,14 +400,18 @@ const initialState = {
           APP_PAGE_ICON_CONFIRM: !state.APP_PAGE_ICON_CONFIRM
         }
 
-        
-        // ONLINK_GOOGLE_CONFIRM_DATA: {
-        //   u: { id: action.payload.u.id, username: action.payload.u.username, icon: action.payload.u.icon, googleId: action.payload.u.googleId, age: action.payload.u.age }
-        // }
-        // u: { age: 0, email: '', googleId: '', icon: '', id: 0, username: ''
-        // ONLINK_GOOGLE_CONFIRM_DATA: action.payload
-      
+      case "SET_EMAIL_OR_USERNAME_LOGIN_INPUT":
+        return {
+          ...state,
+          EMAIL_OR_USERNAME_LOGIN_INPUT: action.payload
+        }
 
+      case "SET_PASSWORD_LOGIN_INPUT":
+        return {
+          ...state,
+          PASSWORD_LOGIN_INPUT: action.payload
+        }
+    
       default:
         return state;
     }
