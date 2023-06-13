@@ -436,7 +436,8 @@ const RootQueryType = new GraphQLObjectType({
       const { id } = args
       let me = allusers.filter(user => user.id === id)   
       me = me[0]
-      let icon = me.icon
+      
+      let icon = me.icon ? me.icon : "/water_img/bite.png"
       return icon
     }   
   },
