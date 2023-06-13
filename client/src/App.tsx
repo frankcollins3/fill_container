@@ -13,6 +13,7 @@ import allDBurl from './utility/fetch/allDBurl'
 import setCursor from './utility/setCursor'
 import waterIntakeWeightFormula from './utility/waterIntakeWeightFormula'
 import {useImage} from './utility/Contexts/ImgContext'
+import {useRegex} from './utility/Contexts/RegexMenu'
 
 // * components from src/components *
 import Navbar from './components/elements/Navbar'
@@ -32,7 +33,7 @@ import {GoogleLogin, GoogleLogout} from 'react-google-login'
 import {gapi} from 'gapi-script'
 
 // redux / global state management 
-import { SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, SET_GOOGLE_IMG_URL, TOGGLE_APP_PAGE_ICON_CONFIRM } from './redux/actions'
+import { SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, SET_GOOGLE_IMG_URL, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_NODE_ENV, SET_API } from './redux/actions'
 import store from './redux/store'
 import ConnectedSignupLoginChecker from './components/elements/SignupLoginChecker/SignupLoginChecker.tsx';
 
@@ -48,21 +49,26 @@ function App( props:any ) {
   setCursor($('*'))   
 
   const { 
-    HYDRO_SETTINGS, LOG_IN_OUT_TYPE, CURRENT_USER, GOOGLE_IMAGE_URL, ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG, FLIP_FLOP_ICON, NON_GOOGLE_IMG_URL, USER_ICON_CONFIRM, APP_PAGE_ICON_CONFIRM,       // state from mapStateToProps above the export app statement.
-    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_GOOGLE_IMG_URL,
+    CURRENT_USER, GOOGLE_IMAGE_URL, ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG, FLIP_FLOP_ICON, NON_GOOGLE_IMG_URL, USER_ICON_CONFIRM, APP_PAGE_ICON_CONFIRM, NODE_ENV, API,
+    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_GOOGLE_IMG_URL, SET_NODE_ENV, SET_API,
   } = props    // object destructuring props haven't done this before.
 
   const [currentUserInit, setCurrentUserInit] = useState(false)
 
   const { bite, googleBigG } = useImage()
+  const { APIsplit } = useRegex()
 
   useEffect( () => {
 
     (async() => {
-      urlbank = await allDBurl()
+      urlbank = await allDBurl() 
+      env = urlbank.ENVdata.data.ENV  
+      let pre_api = env.API.split(APIsplit)
+      SET_API( {payload: env.NODE_ENV === 'development' ? pre_api[0] : pre_api[1]})
 
-      API = urlbank.API      
-      env = urlbank.ENVdata.data.ENV   
+      // if (env.NODE_ENV) === 
+
+      // SET_API( {payload: env.API })
             
       clientId = env.GOOGLE_ID
             function start() {
@@ -91,7 +97,7 @@ function App( props:any ) {
       console.log('localUser right here !')
       
       if (googletokencheck === null) {
-
+        // let predata = await fetch(`http://localhost:5000/fill_cont?query={idArgsReturnIcon(id:1)}`)
         if (localUser != null) {
           let preuser = await JSON.parse(localUser)        
           console.log('preuser')
@@ -102,18 +108,23 @@ function App( props:any ) {
           console.log(preuservalue)
           
           let clone = preuservalue.clone
-          if (clone) {
-            console.log('clone in the CurrentUserInit')
-            console.log(clone)
-            console.log('clone')
-            console.log(clone)
-            let currentUser = clone.data.userSignup
-            console.log('currentUser')
-            console.log(currentUser)
-            let currentIcon:string = currentUser.icon          
-            console.log('currentIcon')
-            console.log(currentIcon)
+          if (clone) {            
+            // const DBcheckPromise = new Promise( () => {
+
+            // })
+            let currentUser = clone.data.userSignup            
+            let currentIcon:string = currentUser.icon                      
             let currentUsername:string = currentUser.username                    
+            let predata = await fetch(`${API}fill_cont?query={idArgsReturnIcon(id:1)}`)
+            let data = await predata.json()
+            let iconDB:string = data.data.icon
+            console.log('data')
+            console.log(data)
+
+            console.log('currentUsername')
+            console.log(currentUsername)
+            
+
             SET_CURRENT_USER({ payload: currentUser})
             TOGGLE_APP_PAGE_ICON_CONFIRM()
             SET_NON_GOOGLE_IMG_URL( { payload: currentIcon || bite })
@@ -203,6 +214,8 @@ const mapStateToProps = (state:any) => ({
     APP_PAGE_ICON_CONFIRM: state.APP_PAGE_ICON_CONFIRM,
     FLIP_FLOP_ICON: state.FLIP_FLOP_ICON,    
     NON_GOOGLE_IMG_URL: state.NON_GOOGLE_IMG_URL,
+    NODE_ENV: state.NODE_ENV,
+    API: state.API
 });
 
 // global redux actions. these are the state-mutating actions being mapped to props
@@ -213,7 +226,9 @@ const mapDispatchToProps = (dispatch: any) => ({
     TOGGLE_APP_PAGE_ICON_CONFIRM: () => dispatch(TOGGLE_APP_PAGE_ICON_CONFIRM()),
     SET_USERNAME_INPUT: (action:any) => dispatch(SET_USERNAME_INPUT(action)),
     SET_CURRENT_USER: (action:any) => dispatch(SET_CURRENT_USER(action)),
-    SET_GOOGLE_IMG_URL: (action:any) => dispatch(SET_GOOGLE_IMG_URL(action))
+    SET_GOOGLE_IMG_URL: (action:any) => dispatch(SET_GOOGLE_IMG_URL(action)),
+    SET_NODE_ENV: (action:any) => dispatch(SET_NODE_ENV(action)),
+    SET_API: (action:any) => dispatch(SET_API(action)),
 });
 
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
