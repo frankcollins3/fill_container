@@ -1,59 +1,77 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {useState, useEffect, useContext} from 'react'
+import $ from 'jquery'
 import "./meicon.css"
+
+// utility functions
 import CSS from '../../../utility/CSS'
 import MathRandom from '../../../utility/MathRandom'
 import attributeJQ from '../../../utility/attributeJQ'
 import deathCertificate from '../../../utility/deathCertificate'
 import {AgeArray} from '../../../utility/UtilityValues'
 import addIconToLocalStorageUser from '../../../utility/addIconToLocalStorageUser'
-
 import Boop from '../../../utility/ParentchildParent/Boop'
 import Boooooop from '../../../utility/ParentchildParent/Boooooop'
 import {useImage} from '../../../utility/Contexts/ImgContext'
 import {useRegex} from '../../../utility/Contexts/RegexMenu'
 // import LetterLife from '../../../utility/ParentchildParent/LetterLife'
-import $ from 'jquery'
+
 import ConnectedSignupLoginChecker from '../SignupLoginChecker'
 import ReusableImage from '../../../components/elements/ReusableImage'
 
-import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE, TOGGLE_USER_ICON_CONFIRM, SET_LAST_ICON_SELECTION_TEXT, SET_SAVE_FOR_WEEKS_INPUT_VALUE} from '../../../redux/actions'
+import allDBurl from '../../../utility/fetch/allDBurl'
+
+import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE, TOGGLE_USER_ICON_CONFIRM, SET_LAST_ICON_SELECTION_TEXT, SET_SAVE_FOR_WEEKS_INPUT_VALUE, SET_NODE_ENV, SET_API, SET_PUPPETEER_SEARCH_TERM} from '../../../redux/actions'
 
  function MeIcon (props:any) {
 
     const { boat, pants, shark, panda, bikini, turtle, dolphin, pool, target, bucket, puppetCup, cup, drink, bottle, bottles, mouseWaterCup, fullCup, confirmation, close, clock, TestUser } = useImage()
 
-    const { RhasNums, RnoBackslash, MprePng } = useRegex()
+    const { RhasNums, RnoBackslash, MprePng, APIsplit } = useRegex()
 
     let img;
     let empty:string[]|undefined[] = ['empty']
     const emptyfunc = () => { return }
 
+    const {
+      FLIP_FLOP_ICON, SPIN_BOTTLE_IMG, SPIN_BOTTLE_SEARCHING, SPIN_BOTTLE_SHOW_INPUT, GOOGLE_IMG_URL, NON_GOOGLE_IMG_URL, SELECT_ICON_SCREEN, PRE_SELECTED_ICON_SRC, PSI_HOVER, GLASS_SCREEN_B4_NAV, GLASS_HALF_FULL_DB_CHOICE, LAST_ICON_SELECTION_TEXT, SAVE_FOR_WEEKS_INPUT_VALUE, NODE_ENV, API, PUPPETEER_SEARCH_TERM,
+      SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE, TOGGLE_USER_ICON_CONFIRM, SET_LAST_ICON_SELECTION_TEXT, SET_SAVE_FOR_WEEKS_INPUT_VALUE, SET_PUPPETEER_SEARCH_TERM
+    } = props
+
+   const [bathingSuit, setBathingSuit] = useState<boolean>(false)
+   const [moveBoat, setMoveBoat] = useState(false)
+   const [flipCoin, setFlipCoin] = useState(false)
+   const [saveDropHover, setSaveDropHover] = useState(false)
+   // const [psiHover, setPsiHover] = useState(false)
+
+   let googleUrl:string = props.GOOGLE_IMAGE_URL
+
+   const Leftie = ["Left-Cont", "Cont"].join(" ")
+   const Rightie = ["Right-Cont", "Cont"].join(" ")
+   const PSI = $('#Pre-Selected-Icon')
+   const Rejection = $('#PreSelectRejection')
+   let URL:any;
+  //  let API:string = ''
+  //  let NODE_ENV: string = ''
+   let env:any;
+
     useEffect( () => {
       (async() => {
+        let url = await allDBurl()
+        env = url.ENVdata.data.ENV
+        let pre_API = env.API.split(APIsplit)
+        NODE_ENV === "development" ? SET_API({payload: pre_API[0]}) : SET_API({payload: pre_API[1]})
+        SET_NODE_ENV( { payload: env.NODE_ENV})
+        console.log('NODE_ENV')
+        console.log(NODE_ENV)
 
+        console.log('pre_API')
+        console.log(pre_API)    
       })()
       
     }, [])
-
-    const {
-       FLIP_FLOP_ICON, SPIN_BOTTLE_IMG, SPIN_BOTTLE_SEARCHING, SPIN_BOTTLE_SHOW_INPUT, GOOGLE_IMG_URL, NON_GOOGLE_IMG_URL, SELECT_ICON_SCREEN, PRE_SELECTED_ICON_SRC, PSI_HOVER, GLASS_SCREEN_B4_NAV, GLASS_HALF_FULL_DB_CHOICE, LAST_ICON_SELECTION_TEXT, SAVE_FOR_WEEKS_INPUT_VALUE,
-       SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE, TOGGLE_USER_ICON_CONFIRM, SET_LAST_ICON_SELECTION_TEXT, SET_SAVE_FOR_WEEKS_INPUT_VALUE
-     } = props
-
-    const [bathingSuit, setBathingSuit] = useState<boolean>(false)
-    const [moveBoat, setMoveBoat] = useState(false)
-    const [flipCoin, setFlipCoin] = useState(false)
-    const [saveDropHover, setSaveDropHover] = useState(false)
-    // const [psiHover, setPsiHover] = useState(false)
-
-    let googleUrl:string = props.GOOGLE_IMAGE_URL
-
-    const Leftie = ["Left-Cont", "Cont"].join(" ")
-    const Rightie = ["Right-Cont", "Cont"].join(" ")
-    const PSI = $('#Pre-Selected-Icon')
-    const Rejection = $('#PreSelectRejection')
+    
 
         const moveboat = () =>  {
           let numbers = [1,2,3,4,5,6,7,8,9,10]
@@ -63,6 +81,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
         }
 
         const FakeClick = (event: any) => { 
+          
           let key: string = event.key;          
           let value: string = event.target.value;
 
@@ -83,8 +102,11 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                   let randomTerm = MathRandom(terms)
                   console.log(randomTerm)
                     TOGGLE_SPIN_BOTTLE_SEARCHING()
-                    resolve(fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"light-blue-${value}")}`))    
-                    // resolve(fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"${MathRandom(puppeteerSearchTerms)}")}`))    
+                    // fix routes API localhost:5000
+                    
+                    SET_PUPPETEER_SEARCH_TERM( { payload: value } )
+                    resolve(fetch(`${API}fill_cont?query={puppeteer(searchTerm:"light-blue-${value}")}`))    
+                    // resolve(fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"light-blue-${value}")}`))    
                     reject(SET_SPIN_BOTTLE_IMG( { payload: randomIcon || '/water_img/squid.png' }))  
                 })
                 PuppetPromise.then(async (data:any) => {
@@ -159,6 +181,11 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
             TOGGLE_GLASS_SCREEN_B4_NAV()
         }
 
+        const rejectSelect = () => {
+           TOGGLE_SELECT_ICON_SCREEN()
+           SET_PUPPETEER_SEARCH_TERM({payload: ''})
+        }
+
         const SaveUserHalf = async (event:any) => {     
           SET_LAST_ICON_SELECTION_TEXT( {payload: "Save icon for how many Weeks?"})
              addIconToLocalStorageUser(NON_GOOGLE_IMG_URL)             
@@ -199,21 +226,29 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
             console.log(`enter: ${key}`)
             console.log('NON_GOOGLE_IMG_URL')
             console.log(NON_GOOGLE_IMG_URL)
-            let pre_img = NON_GOOGLE_IMG_URL.substring(NON_GOOGLE_IMG_URL.lastIndexOf('/'))
-            let almost_img = pre_img.match(MprePng)
-            let img = almost_img[1].replace(RnoBackslash, "")
-            const dodgeJumpyTimeoutPromise = new Promise( (resolve:any, reject:any) => {
-              SET_LAST_ICON_SELECTION_TEXT({ payload: `${username} ${img} dry out in ${parseInt(value) > 1 ? value : 1 } ${parseInt(value) > 1 ? 'weeks' : 'week'}`})
-              let timer:any;
-              resolve(timer)
-              reject(empty)
-            })
-            dodgeJumpyTimeoutPromise
-            .then( (timer:any) => {
-                timer = setTimeout( () => {
-                  window.location.href = "/"
-                }, 2000)
-            })
+
+            console.log('PUPPETEER_SEARCH_TERM')
+            console.log(PUPPETEER_SEARCH_TERM)
+
+            if (PUPPETEER_SEARCH_TERM.length > 1) {
+              SET_LAST_ICON_SELECTION_TEXT({ payload: `${PUPPETEER_SEARCH_TERM} will dry out in ${parseInt(value) > 1 ? value : 1 } ${parseInt(value) > 1 ? 'weeks' : 'week'} ${username}`})
+            } else {
+              let pre_img = NON_GOOGLE_IMG_URL.substring(NON_GOOGLE_IMG_URL.lastIndexOf('/'))
+              let almost_img = pre_img.match(MprePng)
+              let img = almost_img[1].replace(RnoBackslash, "")
+              const dodgeJumpyTimeoutPromise = new Promise( (resolve:any, reject:any) => {
+                SET_LAST_ICON_SELECTION_TEXT({ payload: `${img} will dry out in ${parseInt(value) > 1 ? value : 1 } ${parseInt(value) > 1 ? 'weeks' : 'week'} ${username}`})
+                let timer:any;
+                resolve(timer)
+                reject(empty)
+              })
+              dodgeJumpyTimeoutPromise
+              .then( (timer:any) => {
+                  timer = setTimeout( () => {
+                    window.location.href = "/"
+                  }, 2000)
+              })
+            }
             
             
             // SET_LAST_ICON_SELECTION_TEXT({ payload: `${username} ${img} dry out in ${value === '4' || key === '3' || key === '2' ? key : 1 } ${parseInt(key) > 1 ? 'weeks' : 'week'}`})
@@ -231,13 +266,22 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                 let userObj = JSON.parse(preUser);                
                 let storageUserIcon:string = userObj.clone.data.userSignup.icon 
                 storageUserIcon = NON_GOOGLE_IMG_URL // userObj.clone.data.userSignup.icon
-                resolve(fetch(`http://localhost:5000/fill_cont?query={NonGoogleIconUpdate(id:3,icon:"${NON_GOOGLE_IMG_URL}"){id,icon}}`))
+                resolve(fetch(`${API}fill_cont?query={NonGoogleIconUpdate(id:3,icon:"${NON_GOOGLE_IMG_URL}"){id,icon}}`))
+                // resolve(fetch(`http://localhost:5000/fill_cont?query={NonGoogleIconUpdate(id:3,icon:"${NON_GOOGLE_IMG_URL}"){id,icon}}`))
                 reject(empty)
               }
             })
             saveUserPromise
             .then( (updatedUser:any) => {
+              const ThenPromise = new Promise( (resolve:any, reject:any) => {
+
+              })
+
+              SET_LAST_ICON_SELECTION_TEXT({payload: "Icon Saved. Taking you Home."})
               TOGGLE_USER_ICON_CONFIRM()
+              setTimeout( () => {
+
+              })
               // window.location.href = "/"
             }).catch( (err) => {
               
@@ -245,6 +289,11 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
         }
 
         const clickboat = () => {                      
+          console.log('NODE_ENV')
+          console.log(NODE_ENV)
+
+          console.log('API')
+          console.log(API)
 
         }
 
@@ -290,7 +339,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                               <img className={PSI_HOVER ? "psiHoverAnimation" : ""} id="Pre-Selected-Icon" src={NON_GOOGLE_IMG_URL}/>
                                                            
                                 <div className="row">
-                                  <img id="PreSelectRejection" onClick={() => TOGGLE_SELECT_ICON_SCREEN() } onMouseEnter={HoverClose} onMouseLeave={UnHoverClose} style={{ margin: '0 1em', opacity: PSI_HOVER ? "0.1" : "1.0" }} src={close}></img>
+                                  <img id="PreSelectRejection" onClick={rejectSelect} onMouseEnter={HoverClose} onMouseLeave={UnHoverClose} style={{ margin: '0 1em', opacity: PSI_HOVER ? "0.1" : "1.0" }} src={close}></img>
                                   <img onClick={SelectIcon} id="PreSelectConfirmation" onMouseEnter={FakeBoop} onMouseLeave={FakeBoop} style={{ margin: '0 1em'}} src={confirmation}></img>
                                 </div>
                                    </>
@@ -366,7 +415,10 @@ const mapStateToProps = (state:any) => ({
     GLASS_HALF_FULL_DB_CHOICE: state.GLASS_HALF_FULL_DB_CHOICE,
     USER_ICON_CONFIRM: state.USER_ICON_CONFIRM,
     LAST_ICON_SELECTION_TEXT: state.LAST_ICON_SELECTION_TEXT,
-    SAVE_FOR_WEEKS_INPUT_VALUE: state.SAVE_FOR_WEEKS_INPUT_VALUE
+    SAVE_FOR_WEEKS_INPUT_VALUE: state.SAVE_FOR_WEEKS_INPUT_VALUE,
+    NODE_ENV: state.NODE_ENV,
+    API: state.API,
+    PUPPETEER_SEARCH_TERM: state.PUPPETEER_SEARCH_TERM
     // NON_GOOGLE_IMG_URL: '',                      state doesn't matter since this page is navigated. one would need redux-persist. I'm using regular redux, GraphQl/prisma/postgres and localStorage to persist
 })
 
@@ -383,7 +435,10 @@ const mapDispatchToProps = (dispatch:any) => ({
     TOGGLE_GLASS_HALF_FULL_DB_CHOICE: () => dispatch(TOGGLE_GLASS_HALF_FULL_DB_CHOICE()),
     TOGGLE_USER_ICON_CONFIRM: () => dispatch(TOGGLE_USER_ICON_CONFIRM()),
     SET_LAST_ICON_SELECTION_TEXT: (action:any) => dispatch(SET_LAST_ICON_SELECTION_TEXT(action)),
-    SET_SAVE_FOR_WEEKS_INPUT_VALUE: (action:any) => dispatch(SET_SAVE_FOR_WEEKS_INPUT_VALUE(action))    
+    SET_SAVE_FOR_WEEKS_INPUT_VALUE: (action:any) => dispatch(SET_SAVE_FOR_WEEKS_INPUT_VALUE(action)),
+    SET_NODE_ENV: (action:any) => dispatch(SET_NODE_ENV(action)),
+    SET_API: (action:any) => dispatch(SET_API(action)),
+    SET_PUPPETEER_SEARCH_TERM: (action:any) => dispatch(SET_PUPPETEER_SEARCH_TERM(action))
 })
 
 const ConnectedMeIcon = connect(mapStateToProps, mapDispatchToProps)(MeIcon)
