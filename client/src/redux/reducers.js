@@ -78,6 +78,7 @@ const initialState = {
     NO_LINK_GOOGLE_CLICK: false,
     // ONLINK_GOOGLE_CONFIRM_DATA: {},
     ONLINK_GOOGLE_CONFIRM_DATA:    { u: { age: 0, email: '', googleId: '', icon: '', id: 0, username: '' } },
+    BLUE_G_MULTI_G_GOOGLE: false,
     // ONLINK_GOOGLE_CONFIRM_DATA:    { age: 0, email: '', googleId: '', icon: '', id: 0, username: '' },
 
         
@@ -410,6 +411,12 @@ const initialState = {
         return {
           ...state,
           PASSWORD_LOGIN_INPUT: action.payload
+        }
+      
+      case "TOGGLE_BLUE_G_MULTI_G_GOOGLE":
+        return {
+          ...state,
+          BLUE_G_MULTI_G_GOOGLE: !state.BLUE_G_MULTI_G_GOOGLE
         }
     
       default:
