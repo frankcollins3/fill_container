@@ -182,6 +182,8 @@ export const TOGGLE_GLASS_HALF_FULL_DB_CHOICE = () => { return { type: "TOGGLE_G
 
 export const TOGGLE_USER_ICON_CONFIRM = () => { return { type: "TOGGLE_USER_ICON_CONFIRM" } }
 
+export const TOGGLE_APP_PAGE_ICON_CONFIRM = () => { return { type: "TOGGLE_APP_PAGE_ICON_CONFIRM" } }
+
 export const SET_LAST_ICON_SELECTION_TEXT = (action) => {
   return { 
     type: "SET_LAST_ICON_SELECTION_TEXT",
@@ -230,6 +232,8 @@ export const SET_ONLINK_GOOGLE_CONFIRM_DATA = (action) => {
     payload: action.payload
   }
 }
+
+
 
 
 // ^ ^ END OF ICON STATE ^ ^ ^ 
