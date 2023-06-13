@@ -284,19 +284,13 @@ const RootQueryType = new GraphQLObjectType({
         id: { type: GraphQLInt }
       }, 
       resolve: async ( parent, args ) => {
-        let { id } = args
-        // let allusers = await prisma.users.findMany()    
-        // let me = allusers.filter(user => user.id === id)   
-        // me = me[0]
+        // let predata = await fetch(`http://localhost:5000/fill_cont?query={userSettings(id:1){id,weight,height,age,reminder,start_time,end_time,reminder,activity,users_id}}`)
+        let { id } = args        
         let allsettings = await prisma.settings.findMany()    
         let mySettings = allsettings.filter(settings => settings.users_id === id)
         return { id, weight, height, age, reminder, start_time, end_time, reminder, activity, users_id } = mySettings[0]
-        // return { id, weight, height, age, reminder, start_time, end_time, reminder, activity, users_id } = settings                 
       }   
     },
-    // userSettings: {
-    //   type: new Gra
-    // }
   allDBusers: {
     type: new GraphQLList(UsersType),
     description: 'List of Users from Postgres & Prisma',
@@ -306,7 +300,6 @@ const RootQueryType = new GraphQLObjectType({
     }
   },
   allDBdata: {
-    // type: DataType,
     type: new GraphQLList(DataType),
     description: 'All Data from Postgres and Prisma',
     resolve: async () => {
