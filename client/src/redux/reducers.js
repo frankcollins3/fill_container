@@ -89,6 +89,7 @@ const initialState = {
     GLASS_SCREEN_B4_NAV: false,
     GLASS_HALF_FULL_DB_CHOICE: { localHalfFull: false, glassFullDB: false },
     USER_ICON_CONFIRM: false,
+    APP_PAGE_ICON_CONFIRM: false,
     LAST_ICON_SELECTION_TEXT: "",
     SAVE_FOR_WEEKS_INPUT_VALUE: '',
     PUPPETEER_SEARCH_TERM: '',
@@ -388,12 +389,19 @@ const initialState = {
         return {
           ...state,
           ONLINK_GOOGLE_CONFIRM_DATA: action.payload
-          // ONLINK_GOOGLE_CONFIRM_DATA: {
-          //   u: { id: action.payload.u.id, username: action.payload.u.username, icon: action.payload.u.icon, googleId: action.payload.u.googleId, age: action.payload.u.age }
-          // }
-          // u: { age: 0, email: '', googleId: '', icon: '', id: 0, username: ''
-          // ONLINK_GOOGLE_CONFIRM_DATA: action.payload
         }
+      case "TOGGLE_APP_PAGE_ICON_CONFIRM":
+        return {
+          ...state,
+          APP_PAGE_ICON_CONFIRM: !state.APP_PAGE_ICON_CONFIRM
+        }
+
+        
+        // ONLINK_GOOGLE_CONFIRM_DATA: {
+        //   u: { id: action.payload.u.id, username: action.payload.u.username, icon: action.payload.u.icon, googleId: action.payload.u.googleId, age: action.payload.u.age }
+        // }
+        // u: { age: 0, email: '', googleId: '', icon: '', id: 0, username: ''
+        // ONLINK_GOOGLE_CONFIRM_DATA: action.payload
       
 
       default:
