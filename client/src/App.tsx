@@ -99,40 +99,33 @@ function App( props:any ) {
       if (googletokencheck === null) {
         // let predata = await fetch(`http://localhost:5000/fill_cont?query={idArgsReturnIcon(id:1)}`)
         if (localUser != null) {
-          let preuser = await JSON.parse(localUser)        
-          console.log('preuser')
-          console.log(preuser)
-          let preuservalue = JSON.parse(preuser.value)
-          
-          console.log('preuservalue')
-          console.log(preuservalue)
-          
+          let preuser = await JSON.parse(localUser)                  
+          let preuservalue = JSON.parse(preuser.value)                
           let clone = preuservalue.clone
           if (clone) {            
-            // const DBcheckPromise = new Promise( () => {
-
-            // })
-            let currentUser = clone.data.userSignup            
-            let currentIcon:string = currentUser.icon                      
-            let currentUsername:string = currentUser.username                    
-            let predata = await fetch(`${API}fill_cont?query={idArgsReturnIcon(id:1)}`)
-            let data = await predata.json()
-            let iconDB:string = data.data.icon
-            console.log('data')
-            console.log(data)
-
-            console.log('currentUsername')
-            console.log(currentUsername)
+              let currentUser = clone.data.userSignup            
+              let currentIcon:string = currentUser.icon                      
+              let currentUsername:string = currentUser.username                    
+              let predata = await fetch(`${API}fill_cont?query={idArgsReturnIcon(id:1)}`)
+              let data = await predata.json()
+              let DBicon:string = data.data.idArgsReturnIcon
+              console.log('iconDB')
+              console.log(DBicon)
+              if (DBicon) {
+                SET_NON_GOOGLE_IMG_URL( { payload: DBicon })
+                TOGGLE_APP_PAGE_ICON_CONFIRM()
+                TOGGLE_USER_ICON_CONFIRM()
+                setCurrentUserInit(true)
+              } else {
+                SET_CURRENT_USER({ payload: currentUser})
+                TOGGLE_APP_PAGE_ICON_CONFIRM()
+                SET_NON_GOOGLE_IMG_URL( { payload: currentIcon || bite })
+                TOGGLE_USER_ICON_CONFIRM()
+                setCurrentUserInit(true)
+              }
             
 
-            SET_CURRENT_USER({ payload: currentUser})
-            TOGGLE_APP_PAGE_ICON_CONFIRM()
-            SET_NON_GOOGLE_IMG_URL( { payload: currentIcon || bite })
-            TOGGLE_USER_ICON_CONFIRM()
-            setCurrentUserInit(true)
           }
-        } else {
-          
         }
       } else {        
         if (localUser != null) {
