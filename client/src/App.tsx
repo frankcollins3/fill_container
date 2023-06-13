@@ -54,7 +54,7 @@ function App( props:any ) {
 
   const [currentUserInit, setCurrentUserInit] = useState(false)
 
-  const { bite } = useImage()
+  const { bite, googleBigG } = useImage()
 
   useEffect( () => {
 
@@ -82,6 +82,8 @@ function App( props:any ) {
 
   // onClick on the <App>
   const CurrentUserInit = async () => {
+    // parse for database icon here. if there's no database go down the lane!
+
     console.log("hey curentuser")
     if (!currentUserInit) {
       const localUser:any = await localStorage.getItem('wateruser')      
@@ -126,7 +128,7 @@ function App( props:any ) {
           let pre_user = JSON.parse(localUser)
           let icon:string = pre_user.icon.trim()          
           TOGGLE_USER_ICON_CONFIRM()
-          SET_NON_GOOGLE_IMG_URL( { payload: icon || bite })          
+          SET_NON_GOOGLE_IMG_URL( { payload: icon || googleBigG })          
           TOGGLE_APP_PAGE_ICON_CONFIRM()
           setCurrentUserInit(true)
         }        
