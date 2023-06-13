@@ -19,6 +19,8 @@ import isItDeadYet from '../../../utility/isItDeadYet'
 import lazyJQanimate from '../../../utility/lazyJQanimate'
 import userSignup from '../../../utility/fetch/userSignup'
 import linkUserWithGoogle from '../../../utility/fetch/linkUserWithGoogle'
+import stringifyItemSetItem from '../../../utility/stringifyItemSetItem'
+import parseItemGetItem from '../../../utility/parseItemGetItem'
 // import ghostText from '../../../utility/GhostText'
 
 // components
@@ -32,7 +34,7 @@ import SignupInput from '../../../components/elements/SignupInputs'
 import { connect, useDispatch } from 'react-redux'
 import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG, TOGGLE_USER_ICON_CONFIRM, SET_ONLINK_GOOGLE_CONFIRM_DATA } from '../../../redux/actions'
 import $ from 'jquery'
-import { Any } from "react-spring"
+// import { Any } from "react-spring"
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
 
  function LogInOutGoogle ( props:any ) {
@@ -272,20 +274,20 @@ import { Any } from "react-spring"
         
                 deathCertificate('googleImgUrl', googleImgUrl, 1, false)
                 SET_GOOGLE_IMG_URL({ payload: googleImgUrl })
-                
+                ONLINK_GOOGLE_CONFIRM_DATA.icon = googleImgUrl
                 let userUpdatedWithGoogle = await linkUserWithGoogle(USERNAME_INPUT, googleId, googleImgUrl)      
                 const u = userUpdatedWithGoogle.data.linkUserWithGoogle
                 console.log('u')                
                 console.log(u)
-
                 
                 console.log('ONLINK_GOOGLE_CONFIRM_DATA')
                 console.log(ONLINK_GOOGLE_CONFIRM_DATA)
 
+                let googleSignupUserStrForLocStorage = await stringifyItemSetItem(ONLINK_GOOGLE_CONFIRM_DATA, "wateruser");
+                console.log('googleSignupUseStrForLocStorage')
+                console.log(googleSignupUserStrForLocStorage)
+                // let googleSignupUserStrForLocStorage = JSON.stringify(ONLINK_GOOGLE_CONFIRM_DATA);
                 
-
-                // SET_ONLINK_GOOGLE_CONFIRM_DATA( {payload: { id: u.id, username: u.username, icon: u.icon, googleId: u.googleId, age: u.age}})                   
-
 
 
                 const uGID = u.googleId
@@ -313,41 +315,25 @@ import { Any } from "react-spring"
                     let localURL = allDBurl()
                     resolve(localURL)
                     reject([])
-                })
-                
+                })                
                 urlPROMISE.then( (urldata:any) => {
                     let localNODE_ENV = urldata.ENVdata .data.ENV.NODE_ENV                    
-                    const saveUserPROMISE = new Promise( (resolve, reject) => {
-                        
+                    const saveUserPROMISE = new Promise( (resolve, reject) => {                        
                         resolve(userSignup({ googleId: '', icon: '', username: USERNAME_INPUT, email: EMAIL_INPUT, password: PASSWORD_INPUT, age: AGE_INPUT }, localNODE_ENV))
-                        // resolve(userSignup({ googleId: '', icon: '', username: USERNAME_INPUT, email: EMAIL_INPUT, password: PASSWORD_INPUT, age: AGE_INPUT }, localNODE_ENV))
                         reject([])
                     })
-                    saveUserPROMISE.then(async (userSignup: any) => {
-                        console.log('userSignup this is easy');
-                        console.log(userSignup);
-                      
+                    saveUserPROMISE.then(async (userSignup: any) => {                                              
                         const toggle_link_Promise = new Promise(async (resolve: any, reject: any) => {
                           let u = userSignup;
                           let newU = {};
-                          await delete u.data.userSignup.password;
-                          console.log('u after the key is altered');
-                          console.log(u);
+                          await delete u.data.userSignup.password;                          
                           await SET_ONLINK_GOOGLE_CONFIRM_DATA({ payload: u });                      
                             let confirmtoken = ONLINK_GOOGLE_CONFIRM_DATA ? ONLINK_GOOGLE_CONFIRM_DATA : 'reject';
                             resolve(confirmtoken);
                         }).then((noPWuser: any) => {
                             TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()                            
                           localStorage.setItem('GTOKEN', 'GOOGLE');
-                        });                      
-                      
-
-
-                        // let userStringForLocStorage = JSON.stringify(userSignup)
-                        // localStorage.setItem('wateruser', userStringForLocStorage)
-
-                        
-                
+                        });                                      
                         // UPDATE TO        G       O       O       G       L       E               !!!!!!!!!!!!!!!!!!!
 
                         // setTimeout( () => {
