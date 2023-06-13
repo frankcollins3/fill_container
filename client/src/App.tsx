@@ -12,6 +12,7 @@ import EVENT from './utility/EVENT'
 import allDBurl from './utility/fetch/allDBurl'
 import setCursor from './utility/setCursor'
 import waterIntakeWeightFormula from './utility/waterIntakeWeightFormula'
+import {useImage} from './utility/Contexts/ImgContext'
 
 // * components from src/components *
 import Navbar from './components/elements/Navbar'
@@ -31,7 +32,7 @@ import {GoogleLogin, GoogleLogout} from 'react-google-login'
 import {gapi} from 'gapi-script'
 
 // redux / global state management 
-import { SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER } from './redux/actions'
+import { SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, SET_GOOGLE_IMG_URL, TOGGLE_APP_PAGE_ICON_CONFIRM } from './redux/actions'
 import store from './redux/store'
 import ConnectedSignupLoginChecker from './components/elements/SignupLoginChecker/SignupLoginChecker.tsx';
 
@@ -47,11 +48,13 @@ function App( props:any ) {
   setCursor($('*'))   
 
   const { 
-    HYDRO_SETTINGS, LOG_IN_OUT_TYPE, CURRENT_USER, GOOGLE_IMAGE_URL, ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG, FLIP_FLOP_ICON, NON_GOOGLE_IMG_URL, USER_ICON_CONFIRM,      // state from mapStateToProps above the export app statement.
-    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER
+    HYDRO_SETTINGS, LOG_IN_OUT_TYPE, CURRENT_USER, GOOGLE_IMAGE_URL, ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG, FLIP_FLOP_ICON, NON_GOOGLE_IMG_URL, USER_ICON_CONFIRM, APP_PAGE_ICON_CONFIRM,       // state from mapStateToProps above the export app statement.
+    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_GOOGLE_IMG_URL,
   } = props    // object destructuring props haven't done this before.
 
   const [currentUserInit, setCurrentUserInit] = useState(false)
+
+  const { bite } = useImage()
 
   useEffect( () => {
 
@@ -65,7 +68,6 @@ function App( props:any ) {
             function start() {
         gapi.client.init({
           clientId: clientId,
-          // clientId: clientId || '569586439008-leid88t18klfhoi2h193rc125aae533l.apps.googleusercontent.com',
           scope: ""
         })
       };
@@ -78,24 +80,56 @@ function App( props:any ) {
   const onFailure = (res:any) => { console.log("hey failure") }
   const nothing = () => { return }
 
+  // onClick on the <App>
   const CurrentUserInit = async () => {
     console.log("hey curentuser")
     if (!currentUserInit) {
-      const localUser:any = await localStorage.getItem('wateruser')
-      if (localUser != null) {
-        let user = await JSON.parse(localUser)
-        let clone = user.clone        
-        if (clone) {
-          let currentUser = clone.data.userSignup
-          let currentIcon:string = currentUser.icon
-          let currentUsername:string = currentUser.username                    
-          SET_NON_GOOGLE_IMG_URL({payload: currentIcon})
-          SET_CURRENT_USER({ payload: currentUser})
-          TOGGLE_USER_ICON_CONFIRM()
-          setCurrentUserInit(true)
+      const localUser:any = await localStorage.getItem('wateruser')      
+      const googletokencheck = await localStorage.getItem('GTOKEN')
+      console.log('localUser right here !')
+      
+      if (googletokencheck === null) {
+
+        if (localUser != null) {
+          let preuser = await JSON.parse(localUser)        
+          console.log('preuser')
+          console.log(preuser)
+          let preuservalue = JSON.parse(preuser.value)
+          
+          console.log('preuservalue')
+          console.log(preuservalue)
+          
+          let clone = preuservalue.clone
+          if (clone) {
+            console.log('clone in the CurrentUserInit')
+            console.log(clone)
+            console.log('clone')
+            console.log(clone)
+            let currentUser = clone.data.userSignup
+            console.log('currentUser')
+            console.log(currentUser)
+            let currentIcon:string = currentUser.icon          
+            console.log('currentIcon')
+            console.log(currentIcon)
+            let currentUsername:string = currentUser.username                    
+            SET_CURRENT_USER({ payload: currentUser})
+            TOGGLE_APP_PAGE_ICON_CONFIRM()
+            SET_NON_GOOGLE_IMG_URL( { payload: currentIcon || bite })
+            TOGGLE_USER_ICON_CONFIRM()
+            setCurrentUserInit(true)
+          }
+        } else {
+          
         }
-      } else {
-        // POSSIBLE TEST USER HANDLING.
+      } else {        
+        if (localUser != null) {
+          let pre_user = JSON.parse(localUser)
+          let icon:string = pre_user.icon.trim()          
+          TOGGLE_USER_ICON_CONFIRM()
+          SET_NON_GOOGLE_IMG_URL( { payload: icon || bite })          
+          TOGGLE_APP_PAGE_ICON_CONFIRM()
+          setCurrentUserInit(true)
+        }        
       }
     }
     return
@@ -109,9 +143,9 @@ function App( props:any ) {
     <Route path={'/'} element={ < HomeTS /> } />
     {/* <Route path={'/settings'} element={ < Settings /> } /> */}
     {/*   settings needs redux state. [ SETTINGS_DISPLAY | TOGGLE_SETTINGS_DISPLAY ]   */}
-    
-    <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedLogInOutGoogle/> : <ConnectedMeIcon googleImageUrl={GOOGLE_IMAGE_URL}/>  } />
-    {/* <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedMeIcon /> : <ConnectedLogInOutGoogle/>  } /> */}
+
+    {/* <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedLogInOutGoogle/> : <ConnectedMeIcon googleImageUrl={GOOGLE_IMAGE_URL}/>  } /> */}
+    <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedMeIcon /> : <ConnectedLogInOutGoogle/>  } />
 
     <Route path={'/dashboard'} element={ < Dashboard /> } />
     </Routes>
@@ -124,6 +158,7 @@ function App( props:any ) {
     // <GoogleUserContext.Provider value={googleUser} >
     <ImgProvider>
     <RegexProvider>
+    {/* <div onClick={CurrentUserInit} className="App"> */}
     <div onMouseEnter={!currentUserInit ? CurrentUserInit : nothing} className="App">
       <div className="navbar">              
         <Navbar />
@@ -163,7 +198,8 @@ const mapStateToProps = (state:any) => ({
     GOOGLE_IMAGE_URL: state.GOOGLE_IMAGE_URL,
 
     ICON_NOT_INPUT: state.ICON_NOT_INPUT,
-    FLIP_FLOP_ICON: state.FLIP_FLOP_ICON,
+    APP_PAGE_ICON_CONFIRM: state.APP_PAGE_ICON_CONFIRM,
+    FLIP_FLOP_ICON: state.FLIP_FLOP_ICON,    
     NON_GOOGLE_IMG_URL: state.NON_GOOGLE_IMG_URL,
 });
 
@@ -172,8 +208,10 @@ const mapDispatchToProps = (dispatch: any) => ({
     SET_LOG_IN_OUT_FLASH_MSG: () => dispatch(SET_LOG_IN_OUT_FLASH_MSG()),
     SET_NON_GOOGLE_IMG_URL: (action:any) => dispatch(SET_NON_GOOGLE_IMG_URL(action)),
     TOGGLE_USER_ICON_CONFIRM: () => dispatch(TOGGLE_USER_ICON_CONFIRM()),
+    TOGGLE_APP_PAGE_ICON_CONFIRM: () => dispatch(TOGGLE_APP_PAGE_ICON_CONFIRM()),
     SET_USERNAME_INPUT: (action:any) => dispatch(SET_USERNAME_INPUT(action)),
-    SET_CURRENT_USER: (action:any) => dispatch(SET_CURRENT_USER(action))
+    SET_CURRENT_USER: (action:any) => dispatch(SET_CURRENT_USER(action)),
+    SET_GOOGLE_IMG_URL: (action:any) => dispatch(SET_GOOGLE_IMG_URL(action))
 });
 
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
