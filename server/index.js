@@ -354,6 +354,49 @@ const RootQueryType = new GraphQLObjectType({
       })         
     }
   },
+  userData: {    
+    type: DataType,
+    description: 'Data from Postgres a psql table column named data',
+    args: {
+      users_id: { type: GraphQLInt }
+    },
+    resolve: async ( parent, args ) => {
+      // let predata = await fetch(`http://localhost:5000/fill_cont?query={userData(users_id:1){google_id,date,progress,weekday,status,users_id}}`)
+          let data = await prisma.data.findMany()          
+          let my_data = data.filter(data => data.users_id === args.users_id)
+          let my = my_data[0]          
+          if (!my) return
+            return { google_id: my.google_id, date: my.date, progress: my.progress, weekday: my.weekday, status: my.status, users_id: my.users_id  }      
+        }
+    },
+  userLogin: {
+    type: UsersType,
+    description: 'Login',
+    args: {
+      emailOrUsername: { type: GraphQLString },
+      password: { type: GraphQLString }
+    }, 
+    resolve: async ( parent, args) => {
+      const { emailOrUsername, password } = args              
+      const allusers = await prisma.users.findMany()
+      let me = allusers.filter(us => us.username === emailOrUsername)
+      // let me = allusers.filter(us => us.email || us.username === emailOrUsername)
+      me = me[0]
+      let myDBpassword = me.password
+      // handle account recovery over here
+      if (!me) { throw new Error("Username or Password Don't match")}
+
+      const passTheSalt = bcrypt.compareSync(password, myDBpassword)
+
+      if (passTheSalt) {
+        return { id: me.id, googleId: me.googleId, icon: me.icon, username: me.username, password: me.password, email: me.email, age: me.age }
+      }
+       else {
+        return { id: 0, googleId: 'yes', icon: 'yea', username: 'name', password: 'password', email: 'email', age: 1 }        
+      }
+
+    }
+  },
   userSignup: {
       type: UsersType,
       description: 'User Signup from /LogInOutGoogle.tsx. The data is submitted from  const inputCheckingPromise = new Promise()',
@@ -367,6 +410,7 @@ const RootQueryType = new GraphQLObjectType({
         age: { type: GraphQLInt }
       },
       resolve: async ( parent, args ) => {
+// const userSignupQuery = `query={userSignup(googleId:"G",icon:"I",username:"${newusername}",email:"${email}",password:"${encodeURIComponent(newpassword)}",age:${age}){id,googleId,icon,username,email,password}}`;        
         const { googleId, icon, username, password, email, age } = args;
         let allusers = await prisma.users.findMany()
         let autoIncrementUserId = allusers.length + 1
@@ -478,24 +522,6 @@ const RootQueryType = new GraphQLObjectType({
       let icon = me.icon ? me.icon : "/water_img/bite.png"
       return icon
     }   
-  },
-  singledata: {    
-    type: DataType,
-    description: 'Data from Postgres a psql table column named data',
-    args: {
-      users_id: { type: GraphQLInt }
-    },
-    resolve: async ( parent, args ) => {
-      // have to fix this to parse args for the id or the name. robust code: edge cases. 
-        if (typeof args.users_id === 'number') {
-          let data = await prisma.data.findMany()          
-          let my_data = data.filter(data => data.users_id === args.users_id)
-          let my = my_data[0]          
-            return { google_id: my.google_id, date: my.date, progress: my.progress, weekday: my.weekday, status: my.status, users_id: my.users_id  }
-        } else {    
-            return { google_id: 'empty', date: 'empty', progress: 'empty', weekday: 'empty', status: 'empty', users_id: 'empty'  }
-        }
-    }
   },
   clientId: {
     type:  GraphQLString,
