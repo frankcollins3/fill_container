@@ -13,7 +13,8 @@ type RegexContextType = {
     McharAfterComma: RegExp;
     McharBeforeAt: RegExp;
     MprePng: RegExp;
-    APIsplit: string
+    APIsplit: string;
+    MimgSrc: RegExp;
   }
   
   type RegexDefaults = {
@@ -30,6 +31,7 @@ type RegexContextType = {
     McharBeforeAt: RegExp;
     MprePng: RegExp
     APIsplit: string;
+    MimgSrc: RegExp;
   }
   
   const regexDefaults: RegexDefaults = {
@@ -45,7 +47,8 @@ type RegexContextType = {
     McharAfterComma: /,(.*)/,
     McharBeforeAt: /^(.*?)@/,
     MprePng: /(.+)\.png/,
-    APIsplit:  "***"
+    APIsplit:  "***",
+    MimgSrc: /\/water_img\/(.+)/
   };
 
       const RegexContext = createContext<RegexContextType>(regexDefaults)
@@ -72,6 +75,7 @@ type RegexContextType = {
         const [McharBeforeAt, setMCharBeforeAt] = useState<RegExp>(/^(.*?)@/)
         const [MprePng, setMPrePng] = useState<RegExp>(/(.+)\.png/)
         const [APIsplit, setAPISplit] = useState<string>("***")
+        const [MimgSrc, setMImgSrc] = useState<RegExp>(/\/water_img\/(.+)/)         // this matches the characters including "/water_img" and the folliwing characters which would be the image path.
                             
         const value = {
             RstringAfterPeriod,
@@ -86,7 +90,8 @@ type RegexContextType = {
             McharAfterComma,
             McharBeforeAt,
             MprePng,
-            APIsplit
+            APIsplit,
+            MimgSrc
         };
 
         return (
