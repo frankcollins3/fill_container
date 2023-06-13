@@ -240,6 +240,15 @@ export const SET_EMAIL_OR_USERNAME_LOGIN_INPUT = (action) => {
   }
 }
 
+export const SET_PASSWORD_LOGIN_INPUT = (action) => {
+  return {
+    type: "SET_PASSWORD_LOGIN_INPUT",
+    payload: action.payload
+  }
+}
+
+export const TOGGLE_BLUE_G_MULTI_G_GOOGLE = () => { return { type: "TOGGLE_BLUE_G_MULTI_G_GOOGLE" } }
+
 // ^ ^ END OF ICON STATE ^ ^ ^ 
 
 //     GLASS_SCREEN_B4_NAV: false,
