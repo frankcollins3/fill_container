@@ -379,9 +379,16 @@ const RootQueryType = new GraphQLObjectType({
     resolve: async ( parent, args) => {
       const { emailOrUsername, password } = args              
       const allusers = await prisma.users.findMany()
-      let me = allusers.filter(us => us.username === emailOrUsername)
-      // let me = allusers.filter(us => us.email || us.username === emailOrUsername)
-      me = me[0]
+      let emailBool = false
+      emailOrUsername.includes('@') ? emailBool = true : false
+      let me; 
+      if (emailBool) {
+        me = allusers.filter(us => us.email === emailOrUsername)
+      } else {
+        me = allusers.filter(us => us.username === emailOrUsername)
+      }
+      me = me[0]          
+      // let me = allusers.filter(us => us.email || us.username === e mailOrUsername)
       let myDBpassword = me.password
       // handle account recovery over here
       if (!me) { throw new Error("Username or Password Don't match")}
