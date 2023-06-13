@@ -240,8 +240,10 @@ const RootQueryType = new GraphQLObjectType({
           const image = document.querySelector('.rg_i');
           const url = image.getAttribute('data-src') || image.getAttribute('src');
           
-          return url;
-        });
+          return url ? url : randomValue
+        }).catch( () => {
+          return randomValue
+        })
         
         // await browser.close();
       }
@@ -408,12 +410,9 @@ const RootQueryType = new GraphQLObjectType({
       const users = await prisma.users.findMany()
       let myId = users.find(user => user.id === id)
 
-      // let me = allusers.filter(user => user.username === username)
-
-      return await prisma.users.update({
-        // const updateUser = await prisma.users.update({
+      return await prisma.users.update({        
           where: {
-            id: 1
+            id: id
           },
           data: {          
             icon: icon
@@ -426,7 +425,21 @@ const RootQueryType = new GraphQLObjectType({
         })        
     }
   },
-
+  idArgsReturnIcon: {
+    type: GraphQLString || GraphQLInt,
+    description: 'Add Key to args, return the value of the key that matches the arg',
+    args: {
+      id: { type: GraphQLInt },
+    },
+    resolve: async ( parent, args ) => {
+      let allusers = await prisma.users.findMany()    
+      const { id } = args
+      let me = allusers.filter(user => user.id === id)   
+      me = me[0]
+      let icon = me.icon
+      return icon
+    }   
+  },
   singledata: {    
     type: DataType,
     description: 'Data from Postgres a psql table column named data',
