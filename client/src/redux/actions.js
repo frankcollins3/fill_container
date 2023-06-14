@@ -249,6 +249,8 @@ export const SET_PASSWORD_LOGIN_INPUT = (action) => {
 
 export const TOGGLE_BLUE_G_MULTI_G_GOOGLE = () => { return { type: "TOGGLE_BLUE_G_MULTI_G_GOOGLE" } }
 
+export const SET_LOGIN_MSG = () => { return { type: "SET_LOGIN_MSG" } }
+
 // ^ ^ END OF ICON STATE ^ ^ ^ 
 
 //     GLASS_SCREEN_B4_NAV: false,
