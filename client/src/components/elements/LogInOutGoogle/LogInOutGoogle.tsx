@@ -21,9 +21,11 @@ import userSignup from '../../../utility/fetch/userSignup'
 import linkUserWithGoogle from '../../../utility/fetch/linkUserWithGoogle'
 import stringifyItemSetItem from '../../../utility/stringifyItemSetItem'
 import parseItemGetItem from '../../../utility/parseItemGetItem'
+import addIconLoginLocalStorageUser from '../../../utility/addIconLoginLocalStorageUser'
 // import ghostText from '../../../utility/GhostText'
 // Context
 import {useImage} from '../../../utility/Contexts/ImgContext'
+import {useRegex} from '../../../utility/Contexts/RegexMenu'
 
 // components
 import ConnectedPasswordInput from '../../../components/elements/PasswordInput'
@@ -33,10 +35,11 @@ import ConnectedAgeInput from '../../../components/elements/AgeInput'
 import ConnectedSignupLoginChecker from '../../../components/elements/SignupLoginChecker'
 import ConnectedLoginInput from '../../../components/elements/LoginInputs' 
 import SignupInput from '../../../components/elements/SignupInputs' 
+import ConnectedCaptcha from '../../../components/elements/Captcha'
 
 
 import { connect, useDispatch } from 'react-redux'
-import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG, TOGGLE_USER_ICON_CONFIRM, SET_ONLINK_GOOGLE_CONFIRM_DATA, SET_EMAIL_OR_USERNAME_LOGIN_INPUT, SET_PASSWORD_LOGIN_INPUT, SET_USERNAME_INPUT, SET_EMAIL_INPUT, SET_AGE_INPUT, SET_PASSWORD_INPUT } from '../../../redux/actions'
+import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG, TOGGLE_USER_ICON_CONFIRM, SET_ONLINK_GOOGLE_CONFIRM_DATA, SET_EMAIL_OR_USERNAME_LOGIN_INPUT, SET_PASSWORD_LOGIN_INPUT, SET_USERNAME_INPUT, SET_EMAIL_INPUT, SET_AGE_INPUT, SET_PASSWORD_INPUT, SET_NODE_ENV, SET_API, SET_LOGIN_MSG, INCREMENT_INCORRECT_LOGIN_ATTEMPT, RESET_INCORRECT_LOGIN_ATTEMPT } from '../../../redux/actions'
 import $ from 'jquery'
 // import { Any } from "react-spring"
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
@@ -44,20 +47,21 @@ import $ from 'jquery'
  function LogInOutGoogle ( props:any ) {
           
     const { 
-            LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_INPUT, EMAIL_INPUT, PASSWORD_INPUT, AGE_INPUT, PARENT_CONFIRM, SUBMIT_INPUT_DATA, 
-            TOGGLE_SUBMIT_INPUT_DATA, GOOGLE_LINK_ACCT_SCREEN, CURRENT_USER, NO_LINK_GOOGLE_BTN_HOVER, EMAIL_OR_USERNAME_LOGIN_INPUT, PASSWORD_LOGIN_INPUT,
-            YES_LINK_GOOGLE_BTN_HOVER, LINK_GOOGLE_BTN_CLICK, NO_LINK_GOOGLE_BTN_CLICK, GOOGLE_IMG_URL, ICON_NOT_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_CLICK, LOG_IN_OUT_FLASH_MSG, ONLINK_GOOGLE_CONFIRM_DATA,
+            LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERNAMES, USERNAME_INPUT, EMAIL_INPUT, PASSWORD_INPUT, AGE_INPUT, PARENT_CONFIRM, SUBMIT_INPUT_DATA, API, NODE_ENV, LOGIN_MSG, INCORRECT_LOGIN_ATTEMPT, 
+            TOGGLE_SUBMIT_INPUT_DATA, GOOGLE_LINK_ACCT_SCREEN, NO_LINK_GOOGLE_BTN_HOVER, EMAIL_OR_USERNAME_LOGIN_INPUT, PASSWORD_LOGIN_INPUT,
+            YES_LINK_GOOGLE_BTN_HOVER, LINK_GOOGLE_BTN_CLICK, PASSWORD_SHOW, PASSWORD_SHOW_CLICK, LOG_IN_OUT_FLASH_MSG, ONLINK_GOOGLE_CONFIRM_DATA,
                                     
-            TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_ALL_USERS, SET_ALL_USERNAMES, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, SET_ONLINK_GOOGLE_CONFIRM_DATA,
+            TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM,  SET_ALL_USERNAMES, SET_CURRENT_USER, SET_ONLINK_GOOGLE_CONFIRM_DATA,
             TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, 
-            TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG, TOGGLE_USER_ICON_CONFIRM, SET_EMAIL_OR_USERNAME_LOGIN_INPUT, SET_PASSWORD_LOGIN_INPUT, SET_USERNAME_INPUT, SET_AGE_INPUT, SET_PASSWORD_INPUT, SET_EMAIL_INPUT
+            TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG, TOGGLE_USER_ICON_CONFIRM, SET_EMAIL_OR_USERNAME_LOGIN_INPUT, SET_PASSWORD_LOGIN_INPUT, SET_USERNAME_INPUT, SET_AGE_INPUT, SET_PASSWORD_INPUT, SET_EMAIL_INPUT, SET_NODE_ENV, SET_API, SET_LOGIN_MSG, INCREMENT_INCORRECT_LOGIN_ATTEMPT, RESET_INCORRECT_LOGIN_ATTEMPT
           } = props
 
-    const { blueGoogle, multiColorG } = useImage()
+    const { blueGoogle, multiColorG, hand } = useImage()
+
+    const { APIsplit } = useRegex()
 
     const googleLinkBtnClass = ["row", "google-link-btn"].join(" ");
 
-    const [passwordShow, setPasswordShow] = useState<boolean>(false)
           
     const dispatch = useDispatch()
 
@@ -66,8 +70,6 @@ import $ from 'jquery'
     let api;
     let env;
     let clientId:any;
-    let API;
-    let NODE_ENV:string 
 
     const onSignupSuccess = (res:any) =>  { 
         console.log('res')
@@ -75,25 +77,17 @@ import $ from 'jquery'
         // create state and handle accessing user 
         // change the form in the middle to be the login user button. 
     }
-
-    const remove = async () => {
-        let myitem = await isItDeadYet('googleImgUrl')        
-        console.log('myitem')
-        console.log(myitem)
-    }
-    
-
+        
     const onFailure = (res:any) => { console.log("hey failure") }
 
     useEffect( () => {
         (async() => {
-          urlbank = await allDBurl()
-          // let {HYDRO_DATA, HYDRO_SETTINGS } = await store.getState()
-    
-          API = urlbank.API      
-          env = urlbank.ENVdata.data.ENV        
-          NODE_ENV = env.NODE_ENV   
-          allDBusersURL = urlbank.allDBusersURL
+            urlbank = await allDBurl() 
+            env = urlbank.ENVdata.data.ENV  
+            let pre_api = env.API.split(APIsplit)
+            SET_API( {payload: env.NODE_ENV === 'development' ? pre_api[0] : pre_api[1]})
+            SET_NODE_ENV( { payload: env.NODE_ENV })
+            allDBusersURL = urlbank.allDBusersURL
           
           let options = { headers: 'AllUsers' }
 
@@ -127,8 +121,6 @@ import $ from 'jquery'
         })()
       }, [])
 
-    let InOutGoogleFunction:any;
-
     const showHideLoginSignupBtn = () => {        
         TOGGLE_LOGIN_SIGNUP_BTN()
         if (DISPLAY_FORM !== "login" || DISPLAY_FORM !== "signup") TOGGLE_SHOW_FORM({payload: ""})
@@ -153,16 +145,6 @@ import $ from 'jquery'
     const formhover = async (event:any) => {
         let target:any = event.target
         let children = $(event.target).children()
-    }
-
-    const ghosttext = (event:any) => {
-        let target:any = event.target
-        let jqtarget:any = $(event.target)
-        let targetId:string = event.target.id       
-        if (targetId === 'password') {            
-        } else {
-            attributeJQ(target, 'value', targetId)         // $(event.target).attr('value', targetId)
-        }        
     }
 
     const submitFaucetClick = async () => {
@@ -241,7 +223,26 @@ import $ from 'jquery'
 
             console.log('PASSWORD_LOGIN_INPUT')
             console.log(PASSWORD_LOGIN_INPUT)
+            let predata = await fetch(`${API}fill_cont?query={userLogin(emailOrUsername:"${encodeURIComponent(EMAIL_OR_USERNAME_LOGIN_INPUT)}",password:"${encodeURIComponent(PASSWORD_LOGIN_INPUT)}"){id,googleId,icon,username,password,email,age}}`)
+            let userLogin = await predata.json()   
+            if (userLogin) {
+                delete userLogin.data.userLogin.password    // was going to reassign this object path to userLogin but [addIconLoginLocalStorageUser] needs access to that path. leaving for now.
+                let icon = userLogin.data.userLogin.icon || '/water_img/hand.png'
+                localStorage.setItem("login", userLogin ? "login" : "reject")
+                localStorage.setItem("user", JSON.stringify(userLogin))
+                // await addIconLoginLocalStorageUser(icon)
+                console.log('userLogin')
+                console.log(userLogin)
+            }   // this condition below exists because the return data includes a dummy object with id of 0. The below if block means username is correct, else block means no user match
+            if (userLogin.data.userLogin.id === 0) {
+                INCREMENT_INCORRECT_LOGIN_ATTEMPT()
+                SET_LOGIN_MSG({payload: `Incorrect Attempt: ${INCORRECT_LOGIN_ATTEMPT}`})
+            } else {
+                INCREMENT_INCORRECT_LOGIN_ATTEMPT()
+                SET_LOGIN_MSG({payload: "No User. Drop in and Signup!"})
+            }                  
             
+        
         }
     }
 
@@ -326,6 +327,7 @@ import $ from 'jquery'
                 let userStringObject = `GID:${u.googleId},icon:${u.icon},username:${u.username},password:${u.password},age:${u.age},id:${u.id}`
 
                 await localStorage.setItem("user", userStringObject)
+                
 
                 // timer = await setTimeout(async() => {
                 //     let updatedUserStrObj:any = await localStorage.getItem("user");
@@ -430,12 +432,22 @@ import $ from 'jquery'
                         :
                         <pre></pre>
                     }
+
                     {
                         DISPLAY_FORM === "login"
-                        ?
-                        <form id="Login-Form" onMouseEnter={formhover}>                            
-                        <ConnectedLoginInput inputType={'emailOrUsername'}/>  
+                        ?                        
+                        <form id="Login-Form" onMouseEnter={formhover}>       
+                        {
+                            INCORRECT_LOGIN_ATTEMPT > 0
+                                    ? 
+                           <ConnectedCaptcha/>
+                                    : 
+                            <>
+                        <ConnectedLoginInput inputType={'emailOrUsername'}/>                      
                         <ConnectedLoginInput inputType={'password'}/>
+                            </>
+                        }                     
+                        <pre id="login-msg-text"> {LOGIN_MSG} </pre>
                             {/* <pre> forgot password? possible empty cup lol </pre> */}
                         </form>
                         :
@@ -576,7 +588,11 @@ const mapStateToProps = (state:any) => ({
     ICON_NOT_INPUT: state.ICON_NOT_INPUT,
     ONLINK_GOOGLE_CONFIRM_DATA: state.ONLINK_GOOGLE_CONFIRM_DATA,
     EMAIL_OR_USERNAME_LOGIN_INPUT: state.EMAIL_OR_USERNAME_LOGIN_INPUT,
-    PASSWORD_LOGIN_INPUT: state.PASSWORD_LOGIN_INPUT
+    PASSWORD_LOGIN_INPUT: state.PASSWORD_LOGIN_INPUT,
+    NODE_ENV: state.NODE_ENV,
+    API: state.API,
+    LOGIN_MSG: state.LOGIN_MSG,
+    INCORRECT_LOGIN_ATTEMPT: state.INCORRECT_LOGIN_ATTEMPT    
     // EMAIL_OR_USERNAME_LOGIN_INPUT: state.EMAIL_OR_USERNAME_LOGIN_INPUT,
     // PASSWORD_LOGIN_INPUT: state.PASSWORD_LOGIN_INPUT,
 })
@@ -608,7 +624,11 @@ const mapDispatchToProps = (dispatch:any) => ({
     SET_PASSWORD_INPUT: (action:any) => dispatch(SET_PASSWORD_INPUT(action)),
     SET_EMAIL_INPUT: (action:any) => dispatch(SET_EMAIL_INPUT(action)),
     SET_AGE_INPUT: (action:any) => dispatch(SET_AGE_INPUT(action)),
-
+    SET_NODE_ENV: (action:any) => dispatch(SET_NODE_ENV(action)),
+    SET_API: (action:any) => dispatch(SET_API(action)),
+    SET_LOGIN_MSG: (action:any) => dispatch(SET_LOGIN_MSG(action)),
+    INCREMENT_INCORRECT_LOGIN_ATTEMPT: () => dispatch(INCREMENT_INCORRECT_LOGIN_ATTEMPT()),
+    RESET_INCORRECT_LOGIN_ATTEMPT: () => dispatch(RESET_INCORRECT_LOGIN_ATTEMPT())
     // TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
 })
 
