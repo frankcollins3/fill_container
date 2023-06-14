@@ -55,7 +55,7 @@ function App( props:any ) {
 
   const [currentUserInit, setCurrentUserInit] = useState(false)
 
-  const { bite, multiColorG } = useImage()
+  const { bite, multiColorG, hand } = useImage()
   const { APIsplit } = useRegex()
 
   useEffect( () => {
@@ -104,9 +104,14 @@ function App( props:any ) {
           let clone = preuservalue.clone
           if (clone) {            
               let currentUser = clone.data.userSignup            
+              console.log('currentUser')
+              console.log(currentUser)
               let currentIcon:string = currentUser.icon                      
               let currentUsername:string = currentUser.username                    
-              let predata = await fetch(`${API}fill_cont?query={idArgsReturnIcon(id:1)}`)
+              let currentId = currentUser.id
+              console.log(currentId)
+              let predata = await fetch(`${API}fill_cont?query={idArgsReturnIcon(id:${parseInt(currentId)})}`)
+              // let predata = await fetch(`${API}fill_cont?query={idArgsReturnIcon(id:"${encodeURIComponent(currentId)}")}`)
               let data = await predata.json()
               let DBicon:string = data.data.idArgsReturnIcon
               console.log('iconDB')
@@ -119,7 +124,7 @@ function App( props:any ) {
               } else {
                 SET_CURRENT_USER({ payload: currentUser})
                 TOGGLE_APP_PAGE_ICON_CONFIRM()
-                SET_NON_GOOGLE_IMG_URL( { payload: currentIcon || bite })
+                SET_NON_GOOGLE_IMG_URL( { payload: currentIcon || hand })
                 TOGGLE_USER_ICON_CONFIRM()
                 setCurrentUserInit(true)
               }            
