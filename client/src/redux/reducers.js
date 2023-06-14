@@ -29,9 +29,6 @@ const initialState = {
       GOOGLE_ID: '',   
     // 
       
-
-    // 
-
     // signup state related 
     CURRENT_USER: { id: 0, googleId: '', username: '', email: '', age: '' },
     ALL_USERS: [],
@@ -51,13 +48,16 @@ const initialState = {
     NON_GOOGLE_IMG_URL: '',
     USER_SELECT_IMG_URL: '',
 
+
+
     // state for signup and login
     USERNAME_INPUT_HOVER: false,
     EMAIL_INPUT_HOVER: false,
     AGE_INPUT_HOVER: false,
     PASSWORD_INPUT_HOVER: false,
-    EMAIL_OR_USERNAME_LOGIN_INPUT: 'test_email_pw',
-    PASSWORD_LOGIN_INPUT: 'testpw',
+    EMAIL_OR_USERNAME_LOGIN_INPUT: '',
+    PASSWORD_LOGIN_INPUT: '',
+    LOGIN_MSG: '',
     // state for signup and login
     
 
@@ -417,6 +417,12 @@ const initialState = {
         return {
           ...state,
           BLUE_G_MULTI_G_GOOGLE: !state.BLUE_G_MULTI_G_GOOGLE
+        }
+      
+      case "SET_LOGIN_MSG":
+        return {
+          ...state,
+          LOGIN_MSG: action.payload
         }
     
       default:
