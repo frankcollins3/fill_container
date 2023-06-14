@@ -199,7 +199,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
             attributeJQ($('#boat'), 'src', clock)
             $('#boat').removeClass('Move-Boat');          
         }
-
+                
         const saveForWeeksOnChange = async (event:any) => {        
           let currentUser:any = await localStorage.getItem('wateruser')
           let userJSON = await JSON.parse(currentUser)
@@ -263,26 +263,24 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
             const saveUserPromise = new Promise( (resolve:any, reject:any) => {
               let preUser = localStorage.getItem("user");              
               if (preUser !== null) {
-                let userObj = JSON.parse(preUser);                
-                let storageUserIcon:string = userObj.clone.data.userSignup.icon 
+                let userObj = JSON.parse(preUser);          
+                let userSignup = userObj.clone.data.userSignup
+                let userId = userSignup.id
+                let storageUserIcon:string = userSignup.icon 
+                // let storageUserIcon:string = userObj.clone.data.userSignup.icon 
                 storageUserIcon = NON_GOOGLE_IMG_URL // userObj.clone.data.userSignup.icon
-                resolve(fetch(`${API}fill_cont?query={NonGoogleIconUpdate(id:3,icon:"${NON_GOOGLE_IMG_URL}"){id,icon}}`))
+                resolve(fetch(`${API}fill_cont?query={NonGoogleIconUpdate(id:${parseInt(userId)},icon:"${NON_GOOGLE_IMG_URL}"){id,icon}}`))
                 // resolve(fetch(`http://localhost:5000/fill_cont?query={NonGoogleIconUpdate(id:3,icon:"${NON_GOOGLE_IMG_URL}"){id,icon}}`))
                 reject(empty)
               }
             })
             saveUserPromise
-            .then( (updatedUser:any) => {
-              const ThenPromise = new Promise( (resolve:any, reject:any) => {
-
-              })
-
+            .then( (updatedUser:any) => {              
               SET_LAST_ICON_SELECTION_TEXT({payload: "Icon Saved. Taking you Home."})
               TOGGLE_USER_ICON_CONFIRM()
               setTimeout( () => {
-
-              })
-              // window.location.href = "/"
+                window.location.href = "/"
+              }, 1000)
             }).catch( (err) => {
               
             })
@@ -326,7 +324,8 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                                         ?
                                         <div className="SaveAllColumn">
                                           <h3 id="SavePre"> {LAST_ICON_SELECTION_TEXT ? LAST_ICON_SELECTION_TEXT : 'Save Icon? You can Edit in Settings'} </h3>
-                                          <input value={SAVE_FOR_WEEKS_INPUT_VALUE || ''} style={{ display: LAST_ICON_SELECTION_TEXT.length > 1 ? '' : 'none', width: '30px', color: 'silver', fontWeight: 'bolder'}} onKeyDown={saveForWeeksOnChange} onChange={emptyfunc} type="text"/>
+                                          <input value={SAVE_FOR_WEEKS_INPUT_VALUE || ''} style={{ display: LAST_ICON_SELECTION_TEXT === 'Save icon for how many Weeks?' ? '' : 'none', width: '30px', color: 'silver', fontWeight: 'bolder'}} onKeyDown={saveForWeeksOnChange} onChange={emptyfunc} type="text"/>
+                                          {/* <input value={SAVE_FOR_WEEKS_INPUT_VALUE || ''} style={{ display: LAST_ICON_SELECTION_TEXT.length > 1 ? '' : 'none', width: '30px', color: 'silver', fontWeight: 'bolder'}} onKeyDown={saveForWeeksOnChange} onChange={emptyfunc} type="text"/> */}
                                         <div className="space-between-row">                                        
 
                                           <img className="cups" onClick={SaveUserHalf} onMouseEnter={() => setSaveDropHover(true)} onMouseLeave={() => setSaveDropHover(false)} style={{ cursor: 'pointer', height: '100px', width: '100px' }} src={mouseWaterCup}/>                                                                          
