@@ -224,8 +224,20 @@ import $ from 'jquery'
             console.log('PASSWORD_LOGIN_INPUT')
             console.log(PASSWORD_LOGIN_INPUT)
             let predata = await fetch(`${API}fill_cont?query={userLogin(emailOrUsername:"${encodeURIComponent(EMAIL_OR_USERNAME_LOGIN_INPUT)}",password:"${encodeURIComponent(PASSWORD_LOGIN_INPUT)}"){id,googleId,icon,username,password,email,age}}`)
-            let userLogin = await predata.json()   
-            if (userLogin) {
+            let userLogin = await predata.json()
+            console.log('userLogin')
+            console.log(userLogin)
+            console.log(userLogin.data.userLogin)
+            if (userLogin.errors) {
+                console.log("were in the error if block")
+                console.log(userLogin.data)
+                INCREMENT_INCORRECT_LOGIN_ATTEMPT()
+                SET_LOGIN_MSG({payload: `No User. Drop in and Signup!`})
+            } else if (userLogin.data.userLogin.id === 0) {
+                INCREMENT_INCORRECT_LOGIN_ATTEMPT()
+                SET_LOGIN_MSG({payload: `Incorrect Attempt: ${INCORRECT_LOGIN_ATTEMPT}`})
+            } else {
+                console.log("else block waddap")
                 delete userLogin.data.userLogin.password    // was going to reassign this object path to userLogin but [addIconLoginLocalStorageUser] needs access to that path. leaving for now.
                 let icon = userLogin.data.userLogin.icon || '/water_img/hand.png'
                 localStorage.setItem("login", userLogin ? "login" : "reject")
@@ -233,13 +245,6 @@ import $ from 'jquery'
                 // await addIconLoginLocalStorageUser(icon)
                 console.log('userLogin')
                 console.log(userLogin)
-            }   // this condition below exists because the return data includes a dummy object with id of 0. The below if block means username is correct, else block means no user match
-            if (userLogin.data.userLogin.id === 0) {
-                INCREMENT_INCORRECT_LOGIN_ATTEMPT()
-                SET_LOGIN_MSG({payload: `Incorrect Attempt: ${INCORRECT_LOGIN_ATTEMPT}`})
-            } else {
-                INCREMENT_INCORRECT_LOGIN_ATTEMPT()
-                SET_LOGIN_MSG({payload: "No User. Drop in and Signup!"})
             }                  
             
         
