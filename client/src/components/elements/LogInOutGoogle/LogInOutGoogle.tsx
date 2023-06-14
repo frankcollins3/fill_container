@@ -22,6 +22,8 @@ import linkUserWithGoogle from '../../../utility/fetch/linkUserWithGoogle'
 import stringifyItemSetItem from '../../../utility/stringifyItemSetItem'
 import parseItemGetItem from '../../../utility/parseItemGetItem'
 // import ghostText from '../../../utility/GhostText'
+// Context
+import {useImage} from '../../../utility/Contexts/ImgContext'
 
 // components
 import ConnectedPasswordInput from '../../../components/elements/PasswordInput'
@@ -29,10 +31,12 @@ import ConnectedUsernameInput from '../../../components/elements/UsernameInput'
 import ConnectedEmailInput from '../../../components/elements/EmailInput'
 import ConnectedAgeInput from '../../../components/elements/AgeInput'
 import ConnectedSignupLoginChecker from '../../../components/elements/SignupLoginChecker'
-import SignupInput from '../../../components/elements/SignupInputs'
+import ConnectedLoginInput from '../../../components/elements/LoginInputs' 
+import SignupInput from '../../../components/elements/SignupInputs' 
+
 
 import { connect, useDispatch } from 'react-redux'
-import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG, TOGGLE_USER_ICON_CONFIRM, SET_ONLINK_GOOGLE_CONFIRM_DATA } from '../../../redux/actions'
+import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG, TOGGLE_USER_ICON_CONFIRM, SET_ONLINK_GOOGLE_CONFIRM_DATA, SET_EMAIL_OR_USERNAME_LOGIN_INPUT, SET_PASSWORD_LOGIN_INPUT, SET_USERNAME_INPUT, SET_EMAIL_INPUT, SET_AGE_INPUT, SET_PASSWORD_INPUT } from '../../../redux/actions'
 import $ from 'jquery'
 // import { Any } from "react-spring"
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
@@ -41,13 +45,15 @@ import $ from 'jquery'
           
     const { 
             LOGIN_SIGNUP_BTN, DISPLAY_FORM, INPUT_FOCUS, ALL_USERS, ALL_USERNAMES, USERNAME_INPUT, EMAIL_INPUT, PASSWORD_INPUT, AGE_INPUT, PARENT_CONFIRM, SUBMIT_INPUT_DATA, 
-            TOGGLE_SUBMIT_INPUT_DATA, GOOGLE_LINK_ACCT_SCREEN, CURRENT_USER, NO_LINK_GOOGLE_BTN_HOVER,
+            TOGGLE_SUBMIT_INPUT_DATA, GOOGLE_LINK_ACCT_SCREEN, CURRENT_USER, NO_LINK_GOOGLE_BTN_HOVER, EMAIL_OR_USERNAME_LOGIN_INPUT, PASSWORD_LOGIN_INPUT,
             YES_LINK_GOOGLE_BTN_HOVER, LINK_GOOGLE_BTN_CLICK, NO_LINK_GOOGLE_BTN_CLICK, GOOGLE_IMG_URL, ICON_NOT_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_CLICK, LOG_IN_OUT_FLASH_MSG, ONLINK_GOOGLE_CONFIRM_DATA,
                                     
-            TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_PASSWORD_INPUT, SET_ALL_USERS, SET_ALL_USERNAMES, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, SET_ONLINK_GOOGLE_CONFIRM_DATA,
+            TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM, SET_ALL_USERS, SET_ALL_USERNAMES, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, SET_ONLINK_GOOGLE_CONFIRM_DATA,
             TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, 
-            TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG, TOGGLE_USER_ICON_CONFIRM,
+            TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG, TOGGLE_USER_ICON_CONFIRM, SET_EMAIL_OR_USERNAME_LOGIN_INPUT, SET_PASSWORD_LOGIN_INPUT, SET_USERNAME_INPUT, SET_AGE_INPUT, SET_PASSWORD_INPUT, SET_EMAIL_INPUT
           } = props
+
+    const { blueGoogle, multiColorG } = useImage()
 
     const googleLinkBtnClass = ["row", "google-link-btn"].join(" ");
 
@@ -126,8 +132,15 @@ import $ from 'jquery'
     const showHideLoginSignupBtn = () => {        
         TOGGLE_LOGIN_SIGNUP_BTN()
         if (DISPLAY_FORM !== "login" || DISPLAY_FORM !== "signup") TOGGLE_SHOW_FORM({payload: ""})
-        if (DISPLAY_FORM === "login" || DISPLAY_FORM === "signup" && LOGIN_SIGNUP_BTN) {
-            console.log("weve gottem both at the same time.")
+        if (DISPLAY_FORM === "login" || DISPLAY_FORM === "signup") {
+            console.log('thats kind of cool')
+            SET_EMAIL_OR_USERNAME_LOGIN_INPUT( {payload: ''})
+            SET_PASSWORD_LOGIN_INPUT( {payload: ''})
+            SET_USERNAME_INPUT( {payload: ''})
+            SET_PASSWORD_INPUT( {payload: ''})
+            SET_EMAIL_INPUT( {payload: ''})
+            SET_AGE_INPUT( {payload: ''})
+
         }
     }
         
@@ -153,6 +166,9 @@ import $ from 'jquery'
     }
 
     const submitFaucetClick = async () => {
+
+        if (DISPLAY_FORM === 'signup') {
+
         let allUsernames = ALL_USERNAMES
         let username_good:boolean = true
         let email_good:boolean = true
@@ -200,28 +216,37 @@ import $ from 'jquery'
                 }
             }
         }
+            const inputCheckingPromise = new Promise( (resolve, reject) => {
+                resolve(checkinputs())
+                reject(console.log('hey weve got a problem my friend'))
+            })
 
+            // this promise checks that the inputs are validated as they are described in signupLoginChecker.tsx for ternary rendering.
+            inputCheckingPromise
+            .then( () => {
+                if (username_good === true && email_good === true && password_good === true && age_good === true) {
+                    TOGGLE_SUBMIT_INPUT_DATA()
+                    SET_CURRENT_USER( {payload: {id: 0, googleId: '', username: USERNAME_INPUT, email: EMAIL_INPUT, age: AGE_INPUT }})
+                } else {
+                    return 
+                }
+            })                 
+        } else if (DISPLAY_FORM === 'login' ) {
+            console.log("guys it equals login");
+            // EMAIL_OR_USERNAME_LOGIN_INPUT: state.EMAIL_OR_USERNAME_LOGIN_INPUT,
+            // PASSWORD_LOGIN_INPUT: state.PASSWORD_LOGIN_INPUT,            
+            
+            console.log('EMAIL_OR_USERNAME_LOGIN_INPUT')
+            console.log(EMAIL_OR_USERNAME_LOGIN_INPUT)
 
-        const inputCheckingPromise = new Promise( (resolve, reject) => {
-            resolve(checkinputs())
-            reject(console.log('hey weve got a problem my friend'))
-        })
-
-        // this promise checks that the inputs are validated as they are described in signupLoginChecker.tsx for ternary rendering.
-        inputCheckingPromise
-        .then( () => {
-            if (username_good === true && email_good === true && password_good === true && age_good === true) {
-                TOGGLE_SUBMIT_INPUT_DATA()
-                SET_CURRENT_USER( {payload: {id: 0, googleId: '', username: USERNAME_INPUT, email: EMAIL_INPUT, age: AGE_INPUT }})
-            } else {
-                return 
-            }
-        })           
+            console.log('PASSWORD_LOGIN_INPUT')
+            console.log(PASSWORD_LOGIN_INPUT)
+            
+        }
     }
 
             const noLinkGoogleHoverToggleDrop = () => { TOGGLE_NO_LINK_GOOGLE_BTN_HOVER() }
             const yesLinkGoogleHoverToggleDrop = () => { TOGGLE_YES_LINK_GOOGLE_BTN_HOVER() }
-
 
 
             const linkGoogleReject = () => {
@@ -364,7 +389,7 @@ import $ from 'jquery'
                         ?
                 <div style={{ 
                     display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', 
-                    height: '300px', width: '200px',                 
+                    height: '20em', width: '15em'         
                 }}>
                    
                     {
@@ -381,8 +406,6 @@ import $ from 'jquery'
                     {
                         DISPLAY_FORM === "signup"
                         ?
-
-                        <div className="Form-Container">
                         <form onMouseEnter={formhover}>                         
                         <SignupInput inputType={'username'}/>
                         <SignupInput inputType={'email'}/>
@@ -394,29 +417,27 @@ import $ from 'jquery'
                                     ?
                                     <img
                                     onClick={showPassIconClick}
-                                    style={{ border: 'none', opacity: PASSWORD_SHOW_CLICK ? "1.0" : PASSWORD_SHOW ? "0.5" : "0.1", height: '25px', width: '25px', alignSelf: 'center' }}
+                                    style={{ border: 'none', opacity: PASSWORD_SHOW_CLICK ? "1.0" : PASSWORD_SHOW ? "0.5" : "0.1", height: '25px', width: '25px', alignSelf: 'center', marginTop: '0.25em' }}
                                     src="/water_img/statistics.png"
                                     />
                                     :
                                 <div></div>
                         }
 
-                        </form>
                         { INPUT_FOCUS ? <ConnectedSignupLoginChecker loginstate={INPUT_FOCUS} /> : <pre> </pre> }                                                
-                        </div>
+                        </form>
+                        // </div>
                         :
                         <pre></pre>
                     }
                     {
                         DISPLAY_FORM === "login"
                         ?
-                        <div className="Form-Container">
-                        <ConnectedEmailInput/>
-                        <ConnectedPasswordInput/>                        
-                        <form onMouseEnter={formhover}>                            
-                            <button> forgot password? possible empty cup lol </button>
+                        <form id="Login-Form" onMouseEnter={formhover}>                            
+                        <ConnectedLoginInput inputType={'emailOrUsername'}/>  
+                        <ConnectedLoginInput inputType={'password'}/>
+                            {/* <pre> forgot password? possible empty cup lol </pre> */}
                         </form>
-                        </div>
                         :
                         <pre></pre>
                     }
@@ -428,7 +449,7 @@ import $ from 'jquery'
                 {
                     SUBMIT_INPUT_DATA                     
                     ?
-                    <div className="column">
+                    <div id="" className="column">
                         {/* <img src={ GOOGLE_IMG_URL.length > 3 ? GOOGLE_IMG_URL : "/water_img/panda.png"} /> */}
                         {/* <button onClick={remove} style={{ margin: '1em'}}> </button> */}
                 <div className="row">
@@ -436,7 +457,7 @@ import $ from 'jquery'
      <span id="bluespan"> {LINK_GOOGLE_BTN_CLICK ? 'Well, Come!' : 'Welcome!'} </span> {LINK_GOOGLE_BTN_CLICK ? '' : 'Would'} {LINK_GOOGLE_BTN_CLICK ? "Y" : 'y' }ou {LINK_GOOGLE_BTN_CLICK ? "L" : 'l' }ike {LINK_GOOGLE_BTN_CLICK ? "" : 'to link with'} <span id="gspan">G</span><span id="red_o_span">o</span><span id="yellow_o_span">o</span><span id="lil_g_span">g</span><span id="l_span">l</span><span id="e_span">e</span>:
 </h1>
 
-    <div id="link-google" className="google-container" style = {{ backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '200px', width: '200px', border: '5px solid #dedede73', zIndex: '2',transform: 'scale(0.25)' }}> 
+    <div id="link-google" className="google-container" style = {{ backgroundImage: `url('${blueGoogle}')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '200px', width: '200px', border: '5px solid #dedede73', zIndex: '2',transform: 'scale(0.25)' }}> 
 
                 {
                     LINK_GOOGLE_BTN_CLICK 
@@ -457,7 +478,7 @@ import $ from 'jquery'
                 
                 <p style={{ color: "silver", fontSize: '22px'}}> ? </p>
                 </div>
-                    </div>
+                </div>
                 <div id="google-link-btn" className={googleLinkBtnClass}>
                 
                 <div className="column">
@@ -472,7 +493,6 @@ import $ from 'jquery'
                 <pre id={ NO_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "hide"} style={{  }}> into </pre>
                 <pre id={ NO_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "hide"} style={{  }}> the </pre>
                 <pre id={ NO_LINK_GOOGLE_BTN_HOVER ? "poppinsFat" : "hide"} style={{  }}> app </pre>
-                {/* <pre> just Drop me into the App</pre> */}
                 </div>
 
                 </div>
@@ -508,7 +528,7 @@ import $ from 'jquery'
                     ?
                     <div></div>
                 :
-<div className="google-container" style = {{ backgroundImage: `url('water_img/bluegoogle.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '50px', width: '50px', border: '5px solid #dedede73', zIndex: '2',transform: 'scale(0.25)' }}>
+<div className="google-container" style = {{ backgroundImage: `url('${blueGoogle}')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '50px', width: '50px', border: '5px solid #dedede73', zIndex: '2',transform: 'scale(0.25)' }}>
                     {/* <h1> blue text </h1> */}
 
                 {/* <GoogleLogin
@@ -554,14 +574,18 @@ const mapStateToProps = (state:any) => ({
     NO_LINK_GOOGLE_BTN_CLICK: state.NO_LINK_GOOGLE_CLICK,
     GOOGLE_IMG_URL: state.GOOGLE_IMG_URL,
     ICON_NOT_INPUT: state.ICON_NOT_INPUT,
-    ONLINK_GOOGLE_CONFIRM_DATA: state.ONLINK_GOOGLE_CONFIRM_DATA
+    ONLINK_GOOGLE_CONFIRM_DATA: state.ONLINK_GOOGLE_CONFIRM_DATA,
+    EMAIL_OR_USERNAME_LOGIN_INPUT: state.EMAIL_OR_USERNAME_LOGIN_INPUT,
+    PASSWORD_LOGIN_INPUT: state.PASSWORD_LOGIN_INPUT
+    // EMAIL_OR_USERNAME_LOGIN_INPUT: state.EMAIL_OR_USERNAME_LOGIN_INPUT,
+    // PASSWORD_LOGIN_INPUT: state.PASSWORD_LOGIN_INPUT,
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
     TOGGLE_LOGIN_SIGNUP_BTN: () => dispatch(TOGGLE_LOGIN_SIGNUP_BTN()),
     SET_LOG_IN_OUT_FLASH_MSG: (action:any) => dispatch(SET_LOG_IN_OUT_FLASH_MSG(action)),
     TOGGLE_SHOW_FORM: (action:any) => dispatch(TOGGLE_SHOW_FORM(action)),
-    SET_PASSWORD_INPUT: (action:any) => dispatch(SET_PASSWORD_INPUT(action)),
+    
     TOGGLE_PASSWORD_SHOW: () => dispatch(TOGGLE_PASSWORD_SHOW()),
     TOGGLE_PASSWORD_SHOW_CLICK: () => dispatch(TOGGLE_PASSWORD_SHOW_CLICK()),
     SET_ALL_USERS: (action:any) => dispatch(SET_ALL_USERS(action)),
@@ -572,13 +596,19 @@ const mapDispatchToProps = (dispatch:any) => ({
     SET_CURRENT_USER: (action:any) => dispatch(SET_CURRENT_USER(action)),
     TOGGLE_NO_LINK_GOOGLE_BTN_HOVER: () => dispatch(TOGGLE_NO_LINK_GOOGLE_BTN_HOVER()),
     TOGGLE_YES_LINK_GOOGLE_BTN_HOVER: () => dispatch(TOGGLE_YES_LINK_GOOGLE_BTN_HOVER()),
-
     TOGGLE_YES_LINK_GOOGLE_BTN_CLICK: () => dispatch(TOGGLE_YES_LINK_GOOGLE_BTN_CLICK()),
     TOGGLE_NO_LINK_GOOGLE_BTN_CLICK: () => dispatch(TOGGLE_NO_LINK_GOOGLE_BTN_CLICK()),
     SET_GOOGLE_IMG_URL: (action:any) => dispatch(SET_GOOGLE_IMG_URL(action)),
     TOGGLE_ICON_NOT_INPUT: () => dispatch(TOGGLE_ICON_NOT_INPUT()),
     TOGGLE_USER_ICON_CONFIRM: () => dispatch(TOGGLE_USER_ICON_CONFIRM()),
-    SET_ONLINK_GOOGLE_CONFIRM_DATA: (action:any) => dispatch(SET_ONLINK_GOOGLE_CONFIRM_DATA(action))
+    SET_ONLINK_GOOGLE_CONFIRM_DATA: (action:any) => dispatch(SET_ONLINK_GOOGLE_CONFIRM_DATA(action)),
+    SET_EMAIL_OR_USERNAME_LOGIN_INPUT: (action:any) => dispatch(SET_EMAIL_OR_USERNAME_LOGIN_INPUT(action)),
+    SET_PASSWORD_LOGIN_INPUT: (action:any) => dispatch(SET_PASSWORD_LOGIN_INPUT(action)),    
+    SET_USERNAME_INPUT: (action:any) => dispatch(SET_USERNAME_INPUT(action)),
+    SET_PASSWORD_INPUT: (action:any) => dispatch(SET_PASSWORD_INPUT(action)),
+    SET_EMAIL_INPUT: (action:any) => dispatch(SET_EMAIL_INPUT(action)),
+    SET_AGE_INPUT: (action:any) => dispatch(SET_AGE_INPUT(action)),
+
     // TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
 })
 
