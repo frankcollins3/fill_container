@@ -64,11 +64,7 @@ function App( props:any ) {
       urlbank = await allDBurl() 
       env = urlbank.ENVdata.data.ENV  
       let pre_api = env.API.split(APIsplit)
-      SET_API( {payload: env.NODE_ENV === 'development' ? pre_api[0] : pre_api[1]})
-
-      // if (env.NODE_ENV) === 
-
-      // SET_API( {payload: env.API })
+      SET_API( {payload: env.NODE_ENV === 'development' ? pre_api[0] : pre_api[1]})      
             
       clientId = env.GOOGLE_ID
             function start() {
@@ -94,45 +90,68 @@ function App( props:any ) {
     if (!currentUserInit) {
       const localUser:any = await localStorage.getItem('wateruser')      
       const googletokencheck = await localStorage.getItem('GTOKEN')
-      console.log('localUser right here !')
+      const logincheck = await localStorage.getItem("login")
       
-      if (googletokencheck === null) {
-        // let predata = await fetch(`http://localhost:5000/fill_cont?query={idArgsReturnIcon(id:1)}`)
-        if (localUser != null) {
-          let preuser = await JSON.parse(localUser)                  
-          let preuservalue = JSON.parse(preuser.value)                
-          let clone = preuservalue.clone
-          if (clone) {            
-              let currentUser = clone.data.userSignup            
-              console.log('currentUser')
-              console.log(currentUser)
-              let currentIcon:string = currentUser.icon                      
-              let currentUsername:string = currentUser.username                    
-              let currentId = currentUser.id
-              console.log(currentId)
-              let predata = await fetch(`${API}fill_cont?query={idArgsReturnIcon(id:${parseInt(currentId)})}`)
-              // let predata = await fetch(`${API}fill_cont?query={idArgsReturnIcon(id:"${encodeURIComponent(currentId)}")}`)
-              let data = await predata.json()
-              let DBicon:string = data.data.idArgsReturnIcon
-              console.log('iconDB')
-              console.log(DBicon)
-              if (DBicon) {
-                SET_NON_GOOGLE_IMG_URL( { payload: DBicon })
-                TOGGLE_APP_PAGE_ICON_CONFIRM()
-                TOGGLE_USER_ICON_CONFIRM()
-                setCurrentUserInit(true)
-              } else {
-                SET_CURRENT_USER({ payload: currentUser})
-                TOGGLE_APP_PAGE_ICON_CONFIRM()
-                SET_NON_GOOGLE_IMG_URL( { payload: currentIcon || hand })
-                TOGGLE_USER_ICON_CONFIRM()
-                setCurrentUserInit(true)
-              }            
+      if (googletokencheck === null) {     
+        if (logincheck != null) {
+          console.log("right in here wittit")
+          const preuser = await localStorage.getItem("loginuser")
+          if (preuser != null) {
+            const preuserParse = await JSON.parse(preuser)
+            let user = preuserParse.data.userLogin
+            let icon:string = user.icon
+
+            console.log('user')
+            console.log(user)
+            
+            SET_CURRENT_USER({ payload: user })
+            TOGGLE_APP_PAGE_ICON_CONFIRM()
+            SET_NON_GOOGLE_IMG_URL( { payload: icon || hand })
+            TOGGLE_USER_ICON_CONFIRM()
+            setCurrentUserInit(true)
+           
           }
-        }
-      } else {        
+
+        } else {
+          if (localUser != null) {
+            console.log("googletokencheck === null and localUser != null")
+            let preuser = await JSON.parse(localUser) 
+            console.log(preuser)                
+            let preuservalue = JSON.parse(preuser.value)                
+            let clone = preuservalue.clone
+            if (clone) {            
+                let currentUser = clone.data.userSignup || clone.data.userLogin                      
+                let currentIcon:string = currentUser.icon                      
+                let currentUsername:string = currentUser.username                    
+                let currentId = currentUser.id
+                let predata = await fetch(`${API}fill_cont?query={idArgsReturnIcon(id:${parseInt(currentId)})}`)
+                let data = await predata.json()
+                let DBicon:string = data.data.idArgsReturnIcon
+                // if there's an icon in the datbase for the user use that. 
+                if (DBicon) {
+                  SET_NON_GOOGLE_IMG_URL( { payload: DBicon })
+                  TOGGLE_APP_PAGE_ICON_CONFIRM()
+                  TOGGLE_USER_ICON_CONFIRM()
+                  setCurrentUserInit(true)
+                  // no icon in db
+                } else {          
+                  SET_CURRENT_USER({ payload: currentUser})
+                  TOGGLE_APP_PAGE_ICON_CONFIRM()
+                  SET_NON_GOOGLE_IMG_URL( { payload: currentIcon || hand })
+                  TOGGLE_USER_ICON_CONFIRM()
+                  setCurrentUserInit(true)
+                }            
+            } 
+          }
+        } 
+         
+      } else {         
+              //   if (googletokenncheck === null) if there is no localStorage.getItem('google") which means 
         if (localUser != null) {
           let pre_user = JSON.parse(localUser)
+          console.log('pre_user')
+          console.log(pre_user)
+          SET_CURRENT_USER( { payload: pre_user })
           let icon:string = pre_user.icon.trim()          
           TOGGLE_USER_ICON_CONFIRM()
           SET_NON_GOOGLE_IMG_URL( { payload: icon || multiColorG } )          
