@@ -58,6 +58,7 @@ const initialState = {
     EMAIL_OR_USERNAME_LOGIN_INPUT: '',
     PASSWORD_LOGIN_INPUT: '',
     LOGIN_MSG: '',
+    INCORRECT_LOGIN_ATTEMPT: 0,
     // state for signup and login
     
 
@@ -98,6 +99,31 @@ const initialState = {
     LAST_ICON_SELECTION_TEXT: "",
     SAVE_FOR_WEEKS_INPUT_VALUE: '',
     PUPPETEER_SEARCH_TERM: '',
+    // end of icons
+
+    // settings
+    AGE: 0,
+    WEIGHT: 0,
+    HEIGHT: 0,
+    START_TIME: 0,
+    END_TIME: 0,
+    REMINDER: 0,
+    ACTIVITY: 0,
+    UNITS: 'imperial',
+    LOADING: true
+    // end of settings
+
+    // const [age, setAge] = useState(0);
+    // const [weight, setWeight] = useState(0);
+    // const [height, setHeight] = useState(0);
+    // const [startTime, setStartTime] = useState(0);
+    // const [endTime, setEndTime] = useState(0);
+    // const [reminder, setReminder] = useState(0);
+    // const [units, setUnits] = useState('imperial');
+    // const [loading, setLoading] = useState(true);
+    // const [error, setError] = useState();
+
+
   };
 
   const rootReducer = (state = initialState, action) => {
@@ -423,6 +449,73 @@ const initialState = {
         return {
           ...state,
           LOGIN_MSG: action.payload
+        }
+
+        case "INCREMENT_INCORRECT_LOGIN_ATTEMPT": 
+        return {
+          ...state,
+          INCORRECT_LOGIN_ATTEMPT: state.INCORRECT_LOGIN_ATTEMPT + 1
+        }
+      
+
+      case "RESET_INCORRECT_LOGIN_ATTEMPT":
+        return {
+          ...state,
+          INCORRECT_LOGIN_ATTEMPT: state.INCORRECT_LOGIN_ATTEMPT = 0
+        }
+      
+      case "SET_AGE":
+        return {
+          ...state,
+          AGE: action.payload
+        }
+
+      case "SET_WEIGHT":
+        return {
+          ...state,
+          WEIGHT: action.payload
+        }
+
+      case "SET_HEIGHT":
+        return {
+          ...state,
+          HEIGHT: action.payload
+        }
+
+      case "SET_START_TIME": 
+        return {
+        ...state,
+        START_TIME: action.payload
+      }
+
+      case "SET_END_TIME": 
+        return {
+        ...state,
+        END_TIME: action.payload
+      }
+
+      case "SET_REMINDER":
+        return {
+          ...state,
+          REMINDER: action.payload
+        }
+
+      case "SET_ACTIVITY":
+        return {
+          ...state,
+          ACTIVITY: action.payload
+        }
+
+      case "SET_UNITS":
+        return {
+          ...state,
+          UNITS: action.payload // was going to set this up as toggle but [imperial] [metric] are 2 buttons to click on so just set because you can't click imperial when its imperial and toggle to metric. 
+        }
+
+      case "TOGGLE_LOADING":
+        return {
+          ...state,
+          LOADING: !state.LOADING
         }
     
       default:
