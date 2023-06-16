@@ -249,9 +249,81 @@ export const SET_PASSWORD_LOGIN_INPUT = (action) => {
 
 export const TOGGLE_BLUE_G_MULTI_G_GOOGLE = () => { return { type: "TOGGLE_BLUE_G_MULTI_G_GOOGLE" } }
 
-export const SET_LOGIN_MSG = () => { return { type: "SET_LOGIN_MSG" } }
+export const SET_LOGIN_MSG = (action) => {
+  return {
+    type: "SET_LOGIN_MSG",
+    payload: action.payload
+  }
+}
 
+export const INCREMENT_INCORRECT_LOGIN_ATTEMPT = () => { return { type: "INCREMENT_INCORRECT_LOGIN_ATTEMPT" } }
+
+export const RESET_INCORRECT_LOGIN_ATTEMPT = () => { return { type: "RESET_INCORRECT_LOGIN_ATTEMPT" } }
 // ^ ^ END OF ICON STATE ^ ^ ^ 
 
-//     GLASS_SCREEN_B4_NAV: false,
-    // GLASS_HALF_FULL_DB_CHOICE: false,
+
+//  settings:     (gear.png.click() in the navbar ) The settings which will dictate the: start_time, end_time, notification-intensity/reminder-frequency schedule. And the height, weight for the water intake calculation.
+export const SET_AGE = (action) => {
+  return {
+    type: "SET_AGE",
+    payload: action.payload
+  }
+}
+
+export const SET_WEIGHT = (action) => {
+  return {
+    type: "SET_WEIGHT",
+    payload: action.payload
+  }
+}
+
+export const SET_HEIGHT = (action) => {
+  return {
+    type: "SET_HEIGHT",
+    payload: action.payload
+  }
+}
+
+export const SET_START_TIME = (action) => {
+  return {
+    type: "SET_START_TIME",
+    payload: action.payload
+  }
+}
+
+export const SET_END_TIME = (action) => {
+  return {
+    type: "SET_END_TIME",
+    payload: action.payload
+  }
+}
+
+export const SET_REMINDER = (action) => {
+  return {
+    type: "SET_REMINDER",
+    payload: action.payload
+  }
+}
+
+export const SET_ACTIVITY = (action) => {
+  return {
+    type: "SET_ACTIVITY",
+    payload: action.payload
+  }
+}
+
+export const SET_UNITS = (action) => {
+  return {
+    type: "SET_UNITS",
+    payload: action.payload
+  }
+}
+
+export const TOGGLE_LOADING = (action) => {
+  return {
+    type: "TOGGLE_LOADING",
+    payload: action.payload
+  }
+}
+
+// end of settings.
