@@ -114,6 +114,7 @@ const { inputType, USERNAME_INPUT, PASSWORD_INPUT, PASSWORD_SHOW, PASSWORD_SHOW_
             return (
                 <>
              <input
+             style={{ marginTop: '1em'}}
               type={ inputType === "password" && PASSWORD_SHOW_CLICK === false ? "password" : "text"}
               spellCheck="false"
               id={inputType}
