@@ -218,35 +218,50 @@ const RootQueryType = new GraphQLObjectType({
       description: 'Invoke Puppeteer',
       args: {
         searchTerm: { type: GraphQLString },
-        // backupArr: { type: new GraphQLList(GraphQLString) }
       },
       resolve: async (parent, args) => {
-        const { searchTerm, } = args;
-        const backupArr = ['/water_img/water-park.png', '/water_img/manta-ray.png', '/water_img/aqua-jogging.png', '/water_img/whale.png'];
-        let randomValue = backupArr[Math.floor(Math.random() * backupArr.length )].trim()
-        const browser = await puppeteer.launch({headless: true});
+        const { searchTerm } = args;
+        const backupArr = [
+          '/water_img/water-park.png',
+          '/water_img/manta-ray.png',
+          '/water_img/aqua-jogging.png',
+          '/water_img/whale.png',
+        ];
+        const randomValue =
+          backupArr[Math.floor(Math.random() * backupArr.length)].trim();
+    
+        const browser = await puppeteer.launch({ headless: true });
         const page = await browser.newPage();
-        
+    
         // Navigate to Google Images
-        await page.goto(`https://www.google.com/search?q="${searchTerm}"}&tbm=isch`);
-        // await page.goto(`https://www.google.com/search?q=${encodeURIComponent(searchTerm)}&tbm=isch`);
-        
+        await page.goto(
+          `https://www.google.com/search?q="${searchTerm}"}&tbm=isch`
+        );
+    
         // Wait for the images to load
-        // await page.waitForSelector('.rg_i');
-        await page.waitForSelector('.rg_i', { timeout: 60000 })
-      
+        await page.waitForSelector('.rg_i', { timeout: 60000 });
+    
         // Evaluate the page and extract the first image URL
-        return imageUrl = await page.evaluate(() => {
+        const imageUrl = await page.evaluate(() => {
           const image = document.querySelector('.rg_i');
           const url = image.getAttribute('data-src') || image.getAttribute('src');
-          
-          return url ? url : randomValue
-        }).catch( () => {
-          return randomValue
-        })
-        
-        // await browser.close();
-      }
+          return url;
+        }).catch(() => {
+          return randomValue;
+        });
+        // If the URL is present, return the base64 encoded image
+        if (imageUrl) {
+          try {
+            const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+            const base64Image = Buffer.from(response.data, 'binary').toString('base64');
+            return `data:${response.headers['content-type']};base64,${base64Image}`;
+          } catch (error) {
+            console.error('Error fetching image:', error);
+          }
+        }    
+        // If the URL is not present or fetching fails, return the random backup image
+        return randomValue;
+      },
     },
     ENV: {      
       type: EnvType,
@@ -619,30 +634,34 @@ module.exports = app;
 
 
 // puppeteer: {
-//   type: new GraphQLList(GraphQLString),    
+//   type: GraphQLString,
 //   description: 'Invoke Puppeteer',
-//   resolve: async () => {
-//       let promises = [
-//         puppeteer.launch({headless: false}).then(async(browser) => {            
-//               const page = await browser.newPage();
-//               await page.goto('file:///Users/medium/Desktop/alert.html');  
-
-//               return await page.evaluate(async() => {
-//                 // const tree = document.valuetree;
-//                 const tree = await window.valuetree
-//                   window.valuetree.branch_3 = "yew"
-//                 // const treearray = await window.valuearray
-//                 alert(`branch 1: ${tree.branch_1}`);
-//                 alert(`branch 2: ${tree.branch_2}`);
-//                 alert(`branch 3: ${tree.branch_3}`);
-//                 return [
-//                   `branch 1: ${tree.branch_1}`,
-//                   `branch 2: ${tree.branch_2}`,
-//                   `branch 3: ${tree.branch_3}`
-//                 ]                    
-//               })              
-//             })
-//           ];              
-//           return await Promise.all(promises)      
+//   args: {
+//     searchTerm: { type: GraphQLString },
+//     // backupArr: { type: new GraphQLList(GraphQLString) }
+//   },
+//   resolve: async (parent, args) => {
+//     const { searchTerm, } = args;
+//     const backupArr = ['/water_img/water-park.png', '/water_img/manta-ray.png', '/water_img/aqua-jogging.png', '/water_img/whale.png'];
+//     let randomValue = backupArr[Math.floor(Math.random() * backupArr.length)].trim()
+//     const browser = await puppeteer.launch({headless: true});
+//     const page = await browser.newPage();
+    
+//     // Navigate to Google Images
+//     await page.goto(`https://www.google.com/search?q="${searchTerm}"}&tbm=isch`);
+//     // await page.goto(`https://www.google.com/search?q=${encodeURIComponent(searchTerm)}&tbm=isch`);
+    
+//     // Wait for the images to load
+//     // await page.waitForSelector('.rg_i');
+//     await page.waitForSelector('.rg_i', { timeout: 60000 })
+  
+//     // Evaluate the page and extract the first image URL
+//     return imageUrl = await page.evaluate(() => {
+//       const image = document.querySelector('.rg_i');
+//       const url = image.getAttribute('data-src') || image.getAttribute('src') || '/water_img/hand.png';          
+//       return url ? url : randomValue
+//     }).catch( () => {
+//       return randomValue
+//     })        
 //   }
-// },    
+// },
