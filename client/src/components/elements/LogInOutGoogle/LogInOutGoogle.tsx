@@ -39,7 +39,7 @@ import ConnectedCaptcha from '../../../components/elements/Captcha'
 
 
 import { connect, useDispatch } from 'react-redux'
-import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM , SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG, TOGGLE_USER_ICON_CONFIRM, SET_ONLINK_GOOGLE_CONFIRM_DATA, SET_EMAIL_OR_USERNAME_LOGIN_INPUT, SET_PASSWORD_LOGIN_INPUT, SET_USERNAME_INPUT, SET_EMAIL_INPUT, SET_AGE_INPUT, SET_PASSWORD_INPUT, SET_NODE_ENV, SET_API, SET_LOGIN_MSG, INCREMENT_INCORRECT_LOGIN_ATTEMPT, RESET_INCORRECT_LOGIN_ATTEMPT } from '../../../redux/actions'
+import { TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SUBMIT_INPUT_DATA, SET_ALL_USERS, SET_ALL_USERNAMES, SET_ALL_EMAILS, TOGGLE_GOOGLE_LINK_ACCT_SCREEN, SET_CURRENT_USER, TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG, TOGGLE_USER_ICON_CONFIRM, SET_ONLINK_GOOGLE_CONFIRM_DATA, SET_EMAIL_OR_USERNAME_LOGIN_INPUT, SET_PASSWORD_LOGIN_INPUT, SET_USERNAME_INPUT, SET_EMAIL_INPUT, SET_AGE_INPUT, SET_PASSWORD_INPUT, SET_NODE_ENV, SET_API, SET_LOGIN_MSG, INCREMENT_INCORRECT_LOGIN_ATTEMPT, RESET_INCORRECT_LOGIN_ATTEMPT, TOGGLE_SHOW_FORM } from '../../../redux/actions'
 import $ from 'jquery'
 // import { Any } from "react-spring"
 // client/src/components/elements/LogInOutGoogle/LogInOutGoogle.module.scss // relative path for import above 
@@ -52,7 +52,7 @@ import $ from 'jquery'
             YES_LINK_GOOGLE_BTN_HOVER, LINK_GOOGLE_BTN_CLICK, PASSWORD_SHOW, PASSWORD_SHOW_CLICK, LOG_IN_OUT_FLASH_MSG, ONLINK_GOOGLE_CONFIRM_DATA,
                                     
             TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_SHOW_FORM,  SET_ALL_USERNAMES, SET_CURRENT_USER, SET_ONLINK_GOOGLE_CONFIRM_DATA,
-            TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL, 
+            TOGGLE_NO_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_HOVER, TOGGLE_YES_LINK_GOOGLE_BTN_CLICK, TOGGLE_NO_LINK_GOOGLE_BTN_CLICK, SET_GOOGLE_IMG_URL,
             TOGGLE_ICON_NOT_INPUT, TOGGLE_PASSWORD_SHOW_CLICK, SET_LOG_IN_OUT_FLASH_MSG, TOGGLE_USER_ICON_CONFIRM, SET_EMAIL_OR_USERNAME_LOGIN_INPUT, SET_PASSWORD_LOGIN_INPUT, SET_USERNAME_INPUT, SET_AGE_INPUT, SET_PASSWORD_INPUT, SET_EMAIL_INPUT, SET_NODE_ENV, SET_API, SET_LOGIN_MSG, INCREMENT_INCORRECT_LOGIN_ATTEMPT, RESET_INCORRECT_LOGIN_ATTEMPT
           } = props
 
@@ -240,8 +240,26 @@ import $ from 'jquery'
                 console.log("else block waddap")
                 delete userLogin.data.userLogin.password    // was going to reassign this object path to userLogin but [addIconLoginLocalStorageUser] needs access to that path. leaving for now.
                 let icon = userLogin.data.userLogin.icon || '/water_img/hand.png'
-                localStorage.setItem("login", userLogin ? "login" : "reject")
-                localStorage.setItem("user", JSON.stringify(userLogin))
+                console.log('icon')
+                console.log(icon)
+                const storagePromise = new Promise( (resolve:any, reject:any) => {
+                    localStorage.setItem("login", userLogin ? "login" : "reject")
+                    localStorage.setItem("loginuser", JSON.stringify(userLogin))
+                    let testuser:any = localStorage.getItem('loginuser')
+                    if (testuser != null) {
+                        let user = JSON.parse(testuser)
+                        resolve(user ? user : "rejection")
+                    } else { return SET_LOGIN_MSG( { 
+                        payload: `No user, sorry! Signup Please!`                        
+                    }) 
+                }       
+            })
+            storagePromise.then( (data:any) => { window.location.href = "/" })
+
+                
+
+
+
                 // await addIconLoginLocalStorageUser(icon)
                 console.log('userLogin')
                 console.log(userLogin)
@@ -275,7 +293,7 @@ import $ from 'jquery'
                         let clonedobject = { clone: {...userdata} }
 
                         TOGGLE_USER_ICON_CONFIRM()
-                        // let userStringObject = `GID:${u.googleId},icon:${u.icon},username:${u.username},password:${u.password},age:${u.age},id:${u.id}`
+
                         localStorage.setItem("user", JSON.stringify(clonedobject))
                         
                         // UPDATE TO        G       O       O       G       L       E               !!!!!!!!!!!!!!!!!!!
@@ -333,13 +351,9 @@ import $ from 'jquery'
 
                 await localStorage.setItem("user", userStringObject)
                 
-
-                // timer = await setTimeout(async() => {
-                //     let updatedUserStrObj:any = await localStorage.getItem("user");
-                //     console.log('updatedUserStrObj')
-                //     console.log(updatedUserStrObj)
-                // }, 2000)
-
+                timer = await setTimeout(async() => {
+                        window.location.href = "/"
+                }, 1000)
             }
         
             const linkGoogleConfirm = async () => {                
@@ -633,7 +647,7 @@ const mapDispatchToProps = (dispatch:any) => ({
     SET_API: (action:any) => dispatch(SET_API(action)),
     SET_LOGIN_MSG: (action:any) => dispatch(SET_LOGIN_MSG(action)),
     INCREMENT_INCORRECT_LOGIN_ATTEMPT: () => dispatch(INCREMENT_INCORRECT_LOGIN_ATTEMPT()),
-    RESET_INCORRECT_LOGIN_ATTEMPT: () => dispatch(RESET_INCORRECT_LOGIN_ATTEMPT())
+    RESET_INCORRECT_LOGIN_ATTEMPT: () => dispatch(RESET_INCORRECT_LOGIN_ATTEMPT()),
     // TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
 })
 
