@@ -345,6 +345,7 @@ const RootQueryType = new GraphQLObjectType({
       }   
     },
     postSettings: {
+      // let predata = await fetch(`http://localhost:5000/fill_cont?query={postSettings(weight:${WEIGHT},height:${HEIGHT},age:${AGE},start_time:${START_TIME},end_time:${END_TIME},reminder:${REMINDER},activity:${ACTIVITY},users_id:${user_id}){id,weight,height,age,reminder,start_time,end_time,reminder,activity,users_id}}`)
       type: SettingsType,
       description: 'Post Settings',
       args: {
@@ -360,12 +361,21 @@ const RootQueryType = new GraphQLObjectType({
       resolve: async (parent, args) => {
         let { weight, height, age, start_time, end_time, reminder, activity, users_id } = args
         let allSettings = await prisma.settings.findMany()
-        let settingsLength = allSettings.length
         let mySettings = allSettings.filter(settings => settings.users_id === users_id)
-        mySettings = mySettings[0]          
+        mySettings = mySettings[0]        
+        if (mySettings) {
+          const deleteUser = await prisma.settings.delete({
+            where: {
+              id: mySettings.id
+            },
+          })
+        }
+        let newSettings = await prisma.settings.findMany()
+        let newLength = newSettings.length + 1
+        
           return NewSettings = await prisma.settings.create({
                 data: {
-                    id: settingsLength + 1,
+                    id: newLength,
                     weight: weight,
                     height: height,
                     age: age,
