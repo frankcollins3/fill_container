@@ -10,6 +10,8 @@ import WaterRequest from './utility/WaterRequest'
 import CSS from './utility/CSS'
 import EVENT from './utility/EVENT'
 import allDBurl from './utility/fetch/allDBurl'
+import userSettingsFetch from './utility/fetch/userSettings'
+import setScheduleWithSettings from './utility/setScheduleWithSettings'
 import setCursor from './utility/setCursor'
 import waterIntakeWeightFormula from './utility/waterIntakeWeightFormula'
 import {useImage} from './utility/Contexts/ImgContext'
@@ -33,7 +35,7 @@ import {GoogleLogin, GoogleLogout} from 'react-google-login'
 import {gapi} from 'gapi-script'
 
 // redux / global state management 
-import { SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, SET_GOOGLE_IMG_URL, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_NODE_ENV, SET_API } from './redux/actions'
+import { SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, SET_GOOGLE_IMG_URL, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_NODE_ENV, SET_API, SET_HYDRO_DATA, SET_HYDRO_INTAKE, SET_HYDRO_SCHEDULE, SET_SETTINGS_HYDRO, SET_DATE, TOGGLE_RELOAD } from './redux/actions'
 import store from './redux/store'
 import ConnectedSignupLoginChecker from './components/elements/SignupLoginChecker/SignupLoginChecker.tsx';
 
@@ -49,8 +51,8 @@ function App( props:any ) {
   setCursor($('*'))   
 
   const { 
-    CURRENT_USER, GOOGLE_IMAGE_URL, ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG, FLIP_FLOP_ICON, NON_GOOGLE_IMG_URL, USER_ICON_CONFIRM, APP_PAGE_ICON_CONFIRM, NODE_ENV, API,
-    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_GOOGLE_IMG_URL, SET_NODE_ENV, SET_API,
+    CURRENT_USER, GOOGLE_IMAGE_URL, ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG, FLIP_FLOP_ICON, NON_GOOGLE_IMG_URL, USER_ICON_CONFIRM, APP_PAGE_ICON_CONFIRM, NODE_ENV, API, HYDRO_DATA, HYDRO_INTAKE, SETTINGS_HYDRO, HYDRO_SCHEDULE, DATE, RELOAD,
+    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_GOOGLE_IMG_URL, SET_NODE_ENV, SET_API, SET_HYDRO_DATA, SET_HYDRO_INTAKE, SET_HYDRO_SCHEDULE, SET_SETTINGS_HYDRO, SET_DATE, TOGGLE_RELOAD
   } = props    // object destructuring props haven't done this before.
 
   const [currentUserInit, setCurrentUserInit] = useState(false)
@@ -100,12 +102,11 @@ function App( props:any ) {
             const preuserParse = await JSON.parse(preuser)
             let user = preuserParse.data.userLogin
             let icon:string = user.icon
-
-            console.log('user')
-            console.log(user)
-
             
-            
+            let mySettings:any = await userSettingsFetch(user.id)                        
+            mySettings = mySettings.data.userSettings
+            let setSchedule = await setScheduleWithSettings(mySettings, SET_HYDRO_SCHEDULE)            
+                        
             SET_CURRENT_USER({ payload: user })
             localStorage.setItem('currentuser', JSON.stringify(user))
             TOGGLE_APP_PAGE_ICON_CONFIRM()
@@ -127,6 +128,13 @@ function App( props:any ) {
                 let currentIcon:string = currentUser.icon                      
                 let currentUsername:string = currentUser.username                    
                 let currentId = currentUser.id
+
+                // settings might need update
+                let mySettings:any = await userSettingsFetch(currentId)                        
+                mySettings = mySettings.data.userSettings
+                let setSchedule = await setScheduleWithSettings(mySettings, SET_HYDRO_SCHEDULE)         
+                // settings might need update
+
                 let predata = await fetch(`${API}fill_cont?query={idArgsReturnIcon(id:${parseInt(currentId)})}`)
                 let data = await predata.json()
                 let DBicon:string = data.data.idArgsReturnIcon
@@ -219,24 +227,29 @@ function App( props:any ) {
 
 //  global redux variables from '/redux/store to be manipulated by the actions dispatch object that are sent to props from mapDispatchToProps below
 const mapStateToProps = (state:any) => ({
-    API_URL: state.API_URL,
     ENV: state.ENV,
     USER: state.USER,
+    NODE_ENV: state.NODE_ENV,
+    API: state.API,
     
     // regular app props
     LOG_IN_OUT_TYPE: state.LOG_IN_OUT_TYPE,
     LOG_IN_OUT_FLASH_MSG: state.LOG_IN_OUT_FLASH_MSG,
     HYDRO_SETTINGS: state.HYDRO_SETTINGS,
-
     CURRENT_USER: state.CURRENT_USER,
     GOOGLE_IMAGE_URL: state.GOOGLE_IMAGE_URL,
-
     ICON_NOT_INPUT: state.ICON_NOT_INPUT,
     APP_PAGE_ICON_CONFIRM: state.APP_PAGE_ICON_CONFIRM,
     FLIP_FLOP_ICON: state.FLIP_FLOP_ICON,    
     NON_GOOGLE_IMG_URL: state.NON_GOOGLE_IMG_URL,
-    NODE_ENV: state.NODE_ENV,
-    API: state.API
+    
+    // water settings 
+    HYDRO_DATA: state.HYDRO_DATA,           // postgres.table.data           
+    HYDRO_INTAKE: state.HYDRO_INTAKE, 
+    HYDRO_SCHEDULE: state.HYDRO_SCHEDULE,
+    SETTINGS_HYDRO: state.SETTINGS_HYDRO,
+    DATE: state.DATE,
+    RELOAD: state.reload
 });
 
 // global redux actions. these are the state-mutating actions being mapped to props
@@ -250,6 +263,14 @@ const mapDispatchToProps = (dispatch: any) => ({
     SET_GOOGLE_IMG_URL: (action:any) => dispatch(SET_GOOGLE_IMG_URL(action)),
     SET_NODE_ENV: (action:any) => dispatch(SET_NODE_ENV(action)),
     SET_API: (action:any) => dispatch(SET_API(action)),
+
+    SET_HYDRO_DATA: (action:any) => dispatch(SET_HYDRO_DATA(action)),
+    SET_HYDRO_INTAKE: (action:any) => dispatch(SET_HYDRO_INTAKE(action)),
+    SET_HYDRO_SCHEDULE: (action:any) => dispatch(SET_HYDRO_SCHEDULE(action)),
+    SET_SETTINGS_HYDRO: (action:any) => dispatch(SET_SETTINGS_HYDRO(action)),
+    SET_DATE: (action:any) => dispatch(SET_DATE(action)),
+    TOGGLE_RELOAD: () => dispatch(TOGGLE_RELOAD())
+
 });
 
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
