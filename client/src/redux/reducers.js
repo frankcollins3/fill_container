@@ -23,6 +23,30 @@ const initialState = {
       users_id: 0
     },
 
+    HYDRO_INTAKE: 0,
+    HYDRO_SCHEDULE: [],
+    SETTINGS_HYDRO: {
+      id: 0,
+      weight: 0,
+      height: 0,
+      age: 0,
+      start_time: 0,
+      end_time: 0,
+      reminder: 0,
+      activity: 0,
+      users_id: 0
+    },
+    DATE: '',
+    RELOAD: false, // 0 or true ? waiting for this.
+
+
+    // const [hydroData, setHydroData] = useState();
+    // const [hydroIntake, setHydroIntake] = useState();
+    // const [hydroSchedule, setHydroSchedule] = useState([]);
+    // const [hydroSettings, setHydroSettings] = useState();
+    // const [reload, setReload] = useState();
+    // const [date, setDate] = useState();
+
     // 
       NODE_ENV: '',
       API: '',  
@@ -111,7 +135,7 @@ const initialState = {
     ACTIVITY: 0,
     UNITS: 'imperial',
     LOADING: true
-    // end of settings
+    // end of settings    
 
     // const [age, setAge] = useState(0);
     // const [weight, setWeight] = useState(0);
@@ -143,6 +167,30 @@ const initialState = {
             id: action.payload.id, google_id: action.payload.google_id, date: action.payload.date, progress: action.payload.progress,
             weekday: action.payload.weekday, status: action.payload.status, users_id: action.payload.users_id
           }
+        }
+
+      case "SET_HYDRO_SCHEDULE":
+        return {
+          ...state,
+          HYDRO_SCHEDULE: action.payload
+        }
+
+      case "SET_SETTINGS_HYDRO":
+        return {
+          ...state,
+          HYDRO_SETTINGS: action.payload
+        }
+
+      case "SET_DATE":
+        return {
+          ...state,
+          DATE: action.payload
+        }
+
+      case "TOGGLE_RELOAD":
+        return {
+          ...state,
+          RELOAD: !state.RELOAD
         }
 
       case 'SET_LOG_IN_OUT_TYPE':
@@ -517,6 +565,18 @@ const initialState = {
           ...state,
           LOADING: !state.LOADING
         }
+
+      
+
+        // AGE: 0,
+        // WEIGHT: 0,
+        // HEIGHT: 0,
+        // START_TIME: 0,
+        // END_TIME: 0,
+        // REMINDER: 0,
+        // ACTIVITY: 0,
+        // UNITS: 'imperial',
+        // LOADING: true  
     
       default:
         return state;
