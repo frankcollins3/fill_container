@@ -162,6 +162,17 @@ const SettingsType = new GraphQLObjectType({
   //  id | age | height | weight | reminder | end_time | start_time | users_id 
       })})
 
+      const RelatedUsersSettingsType = new GraphQLObjectType({
+        type: "RelatedUsersSettings",
+        description: 'Users with related Settings as Associated Data',
+        fields: () => ({
+          ...UsersType.getFields(),
+          settings: {
+            type: SettingsType
+          }
+        })
+      })
+
       const GraphQLDate = new GraphQLScalarType({
         name: 'Date',
         description: 'Date custom scalar type',
@@ -308,25 +319,6 @@ const RootQueryType = new GraphQLObjectType({
         let myage = me[0].age
         let mySettings = allsettings.filter(settings => settings.users_id === id)
         mySettings = mySettings[0]
-        // if (!mySettings) {
-
-          // if (!mySettings.start_time) {
-          //   return prisma.settings.create({
-          //     data: {
-          //       id: settingsLength,
-          //       weight: 150,
-          //       height: 75,
-          //       age: myage,
-          //       reminder: 4,
-          //       start_time: 9,
-          //       end_time: 5,
-          //       activity: 1,
-          //       users_id: id
-          //     }
-          //   }).then( (data) => {
-          //     return { id, weight, height, age, start_time, end_time, reminder, activity, users_id } = data
-          //   })
-          // } else {
               const s = mySettings
               return { 
                 id: mySettings.id,
@@ -341,7 +333,6 @@ const RootQueryType = new GraphQLObjectType({
               }       
               // return { id, weight, height, age, start_time, end_time, reminder, activity, users_id } = mySettings          
           // }
-
       }   
     },
     postSettings: {
@@ -360,8 +351,11 @@ const RootQueryType = new GraphQLObjectType({
       }, 
       resolve: async (parent, args) => {
         let { weight, height, age, start_time, end_time, reminder, activity, users_id } = args
+        let meAsUser = await prisma.users.findUnique({ where: { id: users_id }})
+
         let allSettings = await prisma.settings.findMany()
         let mySettings = allSettings.filter(settings => settings.users_id === users_id)
+
         mySettings = mySettings[0]        
         if (mySettings) {
           const deleteUser = await prisma.settings.delete({
@@ -385,13 +379,14 @@ const RootQueryType = new GraphQLObjectType({
                     activity: activity,
                     users_id: users_id,
               }
-          }).then( (data) => {
+          }).then(async(data) => {
             return { id, weight, height, age, start_time, end_time, reminder, activity, users_id } = data
           }).catch( () => {
             return { id: settingsLength || 0, weight: weight || 0, height: height || 0, age: age || 0, start_time: start_time || 0, end_time: end_time || 0, reminder: reminder || 0, activity: activity || 0, users_id: users_id || 0 }            
           })
       }
     },
+
   allDBusers: {
     type: new GraphQLList(UsersType),
     description: 'List of Users from Postgres & Prisma',
