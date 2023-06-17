@@ -310,27 +310,77 @@ const RootQueryType = new GraphQLObjectType({
         mySettings = mySettings[0]
         // if (!mySettings) {
 
-          if (!mySettings.start_time) {
-            return prisma.settings.create({
-              data: {
-                id: settingsLength,
-                weight: 150,
-                height: 75,
-                age: myage,
-                reminder: 4,
-                start_time: 9,
-                end_time: 5,
-                activity: 1,
-                users_id: id
-              }
-            }).then( (data) => {
-              return { id, weight, height, age, start_time, end_time, reminder, activity, users_id } = data
-            })
-          } else {
-              return { id, weight, height, age, start_time, end_time, reminder, activity, users_id } = mySettings          
-          }
+          // if (!mySettings.start_time) {
+          //   return prisma.settings.create({
+          //     data: {
+          //       id: settingsLength,
+          //       weight: 150,
+          //       height: 75,
+          //       age: myage,
+          //       reminder: 4,
+          //       start_time: 9,
+          //       end_time: 5,
+          //       activity: 1,
+          //       users_id: id
+          //     }
+          //   }).then( (data) => {
+          //     return { id, weight, height, age, start_time, end_time, reminder, activity, users_id } = data
+          //   })
+          // } else {
+              const s = mySettings
+              return { 
+                id: mySettings.id,
+                weight: s.weight || 150,
+                height: s.height || 75, 
+                age: s.age || 22,
+                start_time: s.start_time || 8, 
+                end_time: s.end_time || 16,
+                reminder: s.reminder || 2,
+                activity: s.activity || 1, 
+                users_id: id 
+              }       
+              // return { id, weight, height, age, start_time, end_time, reminder, activity, users_id } = mySettings          
+          // }
 
       }   
+    },
+    postSettings: {
+      type: SettingsType,
+      description: 'Post Settings',
+      args: {
+        weight: { type: GraphQLInt },
+        height: { type: GraphQLInt },
+        age: { type: GraphQLInt },
+        start_time: { type: GraphQLInt },
+        end_time: { type: GraphQLInt },
+        reminder: { type: GraphQLInt },
+        activity: { type: GraphQLInt },
+        users_id: { type: GraphQLInt },        
+      }, 
+      resolve: async (parent, args) => {
+        let { weight, height, age, start_time, end_time, reminder, activity, users_id } = args
+        let allSettings = await prisma.settings.findMany()
+        let settingsLength = allSettings.length
+        let mySettings = allSettings.filter(settings => settings.users_id === users_id)
+        mySettings = mySettings[0]          
+          return NewSettings = await prisma.settings.create({
+                data: {
+                    id: settingsLength + 1,
+                    weight: weight,
+                    height: height,
+                    age: age,
+                    start_time: start_time,
+                    end_time: end_time,
+                    reminder: reminder,
+                    activity: activity,
+                    users_id: users_id,
+              }
+          }).then( (data) => {
+            return { id, weight, height, age, start_time, end_time, reminder, activity, users_id } = data
+          }).catch( () => {
+            return { id: settingsLength || 0, weight: weight || 0, height: height || 0, age: age || 0, start_time: start_time || 0, end_time: end_time || 0, reminder: reminder || 0, activity: activity || 0, users_id: users_id || 0 }            
+          })
+      }
     },
   allDBusers: {
     type: new GraphQLList(UsersType),
