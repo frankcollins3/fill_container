@@ -103,8 +103,11 @@ function App( props:any ) {
 
             console.log('user')
             console.log(user)
+
+            
             
             SET_CURRENT_USER({ payload: user })
+            localStorage.setItem('currentuser', JSON.stringify(user))
             TOGGLE_APP_PAGE_ICON_CONFIRM()
             SET_NON_GOOGLE_IMG_URL( { payload: icon || hand })
             TOGGLE_USER_ICON_CONFIRM()
@@ -130,12 +133,14 @@ function App( props:any ) {
                 // if there's an icon in the datbase for the user use that. 
                 if (DBicon) {
                   SET_NON_GOOGLE_IMG_URL( { payload: DBicon })
+                  localStorage.setItem('currentuser', JSON.stringify(data))
                   TOGGLE_APP_PAGE_ICON_CONFIRM()
                   TOGGLE_USER_ICON_CONFIRM()
                   setCurrentUserInit(true)
                   // no icon in db
                 } else {          
                   SET_CURRENT_USER({ payload: currentUser})
+                  localStorage.setItem('currentuser', JSON.stringify(currentUser))
                   TOGGLE_APP_PAGE_ICON_CONFIRM()
                   SET_NON_GOOGLE_IMG_URL( { payload: currentIcon || hand })
                   TOGGLE_USER_ICON_CONFIRM()
@@ -152,6 +157,7 @@ function App( props:any ) {
           console.log('pre_user')
           console.log(pre_user)
           SET_CURRENT_USER( { payload: pre_user })
+          localStorage.setItem('currentuser', JSON.stringify(pre_user))
           let icon:string = pre_user.icon.trim()          
           TOGGLE_USER_ICON_CONFIRM()
           SET_NON_GOOGLE_IMG_URL( { payload: icon || multiColorG } )          
