@@ -386,6 +386,33 @@ const RootQueryType = new GraphQLObjectType({
           })
       }
     },
+    relatedUsersSettings: {
+      type: RelatedUsersSettingsType,
+      description: 'Return User data connected to the Provided Args, and that Users associated Settings data',
+      args: {
+        users_id: { type: GraphQLInt}
+      },
+      resolve: async (parent, args) => {
+        const {users_id} = args
+        return RelatedUserSettings = prisma.users.findUnique({
+          where: {
+            id: users_id
+          },
+          include: {
+            settings: true
+          }
+        }).then( (data) => {
+          googleId,icon,username,password,email,age,height,weight,start_time,end_time,reminder,activity,users_id
+          const s = data.settings
+            return {
+              googleId: data.googleId, icon: data.googleIcon, username: data.username, password: data.password, email: data.email, age: data.age, 
+              start_time: s.start_time, end_time: s.end_time, reminder: s.reminder, activity: s.activity, users_id: s.users_id
+            }
+            // return {data}
+        })
+      }
+    },
+
 
   allDBusers: {
     type: new GraphQLList(UsersType),
