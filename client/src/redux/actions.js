@@ -1,6 +1,36 @@
 //        /Navbar.tsx ------->      const settingsclick = () => { } else { TOGGLE_HYDRO_SETTINGS() } }   ----> gear.png.click()   TOGGLE_HYDRO_SETTINGS() make the settings sidebar appear or navigate page to do so
 export const TOGGLE_HYDRO_SETTINGS = () => { return { type: 'TOGGLE_HYDRO_SETTINGS', } };
 
+export const SET_HYDRO_DATA = (action) => {
+  return {
+    type: "SET_HYDRO_DATA",
+    payload: action.payload
+  }
+}
+
+export const SET_HYDRO_SCHEDULE = (action) => {
+  return {
+    type: "SET_HYDRO_SCHEDULE",
+    payload: action.payload
+  }
+}
+
+export const SET_SETTINGS_HYDRO = (action) => {
+  return {
+    type: "SET_SETTINGS_HYDRO",
+    payload: action.payload
+  }
+}
+
+export const SET_DATE = (action) => {
+  return {
+    type: "SET_DATE",
+    payload: action.payload
+  }
+}
+
+export const TOGGLE_RELOAD = () => { return { type: "TOGGLE_RELOAD" } }
+
 //      /LogInOutGoogle.tsx   ---------->         const showHideLoginSignupBtn = () => {          TOGGLE_LOGIN_SIGNUP_BTN()           ------>     <img onClick={showHideLoginSignupBtn}
 export const TOGGLE_LOGIN_SIGNUP_BTN = () => { return { type: "TOGGLE_LOGIN_SIGNUP_BTN" } }
 
