@@ -8,6 +8,13 @@ export const SET_HYDRO_DATA = (action) => {
   }
 }
 
+export const SET_HYDRO_INTAKE = (action) => {
+  return {
+    type: "SET_HYDRO_INTAKE",
+    payload: action.payload
+  }
+}
+
 export const SET_HYDRO_SCHEDULE = (action) => {
   return {
     type: "SET_HYDRO_SCHEDULE",
@@ -25,6 +32,20 @@ export const SET_SETTINGS_HYDRO = (action) => {
 export const SET_DATE = (action) => {
   return {
     type: "SET_DATE",
+    payload: action.payload
+  }
+}
+
+export const SET_PROGRESS = (action) => {
+  return {
+    type: "SET_PROGRESS",
+    payload: action.payload
+  }
+}
+
+export const SET_STATUS = (action) => {
+  return {
+    type: "SET_STATUS",
     payload: action.payload
   }
 }
