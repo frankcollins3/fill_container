@@ -22,6 +22,9 @@ const anotherDataRouter = require('./routes/allPokemon')
 const PORT = 5000;
 const app = express();
 
+const allusersDB = prisma.users.findMany
+const alldataDB = prisma.data.findMany
+
 const allPokemonAPI = async () => {    
     let bucket = []
     let pokemon = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=151`)
@@ -76,18 +79,6 @@ const pokemon = [
     { id: 8, name: 'wartortle' },
     { id: 9, name: 'blastoise' }
 ]
-
-async function nameOrIdForData(key) {
-  if (key) {
-      // parameter can be an integer (pokemon.id) or a name (pokemon.name)
-// access axios. check for pokeAPI related endpoint data.abilities. and render that data or empty array. 
-      let predata = await axios.get(`https://pokeapi.co/api/v2/pokemon/${key}`)
-      let data = predata.data.abilities ? predata.data : []            
-      return data
-  } else {
-      return  
-  }            
-}
 
 const BookType = new GraphQLObjectType({
   name: 'Book',
@@ -161,17 +152,6 @@ const SettingsType = new GraphQLObjectType({
         age: { type: GraphQLInt },        
   //  id | age | height | weight | reminder | end_time | start_time | users_id 
       })})
-
-      const RelatedUsersSettingsType = new GraphQLObjectType({
-        type: "RelatedUsersSettings",
-        description: 'Users with related Settings as Associated Data',
-        fields: () => ({
-          ...UsersType.getFields(),
-          settings: {
-            type: SettingsType
-          }
-        })
-      })
 
       const GraphQLDate = new GraphQLScalarType({
         name: 'Date',
@@ -386,34 +366,6 @@ const RootQueryType = new GraphQLObjectType({
           })
       }
     },
-    relatedUsersSettings: {
-      type: RelatedUsersSettingsType,
-      description: 'Return User data connected to the Provided Args, and that Users associated Settings data',
-      args: {
-        users_id: { type: GraphQLInt}
-      },
-      resolve: async (parent, args) => {
-        const {users_id} = args
-        return RelatedUserSettings = prisma.users.findUnique({
-          where: {
-            id: users_id
-          },
-          include: {
-            settings: true
-          }
-        }).then( (data) => {
-          googleId,icon,username,password,email,age,height,weight,start_time,end_time,reminder,activity,users_id
-          const s = data.settings
-            return {
-              googleId: data.googleId, icon: data.googleIcon, username: data.username, password: data.password, email: data.email, age: data.age, 
-              start_time: s.start_time, end_time: s.end_time, reminder: s.reminder, activity: s.activity, users_id: s.users_id
-            }
-            // return {data}
-        })
-      }
-    },
-
-
   allDBusers: {
     type: new GraphQLList(UsersType),
     description: 'List of Users from Postgres & Prisma',
@@ -466,6 +418,40 @@ const RootQueryType = new GraphQLObjectType({
             return { google_id: my.google_id, date: my.date, progress: my.progress, weekday: my.weekday, status: my.status, users_id: my.users_id  }      
         }
     },
+  getDailyData: {
+    type: DataType,
+    description: 'Daily Data for Water Intake',
+    args: {
+      users_id: { type: GraphQLInt },
+    },
+    resolve: async (parent, args) => {
+    // let predata = await fetch(`http://localhost:5000/fill_cont?query={getDailyData(users_id:3){google_id,date,progress,weekday,status,users_id}}`)
+        const { users_id } = args
+        const allusers = await allusersDB()
+        const alldata = await alldataDB()
+        const dataLength = alldata.length
+        let me = allusers.filter(users => users.id === users_id)
+        const date = new Date()
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'long' } )
+        const dateString = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`        
+        if (!me) return
+        return newDailyDate = prisma.data.create({
+          data: {
+            id: dataLength + 1,
+            google_id: me.google_id || 'no google-id',
+            date: dateString,
+            progress: 0,
+            weekday: dayName,
+            status: [],
+            users_id: users_id
+          }
+        }).then( (newdate) => {
+          let d = newdate;
+          return { id: d.id, google_id: d.google_id, date: d.date, progress: d.progress, weekday: d.weekday, status: d.status, users_id: d.users_id }
+          // return { id, google_id, date, progress, weekday, status, users_id}
+        })
+    }
+  },
   userLogin: {
     type: UsersType,
     description: 'Login',
@@ -711,39 +697,73 @@ app.listen(PORT || 5000, () => console.log(`Drink up on Port: ${PORT}`))
 
 module.exports = app;
 
+      // puppeteer: {
+      //   type: GraphQLString,
+      //   description: 'Invoke Puppeteer',
+      //   args: {
+      //     searchTerm: { type: GraphQLString },
+      //     // backupArr: { type: new GraphQLList(GraphQLString) }
+      //   },
+      //   resolve: async (parent, args) => {
+      //     const { searchTerm, } = args;
+      //     const backupArr = ['/water_img/water-park.png', '/water_img/manta-ray.png', '/water_img/aqua-jogging.png', '/water_img/whale.png'];
+      //     let randomValue = backupArr[Math.floor(Math.random() * backupArr.length)].trim()
+      //     const browser = await puppeteer.launch({headless: true});
+      //     const page = await browser.newPage();
+          
+      //     // Navigate to Google Images
+      //     await page.goto(`https://www.google.com/search?q="${searchTerm}"}&tbm=isch`);
+      //     // await page.goto(`https://www.google.com/search?q=${encodeURIComponent(searchTerm)}&tbm=isch`);
+          
+      //     // Wait for the images to load
+      //     // await page.waitForSelector('.rg_i');
+      //     await page.waitForSelector('.rg_i', { timeout: 60000 })
+        
+      //     // Evaluate the page and extract the first image URL
+      //     return imageUrl = await page.evaluate(() => {
+      //       const image = document.querySelector('.rg_i');
+      //       const url = image.getAttribute('data-src') || image.getAttribute('src') || '/water_img/hand.png';          
+      //       return url ? url : randomValue
+      //     }).catch( () => {
+      //       return randomValue
+      //     })        
+      //   }
+      // },
 
+      // const RelatedUsersSettingsType = new GraphQLObjectType({
+      //   type: "RelatedUsersSettings",
+      //   description: 'Users with related Settings as Associated Data',
+      //   fields: () => ({
+      //     ...UsersType.getFields(),
+      //     settings: {
+      //       type: SettingsType
+      //     }
+      //   })
+      // })
 
-
-
-// puppeteer: {
-//   type: GraphQLString,
-//   description: 'Invoke Puppeteer',
-//   args: {
-//     searchTerm: { type: GraphQLString },
-//     // backupArr: { type: new GraphQLList(GraphQLString) }
-//   },
-//   resolve: async (parent, args) => {
-//     const { searchTerm, } = args;
-//     const backupArr = ['/water_img/water-park.png', '/water_img/manta-ray.png', '/water_img/aqua-jogging.png', '/water_img/whale.png'];
-//     let randomValue = backupArr[Math.floor(Math.random() * backupArr.length)].trim()
-//     const browser = await puppeteer.launch({headless: true});
-//     const page = await browser.newPage();
-    
-//     // Navigate to Google Images
-//     await page.goto(`https://www.google.com/search?q="${searchTerm}"}&tbm=isch`);
-//     // await page.goto(`https://www.google.com/search?q=${encodeURIComponent(searchTerm)}&tbm=isch`);
-    
-//     // Wait for the images to load
-//     // await page.waitForSelector('.rg_i');
-//     await page.waitForSelector('.rg_i', { timeout: 60000 })
-  
-//     // Evaluate the page and extract the first image URL
-//     return imageUrl = await page.evaluate(() => {
-//       const image = document.querySelector('.rg_i');
-//       const url = image.getAttribute('data-src') || image.getAttribute('src') || '/water_img/hand.png';          
-//       return url ? url : randomValue
-//     }).catch( () => {
-//       return randomValue
-//     })        
-//   }
-// },
+      // Settings: {
+      //   type: RelatedUsersSettingsType,
+      //   description: 'Return User data connected to the Provided Args, and that Users associated Settings data',
+      //   args: {
+      //     users_id: { type: GraphQLInt}
+      //   },
+      //   resolve: async (parent, args) => {
+      //     const {users_id} = args
+      //     return RelatedUserSettings = prisma.users.findUnique({
+      //       where: {
+      //         id: users_id
+      //       },
+      //       include: {
+      //         settings: true
+      //       }
+      //     }).then( (data) => {
+      //       googleId,icon,username,password,email,age,height,weight,start_time,end_time,reminder,activity,users_id
+      //       const s = data.settings
+      //         return {
+      //           googleId: data.googleId, icon: data.googleIcon, username: data.username, password: data.password, email: data.email, age: data.age, 
+      //           start_time: s.start_time, end_time: s.end_time, reminder: s.reminder, activity: s.activity, users_id: s.users_id
+      //         }
+      //         // return {data}
+      //     })
+      //   }
+      // },
