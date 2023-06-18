@@ -10,7 +10,7 @@
 
 // initial state for redux 
 const initialState = {
-    // 
+    // water settings as app state
     HYDRO_SETTINGS: false,            // click gear.png the gear navbar icon and it brings up the sidebar on the main container.
 
     HYDRO_DATA: {                     // fetch(postgres/tables/data)    
@@ -23,9 +23,9 @@ const initialState = {
       users_id: 0
     },
 
-    HYDRO_INTAKE: 0,
-    HYDRO_SCHEDULE: [],
-    SETTINGS_HYDRO: {
+    HYDRO_INTAKE: 0,          // Math.ceil(response.settings.weight * (2 / 3))
+    HYDRO_SCHEDULE: [],     //    for (let i = start_time; i < end_time; i += reminder)  // create schedule out of start time end time and notification intensity.
+    SETTINGS_HYDRO: {     // pg.table.settings. (associated data that belongs to the user. This data is handled through the form presented by clicking gear.png() in the navbar.tsx )
       id: 0,
       weight: 0,
       height: 0,
@@ -36,18 +36,13 @@ const initialState = {
       activity: 0,
       users_id: 0
     },
-    DATE: '',
+    DATE: '',             // current dateString;
+    PROGRESS: 0,
+    STATUS: [],
     RELOAD: false, // 0 or true ? waiting for this.
+    // water settings as app state
 
-
-    // const [hydroData, setHydroData] = useState();
-    // const [hydroIntake, setHydroIntake] = useState();
-    // const [hydroSchedule, setHydroSchedule] = useState([]);
-    // const [hydroSettings, setHydroSettings] = useState();
-    // const [reload, setReload] = useState();
-    // const [date, setDate] = useState();
-
-    // 
+    // environment variables from process.env (accessed through GraphQL)
       NODE_ENV: '',
       API: '',  
       GOOGLE_ID: '',   
@@ -71,8 +66,6 @@ const initialState = {
     GOOGLE_IMG_URL: '',
     NON_GOOGLE_IMG_URL: '',
     USER_SELECT_IMG_URL: '',
-
-
 
     // state for signup and login
     USERNAME_INPUT_HOVER: false,
@@ -169,6 +162,12 @@ const initialState = {
           }
         }
 
+      case "SET_HYDRO_INTAKE":
+        return {
+          ...state,
+          HYDRO_INTAKE: action.payload
+        }
+
       case "SET_HYDRO_SCHEDULE":
         return {
           ...state,
@@ -185,6 +184,18 @@ const initialState = {
         return {
           ...state,
           DATE: action.payload
+        }
+
+      case "SET_PROGRESS":
+        return {
+          ...state,
+          PROGRESS: action.payload
+        }
+
+      case "SET_STATUS":
+        return {
+          ...state,
+          STATUS: action.payload
         }
 
       case "TOGGLE_RELOAD":
