@@ -15,7 +15,7 @@ import Settings from '../../../components/elements/Settings'
 import Schedule from '../../../components/elements/Schedule'
 
 // redux 
-import { TOGGLE_HYDRO_SETTINGS, SET_DISABLED } from '../../../redux/actions'
+import { TOGGLE_HYDRO_SETTINGS, SET_DISABLED, SET_STATUS, SET_PROGRESS } from '../../../redux/actions'
 
 const GraphQLcheck = () => {
   console.log('lemme see');
@@ -36,8 +36,8 @@ interface Props {
  function HomeTS (props:any) {  
 
   const { 
-    HYDRO_SETTINGS, HYDRO_DATA, DATE, DISABLED, STATUS, PROGRESS, LOG_IN_OUT_TYPE, HYDRO_SCHEDULE, HYDRO_INTAKE, 
-    TOGGLE_HYDRO_SETTINGS, SET_DISABLED
+    HYDRO_SETTINGS, HYDRO_DATA, DATE, DISABLED, STATUS, PROGRESS, LOG_IN_OUT_TYPE, HYDRO_SCHEDULE, HYDRO_INTAKE,
+    TOGGLE_HYDRO_SETTINGS, SET_DISABLED, SET_STATUS, SET_PROGRESS,
    } = props 
 
   useEffect( () => {
@@ -55,19 +55,49 @@ interface Props {
     // ""
   }, [HYDRO_DATA])
 
-  
-  useEffect( () => {
-    url = window.location.href
-  })
 
-  const test2 = async () => {
-    
-  }
+  // handleclick
+  const handleClick = async (index:any) => {
+    // if a button is clicked, disable the button
+    const newDisabled = [...DISABLED];
+    newDisabled[index] = true;
+    SET_DISABLED({payload: newDisabled})
+    // setDisabled(newDisabled);
 
-  useEffect( () => {
-    (async() => {
-    })()
-  }, [])
+    const newStatus = [...STATUS];
+    newStatus[index] = 'check';
+    SET_STATUS({payload: newStatus})
+    // SET_STATUS(newStatus);
+
+    console.log('newStatus')
+    console.log(newStatus)
+    console.log(newStatus.length)
+
+    const filterProgress = newStatus.filter((e) => e === 'check');
+    console.log('filterProgress')
+    console.log(filterProgress)
+
+    const calculateProgress = filterProgress.length / newStatus.length;
+    console.log('calculateProgress')
+    console.log(calculateProgress)
+
+
+    SET_PROGRESS({payload: calculateProgress / HYDRO_SCHEDULE.length})
+    // setProgress(calculateProgress);
+
+    // update the progress level in the databse
+    // const response = await WAPPRequest('/data/daily', {
+    //   method: 'PUT',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({
+    //     progress: calculateProgress,
+    //     status: newStatus,
+    //   }),
+    // });
+  };
+
+
+
 
 
   const renderHome = () => {
@@ -88,9 +118,9 @@ interface Props {
           <Schedule
         hydroSchedule={HYDRO_SCHEDULE}
         hydroIntake={HYDRO_INTAKE}
-        // handleClick={handleClick}
+        handleClick={handleClick}
         status={STATUS}
-        // disabled={disabled}
+        disabled={DISABLED}
         />
           </div>
         </div>
@@ -131,7 +161,9 @@ const mapStateToProps = (state:any) => ({
 
 const mapDispatchToProps = (dispatch:any) => ({
   TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
-  SET_DISABLED: (action:any) => dispatch(SET_DISABLED(action))
+  SET_DISABLED: (action:any) => dispatch(SET_DISABLED(action)),
+  SET_STATUS: (action:any) => dispatch(SET_STATUS(action)),
+  SET_PROGRESS: (action:any) => dispatch(SET_PROGRESS(action))
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(HomeTS);
