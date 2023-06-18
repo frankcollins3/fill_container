@@ -11,6 +11,7 @@ import CSS from './utility/CSS'
 import EVENT from './utility/EVENT'
 import allDBurl from './utility/fetch/allDBurl'
 import userSettingsFetch from './utility/fetch/userSettings'
+import getDailyDataFetch from './utility/fetch/getDailyDataFetch'
 import setScheduleWithSettings from './utility/setScheduleWithSettings'
 import setCursor from './utility/setCursor'
 import waterIntakeWeightFormula from './utility/waterIntakeWeightFormula'
@@ -35,7 +36,7 @@ import {GoogleLogin, GoogleLogout} from 'react-google-login'
 import {gapi} from 'gapi-script'
 
 // redux / global state management 
-import { SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, SET_GOOGLE_IMG_URL, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_NODE_ENV, SET_API, SET_HYDRO_DATA, SET_HYDRO_INTAKE, SET_HYDRO_SCHEDULE, SET_SETTINGS_HYDRO, SET_DATE, TOGGLE_RELOAD } from './redux/actions'
+import { SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, SET_GOOGLE_IMG_URL, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_NODE_ENV, SET_API, SET_HYDRO_DATA, SET_HYDRO_INTAKE, SET_HYDRO_SCHEDULE, SET_SETTINGS_HYDRO, SET_DATE, SET_PROGRESS, SET_STATUS, TOGGLE_RELOAD } from './redux/actions'
 import store from './redux/store'
 import ConnectedSignupLoginChecker from './components/elements/SignupLoginChecker/SignupLoginChecker.tsx';
 
@@ -51,8 +52,8 @@ function App( props:any ) {
   setCursor($('*'))   
 
   const { 
-    CURRENT_USER, GOOGLE_IMAGE_URL, ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG, FLIP_FLOP_ICON, NON_GOOGLE_IMG_URL, USER_ICON_CONFIRM, APP_PAGE_ICON_CONFIRM, NODE_ENV, API, HYDRO_DATA, HYDRO_INTAKE, SETTINGS_HYDRO, HYDRO_SCHEDULE, DATE, RELOAD,
-    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_GOOGLE_IMG_URL, SET_NODE_ENV, SET_API, SET_HYDRO_DATA, SET_HYDRO_INTAKE, SET_HYDRO_SCHEDULE, SET_SETTINGS_HYDRO, SET_DATE, TOGGLE_RELOAD
+    CURRENT_USER,ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG, FLIP_FLOP_ICON, NODE_ENV, API, HYDRO_DATA, HYDRO_INTAKE, SETTINGS_HYDRO, HYDRO_SCHEDULE, DATE, RELOAD,
+    SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_GOOGLE_IMG_URL, SET_NODE_ENV, SET_API, SET_HYDRO_DATA, SET_HYDRO_INTAKE, SET_HYDRO_SCHEDULE, SET_SETTINGS_HYDRO, SET_DATE, SET_PROGRESS, SET_STATUS, TOGGLE_RELOAD, 
   } = props    // object destructuring props haven't done this before.
 
   const [currentUserInit, setCurrentUserInit] = useState(false)
@@ -105,17 +106,23 @@ function App( props:any ) {
             
             let mySettings:any = await userSettingsFetch(user.id)                        
             mySettings = mySettings.data.userSettings
-            let setSchedule = await setScheduleWithSettings(mySettings, SET_HYDRO_SCHEDULE)            
-                        
-            SET_CURRENT_USER({ payload: user })
+            let setSchedule = await setScheduleWithSettings(mySettings, SET_HYDRO_SCHEDULE)       
+            let todayData:any = await getDailyDataFetch(user.id)   
+            todayData = todayData.data.getDailyData            
+            
+            SET_HYDRO_DATA({payload: todayData})        
+            SET_DATE({payload: todayData.date})
+            SET_PROGRESS({payload: todayData.progress})
+            SET_STATUS({payload: todayData.status})          
+            let userwaterintake:number = await waterIntakeWeightFormula(mySettings.weight)            
+            
+            await SET_CURRENT_USER({ payload: user })
             localStorage.setItem('currentuser', JSON.stringify(user))
             TOGGLE_APP_PAGE_ICON_CONFIRM()
             SET_NON_GOOGLE_IMG_URL( { payload: icon || hand })
             TOGGLE_USER_ICON_CONFIRM()
-            setCurrentUserInit(true)
-           
+            setCurrentUserInit(true)           
           }
-
         } else {
           if (localUser != null) {
             console.log("googletokencheck === null and localUser != null")
@@ -132,8 +139,14 @@ function App( props:any ) {
                 // settings might need update
                 let mySettings:any = await userSettingsFetch(currentId)                        
                 mySettings = mySettings.data.userSettings
-                let setSchedule = await setScheduleWithSettings(mySettings, SET_HYDRO_SCHEDULE)         
-                // settings might need update
+                let setSchedule = await setScheduleWithSettings(mySettings, SET_HYDRO_SCHEDULE)     
+                let todayData:any = await getDailyDataFetch(currentId)     
+                todayData = todayData.data.getDailyData
+                SET_HYDRO_DATA({payload: todayData})        
+                SET_DATE({payload: todayData.date})
+                SET_PROGRESS({payload: todayData.progress})
+                SET_STATUS({payload: todayData.status})                          
+                let userwaterintake:number = await waterIntakeWeightFormula(mySettings.weight)                
 
                 let predata = await fetch(`${API}fill_cont?query={idArgsReturnIcon(id:${parseInt(currentId)})}`)
                 let data = await predata.json()
@@ -156,8 +169,7 @@ function App( props:any ) {
                 }            
             } 
           }
-        } 
-         
+        }          
       } else {         
               //   if (googletokenncheck === null) if there is no localStorage.getItem('google") which means 
         if (localUser != null) {
@@ -269,6 +281,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     SET_HYDRO_SCHEDULE: (action:any) => dispatch(SET_HYDRO_SCHEDULE(action)),
     SET_SETTINGS_HYDRO: (action:any) => dispatch(SET_SETTINGS_HYDRO(action)),
     SET_DATE: (action:any) => dispatch(SET_DATE(action)),
+    SET_PROGRESS: (action:any) => dispatch(SET_PROGRESS(action)),
+    SET_STATUS: (action:any) => dispatch(SET_STATUS(action)),
     TOGGLE_RELOAD: () => dispatch(TOGGLE_RELOAD())
 
 });
