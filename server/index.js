@@ -434,7 +434,15 @@ const RootQueryType = new GraphQLObjectType({
         const date = new Date()
         const dayName = date.toLocaleDateString('en-US', { weekday: 'long' } )
         const dateString = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`        
+            // Check if there is existing data with the same dateString and users_id
+        const dateAndUserCheck = alldata.find(data => data.date === dateString && data.users_id === users_id)
+        if (dateAndUserCheck) {
+          // Data already exists for the given date and user
+          return dateAndUserCheck;
+        }
+        
         if (!me) return
+
         return newDailyDate = prisma.data.create({
           data: {
             id: dataLength + 1,
