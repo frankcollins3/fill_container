@@ -15,7 +15,7 @@ import Settings from '../../../components/elements/Settings'
 import Schedule from '../../../components/elements/Schedule'
 
 // redux 
-import { TOGGLE_HYDRO_SETTINGS } from '../../../redux/actions'
+import { TOGGLE_HYDRO_SETTINGS, SET_DISABLED } from '../../../redux/actions'
 
 const GraphQLcheck = () => {
   console.log('lemme see');
@@ -36,8 +36,8 @@ interface Props {
  function HomeTS (props:any) {  
 
   const { 
-    HYDRO_SETTINGS, HYDRO_DATA, DATE, STATUS, PROGRESS, LOG_IN_OUT_TYPE, HYDRO_SCHEDULE, HYDRO_INTAKE, 
-    TOGGLE_HYDRO_SETTINGS, 
+    HYDRO_SETTINGS, HYDRO_DATA, DATE, DISABLED, STATUS, PROGRESS, LOG_IN_OUT_TYPE, HYDRO_SCHEDULE, HYDRO_INTAKE, 
+    TOGGLE_HYDRO_SETTINGS, SET_DISABLED
    } = props 
 
   useEffect( () => {
@@ -48,8 +48,12 @@ interface Props {
       timeoutFunc(TOGGLE_HYDRO_SETTINGS, 1000)
       localStorage.removeItem("settingsDuringDashboard")
     }
-
   })
+
+  useEffect( () => {
+    SET_DISABLED({payload: Array(HYDRO_SCHEDULE.length).fill(false)})
+    // ""
+  }, [HYDRO_DATA])
 
   
   useEffect( () => {
@@ -77,7 +81,7 @@ interface Props {
                   ?
             <Display progress={PROGRESS}/>
                   :
-              <pre></pre>
+             <pre></pre>
           }
           </div>
           <div className="schedule">
@@ -119,13 +123,15 @@ const mapStateToProps = (state:any) => ({
   DATE: state.DATE,
   PROGRESS: state.PROGRESS,
   STATUS: state.STATUS,
+  DISABLED: state.DISABLED,
   LOG_IN_OUT_TYPE: state.LOG_IN_OUT_TYPE,
   HYDRO_SCHEDULE: state.HYDRO_SCHEDULE,
   HYDRO_INTAKE: state.HYDRO_INTAKE
 });
 
 const mapDispatchToProps = (dispatch:any) => ({
-  TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS())
+  TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
+  SET_DISABLED: (action:any) => dispatch(SET_DISABLED(action))
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(HomeTS);
