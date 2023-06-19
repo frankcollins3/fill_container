@@ -1,5 +1,8 @@
 import React, { createContext, useContext, ReactNode, useState } from "react";
 
+const date = new Date()
+const year = date.getFullYear()
+
 type RegexContextType = {
     RstringAfterPeriod: RegExp;
     RreturnLettersAthruZ: RegExp;
@@ -33,7 +36,7 @@ type RegexContextType = {
     MprePng: RegExp
     APIsplit: string;
     MimgSrc: RegExp;
-    MbetweenYearAndTimeZone: RegExp;
+    MbetweenYearAndTimeZone: any;
   }
   
   const regexDefaults: RegexDefaults = {
@@ -51,7 +54,7 @@ type RegexContextType = {
     MprePng: /(.+)\.png/,
     APIsplit:  "***",
     MimgSrc: /\/water_img\/(.+)/,
-    MbetweenYearAndTimeZone: /2023\s(.+?)\sGMT/
+    MbetweenYearAndTimeZone: year + "\\s(.+?)\\sGMT"
   };
 
       const RegexContext = createContext<RegexContextType>(regexDefaults)
@@ -79,7 +82,7 @@ type RegexContextType = {
         const [MprePng, setMPrePng] = useState<RegExp>(/(.+)\.png/)
         const [APIsplit, setAPISplit] = useState<string>("***")
         const [MimgSrc, setMImgSrc] = useState<RegExp>(/\/water_img\/(.+)/)         // this matches the characters including "/water_img" and the folliwing characters which would be the image path.
-        const [MbetweenYearAndTimeZone, setMBetweenYearAndTimeZone] = useState<RegExp>(/2023\s(.+?)\sGMT/)
+        const [MbetweenYearAndTimeZone, setMBetweenYearAndTimeZone] = useState<any>(year + "\\s(.+?)\\sGMT")  // 1) let todaydate = new Date()          2) todaydate.toString().match(MbetweenYearAndTimeZone)
                             
         const value = {
             RstringAfterPeriod,
