@@ -434,15 +434,13 @@ const RootQueryType = new GraphQLObjectType({
         const date = new Date()
         const dayName = date.toLocaleDateString('en-US', { weekday: 'long' } )
         const dateString = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`        
-            // Check if there is existing data with the same dateString and users_id
         const dateAndUserCheck = alldata.find(data => data.date === dateString && data.users_id === users_id)
         if (dateAndUserCheck) {
           // Data already exists for the given date and user
           return dateAndUserCheck;
         }
-        
-        if (!me) return
 
+        if (!me) return
         return newDailyDate = prisma.data.create({
           data: {
             id: dataLength + 1,
@@ -460,6 +458,67 @@ const RootQueryType = new GraphQLObjectType({
         })
     }
   },
+  updateDailyData: {
+    type: DataType,
+    description: 'User already got Daily data and went through the daily water cycle. This is the end update',
+    args: {
+      users_id: { type: new GraphQLNonNull(GraphQLInt) },
+      progress: { type: new GraphQLNonNull(GraphQLInt) },
+      status: { type: new GraphQLList(GraphQLString) }
+    },
+    resolve: async (parent, args) => {
+      const { users_id, progress, status } = args;
+      const allusers = await allusersDB();
+      const alldata = await alldataDB()
+      const mydata = alldata.find(data => data.users_id = users_id)
+
+      let me = allusers.find(user => user.id === users_id);
+
+      return await prisma.data.update({
+        where: {
+          id: mydata.id
+        },
+        data: {          
+          progress: progress >= 93 ? 100 : progress,
+          status: status
+          // status: ['check', 'check', 'check', 'check', 'check']
+        },
+      }).then(updatedData => {
+        const d = updatedData;
+        return { google_id: d.google_id, date: d.date, progress: d.progress, weekday: d.weekday, status: d.status, users_id: d.users_id };
+      });
+    }
+  },
+  // updateDailyData: {
+  //   type: DataType,
+  //   description: 'User already got Daily data and went through daily water cycle. This is the end update',
+  //   args: {
+  //     users_id: { type: new GraphQLNonNull(GraphQLInt) },
+  //     progress: { type: new GraphQLNonNull(GraphQLInt) },
+  //     status: { type: new GraphQLList(GraphQLString)}
+  //   },
+  //   resolve: async (parent, args) => {
+  //     const {users_id, progress, status} = args
+  //     const allusers = await allusersDB()
+  //     let me = users.find(user => user.id === id)
+    
+  //     return await prisma.users.update({
+  //       // const updateUser = await prisma.users.update({
+  //         where: {
+  //           id: users_id
+  //         },
+  //         data: {          
+  //             progress: parseInt(progress),
+  //             status: status
+  //         },
+  //       }).then( (updatedData) => {        
+  //         const d = updatedData
+  //         return { google_id: d.google_id, date: d.date, progress: d.progress, weekday: d.weekday, status: d.status, users_id: d.users_id }
+  //       // return { id: u.id || 1, googleId: u.google_id, icon: u.icon, username: u.username, password: u.password, email: u.email, age: u.age }      
+  //       })
+
+  //   }
+  // },
   userLogin: {
     type: UsersType,
     description: 'Login',
