@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { connect, useDispatch } from 'react-redux'
 import {useImage} from '../../../utility/Contexts/ImgContext'
+import {useRegex} from '../../../utility/Contexts/RegexMenu'
 import './reminder.css';
 import $ from 'jquery'
 
@@ -12,6 +13,7 @@ function Reminder(props: any) {
   const reminderContJQ = $('#Reminder-Cont')[0]
 
   const {mouseWaterCup, mouseDroplet, bg} = useImage()
+  const { MbetweenYearAndTimeZone, MreturnAlphaChar, McharBeforeFirstColon, RreturnNumbers, RcolonSandwichInt } = useRegex()
 
   const { 
     time, amt, amtper, percent, index, status, setStatus, disabled, HYDRO_SCHEDULE, HYDRO_DATA, HYDRO_INTAKE, STATUS, DISABLED,
@@ -25,14 +27,64 @@ function Reminder(props: any) {
   // const { amt, amtper, percent, index, status} = props
 
   const handleClick = (index:number) => {
+//  gets the "8 am | 10 am | 12 am" times from Reminder-Bars on Home.tsx. current user && HYDRO_SCHEDULE.length > 1 ?  Compare that time with new Date() time.now() to evaluate successful water intake filling
     console.log($(`#timeSpan${index}`))
+    let indexTargetSpan = $(`#timeSpan${index}`)[0]  
+    let elemindex = $(`#timeSpan${index}`)
+    let todaydate = new Date()
+    let timeRightNow:any|null = todaydate.toString().match(MbetweenYearAndTimeZone)
+    let currentTime = timeRightNow[1]
+    let elemText = indexTargetSpan.innerHTML
+    let elemNums:any;
+    
+    const checkNumberPromise = new Promise( (resolve:any, reject:any) => {
+      let textTimeZone:any = elemText.match(MreturnAlphaChar)      
+      elemNums = elemText.slice(0, 2)
+      resolve(textTimeZone[0] ? textTimeZone[0] : "notimezone")      
+    })
+    checkNumberPromise
+    .then( (timezone) => {
+      let currentTimeHours = currentTime.match(McharBeforeFirstColon)
+      let currentTimeMinutes = currentTime.replace(RcolonSandwichInt, '')
+      let currentHours = currentTimeHours[0]
+      
+      if (timezone === 'pm' && time > 12) {
+      // if (timezone === 'pm' && parseInt(elemText) > 12) {
+        console.log("in the conditon")
+        // elemNums += 12 is for the conversion of PM against the comparison of military time provided by  new Date() constructor
+        const newStatus = [...status];
+        
 
-    let indexTargetSpan = $(`#timeSpan${index}`)[0]
-    console.log('indexTargetSpan')
-    console.log(indexTargetSpan)
-    console.log(indexTargetSpan.innerText)
+        if (time > currentHours) {
+          newStatus[index] = 'check';
+          setStatus(newStatus);
+        } else {          
+          newStatus[index] = 'false';
+          setStatus(newStatus);
+        }
+      } else {
+        console.log('elemNums inAM block')
+      console.log(elemNums)
+      console.log('AM block')
+      console.log(currentHours)
+        if (time > currentHours) {
+          newStatus[index] = 'check';
+          setStatus(newStatus);
+        } else {          
+          newStatus[index] = 'false';
+          setStatus(newStatus);
+        }
+      }
+      
+    })
+
+
+
+
 
     
+
+
 
 
     const newStatus = [...status];
