@@ -43,14 +43,31 @@ export const SET_PROGRESS = (action) => {
   }
 }
 
-export const SET_STATUS = (action) => {
+export const SET_STATUS_LENGTH = (action) => {
+  return {
+    type: "SET_STATUS_LENGTH",
+    payload: action.payload
+  }
+}
+export const SET_STATUS_INDEX = (action) => {
   return {
     type: "SET_STATUS",
     payload: action.payload
   }
 }
 
+export const SET_DISABLED = (action) => {
+  return {
+    type: "SET_DISABLED",
+    payload: action.payload
+  }
+}
+
 export const TOGGLE_RELOAD = () => { return { type: "TOGGLE_RELOAD" } }
+
+export const INCREMENT_REMINDER_CLICK = () => { return { type: "INCREMENT_REMINDER_CLICK" } }
+
+export const TOGGLE_REMINDER_NOT_ENOUGH_TIME = () => { return { type: "TOGGLE_REMINDER_NOT_ENOUGH_TIME" } }
 
 //      /LogInOutGoogle.tsx   ---------->         const showHideLoginSignupBtn = () => {          TOGGLE_LOGIN_SIGNUP_BTN()           ------>     <img onClick={showHideLoginSignupBtn}
 export const TOGGLE_LOGIN_SIGNUP_BTN = () => { return { type: "TOGGLE_LOGIN_SIGNUP_BTN" } }
