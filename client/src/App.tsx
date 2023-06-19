@@ -10,6 +10,7 @@ import WaterRequest from './utility/WaterRequest'
 import CSS from './utility/CSS'
 import EVENT from './utility/EVENT'
 import allDBurl from './utility/fetch/allDBurl'
+import checkTimeForDisabled from './utility/checkTimeForDisabled'
 import userSettingsFetch from './utility/fetch/userSettings'
 import getDailyDataFetch from './utility/fetch/getDailyDataFetch'
 import setScheduleWithSettings from './utility/setScheduleWithSettings'
@@ -36,7 +37,7 @@ import {GoogleLogin, GoogleLogout} from 'react-google-login'
 import {gapi} from 'gapi-script'
 
 // redux / global state management 
-import { SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, SET_GOOGLE_IMG_URL, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_NODE_ENV, SET_API, SET_HYDRO_DATA, SET_HYDRO_INTAKE, SET_HYDRO_SCHEDULE, SET_SETTINGS_HYDRO, SET_DATE, SET_PROGRESS, SET_STATUS, TOGGLE_RELOAD } from './redux/actions'
+import { SET_LOG_IN_OUT_FLASH_MSG, SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, SET_GOOGLE_IMG_URL, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_NODE_ENV, SET_API, SET_HYDRO_DATA, SET_HYDRO_INTAKE, SET_HYDRO_SCHEDULE, SET_SETTINGS_HYDRO, SET_DATE, SET_PROGRESS, SET_STATUS_LENGTH, SET_DISABLED, TOGGLE_RELOAD } from './redux/actions'
 import store from './redux/store'
 import ConnectedSignupLoginChecker from './components/elements/SignupLoginChecker/SignupLoginChecker.tsx';
 
@@ -52,8 +53,8 @@ function App( props:any ) {
   setCursor($('*'))   
 
   const { 
-    CURRENT_USER,ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG, FLIP_FLOP_ICON, NODE_ENV, API, HYDRO_DATA, HYDRO_INTAKE, SETTINGS_HYDRO, HYDRO_SCHEDULE, DATE, RELOAD,
-    SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_GOOGLE_IMG_URL, SET_NODE_ENV, SET_API, SET_HYDRO_DATA, SET_HYDRO_INTAKE, SET_HYDRO_SCHEDULE, SET_SETTINGS_HYDRO, SET_DATE, SET_PROGRESS, SET_STATUS, TOGGLE_RELOAD, 
+    CURRENT_USER,ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG, FLIP_FLOP_ICON, NODE_ENV, API, HYDRO_DATA, HYDRO_INTAKE, SETTINGS_HYDRO, HYDRO_SCHEDULE, DATE, DISABLED, RELOAD, BORDER_40_WATER_LIFE,
+    SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_GOOGLE_IMG_URL, SET_NODE_ENV, SET_API, SET_HYDRO_DATA, SET_HYDRO_INTAKE, SET_HYDRO_SCHEDULE, SET_SETTINGS_HYDRO, SET_DATE, SET_PROGRESS, SET_STATUS, SET_DISABLED, TOGGLE_RELOAD, 
   } = props    // object destructuring props haven't done this before.
 
   const [currentUserInit, setCurrentUserInit] = useState(false)
@@ -105,17 +106,16 @@ function App( props:any ) {
             let icon:string = user.icon
             
             let mySettings:any = await userSettingsFetch(user.id)                        
-            mySettings = mySettings.data.userSettings
-            let setSchedule = await setScheduleWithSettings(mySettings, SET_HYDRO_SCHEDULE)       
+            mySettings = mySettings.data.userSettings            
+            let setSchedule = await setScheduleWithSettings(mySettings, SET_HYDRO_SCHEDULE)                   
             let todayData:any = await getDailyDataFetch(user.id)   
-            todayData = todayData.data.getDailyData            
-            
+            todayData = todayData.data.getDailyData                 
             SET_HYDRO_DATA({payload: todayData})        
             SET_DATE({payload: todayData.date})
-            SET_PROGRESS({payload: todayData.progress})
-            SET_STATUS({payload: todayData.status})          
+            // check time for disabled function might need an update.
+            await checkTimeForDisabled(HYDRO_SCHEDULE, DISABLED, SET_DISABLED)            
             let userwaterintake:number = await waterIntakeWeightFormula(mySettings.weight)            
-            
+            SET_HYDRO_INTAKE({payload: userwaterintake})
             await SET_CURRENT_USER({ payload: user })
             localStorage.setItem('currentuser', JSON.stringify(user))
             TOGGLE_APP_PAGE_ICON_CONFIRM()
@@ -144,10 +144,12 @@ function App( props:any ) {
                 todayData = todayData.data.getDailyData
                 SET_HYDRO_DATA({payload: todayData})        
                 SET_DATE({payload: todayData.date})
+                // check time for disabled function might need an update.
+                await checkTimeForDisabled(HYDRO_SCHEDULE, DISABLED, SET_DISABLED)
                 SET_PROGRESS({payload: todayData.progress})
                 SET_STATUS({payload: todayData.status})                          
                 let userwaterintake:number = await waterIntakeWeightFormula(mySettings.weight)                
-
+                SET_HYDRO_INTAKE({payload: userwaterintake})
                 let predata = await fetch(`${API}fill_cont?query={idArgsReturnIcon(id:${parseInt(currentId)})}`)
                 let data = await predata.json()
                 let DBicon:string = data.data.idArgsReturnIcon
@@ -216,7 +218,8 @@ function App( props:any ) {
     <div onMouseEnter={!currentUserInit ? CurrentUserInit : nothing} className="App">
       <div className="navbar">              
         <Navbar />
-        <h1 className="lifewater" dangerouslySetInnerHTML={{ __html: CURRENT_USER.username  ? `${CURRENT_USER.username}<br> is Water` : "Life is Water" }}></h1>          
+        <h1 style={{ display: BORDER_40_WATER_LIFE ? "" : "none" }} className="lifewater" dangerouslySetInnerHTML={{ __html: !CURRENT_USER.username ? "Life is Water" : CURRENT_USER.username.length > 9 ? `${CURRENT_USER.username}<br> is Water` : `${CURRENT_USER.username} is Water` }}></h1>          
+        {/* <h1 style={{ display: BORDER_40_WATER_LIFE ? "" : "none" }} className="lifewater" dangerouslySetInnerHTML={{ __html: CURRENT_USER.username.length  ? `${CURRENT_USER.username}<br> is Water` : "Life is Water" }}></h1>           */}
         {/* water you during the selection of these elements */}
       </div>
         {renderApp()}
@@ -225,7 +228,7 @@ function App( props:any ) {
         // <h1 className="lifewater" dangerouslySetInnerHTML={{ __html: ICON_NOT_INPUT && FLIP_FLOP_ICON ? "Water You?<br>Water Thoughs" : LOG_IN_OUT_FLASH_MSG ? LOG_IN_OUT_FLASH_MSG : 'Water is Life' }}        
         style={{  
           color: LOG_IN_OUT_FLASH_MSG ? 'silver' : '#73defe', fontSize: LOG_IN_OUT_FLASH_MSG ? '13px' : '32px', fontFamily: LOG_IN_OUT_FLASH_MSG ? 'Poppins' : 'Moon Dance',
-          letterSpacing: LOG_IN_OUT_FLASH_MSG ? '0.25em' : '1.175em',
+          letterSpacing: LOG_IN_OUT_FLASH_MSG ? '0.25em' : '1.175em', display: BORDER_40_WATER_LIFE ? "" : "none"
         }}>
         </h1>
         {/* className="lifewater"> {ICON_NOT_INPUT ? "Water You?" : LOG_IN_OUT_FLASH_MSG ? LOG_IN_OUT_FLASH_MSG : FLIP_FLOP_ICON ? "Water Thoughs" : 'Water is Life' } </h1> */}
@@ -261,7 +264,9 @@ const mapStateToProps = (state:any) => ({
     HYDRO_SCHEDULE: state.HYDRO_SCHEDULE,
     SETTINGS_HYDRO: state.SETTINGS_HYDRO,
     DATE: state.DATE,
-    RELOAD: state.reload
+    RELOAD: state.reload,
+    DISABLED: state.DISABLED,
+    BORDER_40_WATER_LIFE: state.BORDER_40_WATER_LIFE
 });
 
 // global redux actions. these are the state-mutating actions being mapped to props
@@ -282,9 +287,9 @@ const mapDispatchToProps = (dispatch: any) => ({
     SET_SETTINGS_HYDRO: (action:any) => dispatch(SET_SETTINGS_HYDRO(action)),
     SET_DATE: (action:any) => dispatch(SET_DATE(action)),
     SET_PROGRESS: (action:any) => dispatch(SET_PROGRESS(action)),
-    SET_STATUS: (action:any) => dispatch(SET_STATUS(action)),
-    TOGGLE_RELOAD: () => dispatch(TOGGLE_RELOAD())
-
+    SET_STATUS_LENGTH: (action:any) => dispatch(SET_STATUS_LENGTH(action)),
+    TOGGLE_RELOAD: () => dispatch(TOGGLE_RELOAD()),
+    SET_DISABLED: (action:any) => dispatch(SET_DISABLED(action))
 });
 
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
