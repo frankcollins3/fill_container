@@ -17,7 +17,7 @@ const initialState = {
       id: 0,
       google_id: '',
       date: 1992-11-21,
-      progress: 0,
+      progress: .01,
       weekday: 'noneday',
       status: {},
       users_id: 0
@@ -39,7 +39,10 @@ const initialState = {
     DATE: '',             // current dateString;
     PROGRESS: 0,
     STATUS: [],
+    DISABLED: [],
     RELOAD: false, // 0 or true ? waiting for this.
+    REMINDER_CLICK_COUNT: 0,
+    REMINDER_NOT_ENOUGH_TIME: false,
     // water settings as app state
 
     // environment variables from process.env (accessed through GraphQL)
@@ -189,19 +192,44 @@ const initialState = {
       case "SET_PROGRESS":
         return {
           ...state,
-          PROGRESS: action.payload
+          // PROGRESS: action.payload
+          PROGRESS: state.PROGRESS += action.payload
         }
 
-      case "SET_STATUS":
+      case "SET_STATUS_LENGTH":
         return {
           ...state,
           STATUS: action.payload
+        }
+
+      case "SET_STATUS_INDEX":
+        return {
+          ...state,
+          STATUS: state.STATUS[action.payload.index] === action.payload.update
+        }
+
+      case "SET_DISABLED":
+        return {
+          ...state,
+          DISABLED: action.payload
         }
 
       case "TOGGLE_RELOAD":
         return {
           ...state,
           RELOAD: !state.RELOAD
+        }
+
+      case "INCREMENT_REMINDER_CLICK":
+        return {
+          ...state,
+          REMINDER_CLICK_COUNT: state.REMINDER_CLICK_COUNT += 1
+        }
+
+      case "TOGGLE_REMINDER_NOT_ENOUGH_TIME":
+        return {
+          ...state,
+          REMINDER_NOT_ENOUGH_TIME: !state.REMINDER_NOT_ENOUGH_TIME
         }
 
       case 'SET_LOG_IN_OUT_TYPE':
@@ -475,7 +503,7 @@ const initialState = {
         }
       
       case "SET_ONLINK_GOOGLE_CONFIRM_DATA":
-        const u = action.payload.u
+        // const u = action.payload.u
         return {
           ...state,
           ONLINK_GOOGLE_CONFIRM_DATA: action.payload
