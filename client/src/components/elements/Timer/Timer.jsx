@@ -88,8 +88,8 @@ export default function Timer({ hydroSchedule }) {
   };
 
   return (
-    <div className="timer">
-      Time until the next Reminder:
+    <div style={{ color: 'silver', fontWeight: 'bolder'}} className="timer">
+      Next Reminder:
       {renderTimer()}
     </div>
   );
