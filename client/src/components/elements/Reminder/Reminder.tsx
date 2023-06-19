@@ -5,7 +5,7 @@ import {useRegex} from '../../../utility/Contexts/RegexMenu'
 import './reminder.css';
 import $ from 'jquery'
 
-import { SET_PROGRESS, SET_STATUS_INDEX } from '../../../redux/actions'
+import { SET_PROGRESS, SET_STATUS_INDEX, INCREMENT_REMINDER_CLICK } from '../../../redux/actions'
   
 function Reminder(props: any) {
 
@@ -16,8 +16,8 @@ function Reminder(props: any) {
   const { MbetweenYearAndTimeZone, MreturnAlphaChar, McharBeforeFirstColon, RreturnNumbers, RcolonSandwichInt } = useRegex()
 
   const { 
-    time, amt, amtper, percent, index, status, setStatus, disabled, HYDRO_SCHEDULE, HYDRO_DATA, HYDRO_INTAKE, STATUS, DISABLED,
-    SET_PROGRESS, SET_STATUS_INDEX
+    time, amt, amtper, percent, index, status, setStatus, disabled, setDisabled, HYDRO_SCHEDULE, HYDRO_DATA, HYDRO_INTAKE, STATUS, DISABLED, REMINDER_CLICK_COUNT,
+    SET_PROGRESS, SET_STATUS_INDEX, INCREMENT_REMINDER_CLICK
   } = props
 
   const transformers = ["rotate(90deg)", "scale(0.25)"].join(" ")
@@ -27,6 +27,10 @@ function Reminder(props: any) {
   // const { amt, amtper, percent, index, status} = props
 
   const handleClick = (index:number) => {
+    INCREMENT_REMINDER_CLICK()
+    const newDisabled = [...disabled];
+    newDisabled[index] = true;
+    setDisabled(newDisabled);
 //  gets the "8 am | 10 am | 12 am" times from Reminder-Bars on Home.tsx. current user && HYDRO_SCHEDULE.length > 1 ?  Compare that time with new Date() time.now() to evaluate successful water intake filling
     console.log($(`#timeSpan${index}`))
     let indexTargetSpan = $(`#timeSpan${index}`)[0]  
@@ -36,7 +40,6 @@ function Reminder(props: any) {
     let currentTime = timeRightNow[1]
     let elemText = indexTargetSpan.innerHTML
     let elemNums:any;
-    
     const checkNumberPromise = new Promise( (resolve:any, reject:any) => {
       let textTimeZone:any = elemText.match(MreturnAlphaChar)      
       elemNums = elemText.slice(0, 2)
@@ -47,14 +50,9 @@ function Reminder(props: any) {
       let currentTimeHours = currentTime.match(McharBeforeFirstColon)
       let currentTimeMinutes = currentTime.replace(RcolonSandwichInt, '')
       let currentHours = currentTimeHours[0]
-      
       if (timezone === 'pm' && time > 12) {
-      // if (timezone === 'pm' && parseInt(elemText) > 12) {
         console.log("in the conditon")
-        // elemNums += 12 is for the conversion of PM against the comparison of military time provided by  new Date() constructor
-        const newStatus = [...status];
-        
-
+        const newStatus = [...status];        
         if (time > currentHours) {
           newStatus[index] = 'check';
           setStatus(newStatus);
@@ -63,10 +61,6 @@ function Reminder(props: any) {
           setStatus(newStatus);
         }
       } else {
-        console.log('elemNums inAM block')
-      console.log(elemNums)
-      console.log('AM block')
-      console.log(currentHours)
         if (time > currentHours) {
           newStatus[index] = 'check';
           setStatus(newStatus);
@@ -75,8 +69,17 @@ function Reminder(props: any) {
           setStatus(newStatus);
         }
       }
-      
     })
+    
+    console.log('REMINDER_CLICK_COUNT')
+    console.log(REMINDER_CLICK_COUNT)
+
+    if (REMINDER_CLICK_COUNT === HYDRO_SCHEDULE.length) {
+      console.log('hi guys how are you')
+    }
+
+
+      
 
 
 
@@ -107,7 +110,7 @@ function Reminder(props: any) {
 
       <li key={index}>
         <button
-          // disabled={disabled[index]}
+          disabled={disabled[index]}
           className="btn"
           onClick={() => handleClick(index)}
           // onClick={handleClick}
@@ -152,11 +155,13 @@ const mapStateToProps = (state:any) => ({
     HYDRO_INTAKE: state.HYDRO_INTAKE,
     STATUS: state.STATUS,
     DISABLED: state.DISABLED,
+    REMINDER_CLICK_COUNT: state.REMINDER_CLICK_COUNT
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
     SET_PROGRESS: (action:any) => dispatch(SET_PROGRESS(action)), 
     SET_STATUS_INDEX: (action:any) => dispatch(SET_STATUS_INDEX(action)), 
+    INCREMENT_REMINDER_CLICK: () => dispatch(INCREMENT_REMINDER_CLICK()), 
 })
 
 const ConnectedReminder = connect(mapStateToProps, mapDispatchToProps)(Reminder)
