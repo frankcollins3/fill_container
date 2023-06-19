@@ -11,7 +11,7 @@ function Reminder(props: any) {
   const [isShown, setIsShown] = useState(false);
   const reminderContJQ = $('#Reminder-Cont')[0]
 
-  const {mouseWaterCup, mouseDroplet} = useImage()
+  const {mouseWaterCup, mouseDroplet, bg} = useImage()
 
   const { 
     time, amt, amtper, percent, index, status, setStatus, disabled, HYDRO_SCHEDULE, HYDRO_DATA, HYDRO_INTAKE, STATUS, DISABLED,
@@ -25,7 +25,15 @@ function Reminder(props: any) {
   // const { amt, amtper, percent, index, status} = props
 
   const handleClick = (index:number) => {
-    console.log(reminderContJQ)
+    console.log($(`#timeSpan${index}`))
+
+    let indexTargetSpan = $(`#timeSpan${index}`)[0]
+    console.log('indexTargetSpan')
+    console.log(indexTargetSpan)
+    console.log(indexTargetSpan.innerText)
+
+    
+
 
     const newStatus = [...status];
     newStatus[index] = 'check';
@@ -52,8 +60,9 @@ function Reminder(props: any) {
           onClick={() => handleClick(index)}
           // onClick={handleClick}
           style={{
-            backgroundColor: `#98ddfc${percent}`,
+            backgroundColor: status[index] === '' ? `#98ddfc${percent}` : status[index] === 'check' ? `#98ddfc${percent}` : '#dedede70',
             width: `${percent}%`,
+            border: isShown ? "1px dashed #73defe" : "none"
             // width: `${percent}%`,
           }}
           onMouseEnter={() => setIsShown(true)}
@@ -62,20 +71,22 @@ function Reminder(props: any) {
           <span>
             <span>
               {status[index] === 'check' ? '' : amtper.toFixed(2)} /{' '} {amt.toFixed(0)} fl oz
-              { status[index] === 'check' ? <img style={{ transform: transformers }} src={mouseDroplet}/> : <pre></pre>}
+              { status[index] === '' ?  <pre></pre> : status[index] === "check" ? <img style={{ transform: transformers }} src={mouseDroplet}/> : <img style={{ transform: transformers }} src={bg}/>}
+              {/* { status[index] === 'check' ? <img style={{ transform: transformers }} src={mouseDroplet}/> : <pre></pre>} */}
               {/* {status[index] === 'check' ? '✔DONE!⭐' : amtper.toFixed(2)} /{' '} {amt.toFixed(0)} fl oz */}
             </span>
           </span>
         </button>
         <div className="timeline-text">
           <span
+            id={`timeSpan${index}`}
             className="timeline-display"
             style={{ color:  '#00000030'  }} // style={{ color: `${disabled[index] ? '#00000030' : '#000000'}` }}
             >
             {time <= 12 ? time : time - 12} {time < 12 ? 'am' : 'pm'}
           </span>
 
-          {isShown && <div className="timeline-hover"><img src="/water_img/mouse_droplet.png" /></div>}
+          {/* {isShown && <div className="timeline-hover"><img src="/water_img/mouse_droplet.png" /></div>} */}
         </div>
       </li>
       </div>    
