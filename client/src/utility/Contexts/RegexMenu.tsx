@@ -15,6 +15,7 @@ type RegexContextType = {
     MprePng: RegExp;
     APIsplit: string;
     MimgSrc: RegExp;
+    MbetweenYearAndTimeZone: RegExp;
   }
   
   type RegexDefaults = {
@@ -32,6 +33,7 @@ type RegexContextType = {
     MprePng: RegExp
     APIsplit: string;
     MimgSrc: RegExp;
+    MbetweenYearAndTimeZone: RegExp;
   }
   
   const regexDefaults: RegexDefaults = {
@@ -48,7 +50,8 @@ type RegexContextType = {
     McharBeforeAt: /^(.*?)@/,
     MprePng: /(.+)\.png/,
     APIsplit:  "***",
-    MimgSrc: /\/water_img\/(.+)/
+    MimgSrc: /\/water_img\/(.+)/,
+    MbetweenYearAndTimeZone: /2023\s(.+?)\sGMT/
   };
 
       const RegexContext = createContext<RegexContextType>(regexDefaults)
@@ -76,6 +79,7 @@ type RegexContextType = {
         const [MprePng, setMPrePng] = useState<RegExp>(/(.+)\.png/)
         const [APIsplit, setAPISplit] = useState<string>("***")
         const [MimgSrc, setMImgSrc] = useState<RegExp>(/\/water_img\/(.+)/)         // this matches the characters including "/water_img" and the folliwing characters which would be the image path.
+        const [MbetweenYearAndTimeZone, setMBetweenYearAndTimeZone] = useState<RegExp>(/2023\s(.+?)\sGMT/)
                             
         const value = {
             RstringAfterPeriod,
@@ -91,7 +95,8 @@ type RegexContextType = {
             McharBeforeAt,
             MprePng,
             APIsplit,
-            MimgSrc
+            MimgSrc,
+            MbetweenYearAndTimeZone
         };
 
         return (
