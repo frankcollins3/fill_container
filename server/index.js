@@ -467,12 +467,12 @@ const RootQueryType = new GraphQLObjectType({
       status: { type: new GraphQLList(GraphQLString) }
     },
     resolve: async (parent, args) => {
+      // let predata = await fetch(`${API}fill_cont?query={updateDailyData(progress:${roundedProgress},status:"${status}",users_id:${pre_user.id}){google_id,date,progress,weekday,status,users_id}}`)
       const { users_id, progress, status } = args;
       const allusers = await allusersDB();
       const alldata = await alldataDB()
       const mydata = alldata.find(data => data.users_id = users_id)
-
-      let me = allusers.find(user => user.id === users_id);
+      // let me = allusers.find(user => user.id === users_id);
 
       return await prisma.data.update({
         where: {
@@ -481,7 +481,6 @@ const RootQueryType = new GraphQLObjectType({
         data: {          
           progress: progress >= 93 ? 100 : progress,
           status: status
-          // status: ['check', 'check', 'check', 'check', 'check']
         },
       }).then(updatedData => {
         const d = updatedData;
@@ -489,36 +488,6 @@ const RootQueryType = new GraphQLObjectType({
       });
     }
   },
-  // updateDailyData: {
-  //   type: DataType,
-  //   description: 'User already got Daily data and went through daily water cycle. This is the end update',
-  //   args: {
-  //     users_id: { type: new GraphQLNonNull(GraphQLInt) },
-  //     progress: { type: new GraphQLNonNull(GraphQLInt) },
-  //     status: { type: new GraphQLList(GraphQLString)}
-  //   },
-  //   resolve: async (parent, args) => {
-  //     const {users_id, progress, status} = args
-  //     const allusers = await allusersDB()
-  //     let me = users.find(user => user.id === id)
-    
-  //     return await prisma.users.update({
-  //       // const updateUser = await prisma.users.update({
-  //         where: {
-  //           id: users_id
-  //         },
-  //         data: {          
-  //             progress: parseInt(progress),
-  //             status: status
-  //         },
-  //       }).then( (updatedData) => {        
-  //         const d = updatedData
-  //         return { google_id: d.google_id, date: d.date, progress: d.progress, weekday: d.weekday, status: d.status, users_id: d.users_id }
-  //       // return { id: u.id || 1, googleId: u.google_id, icon: u.icon, username: u.username, password: u.password, email: u.email, age: u.age }      
-  //       })
-
-  //   }
-  // },
   userLogin: {
     type: UsersType,
     description: 'Login',
