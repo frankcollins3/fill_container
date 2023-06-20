@@ -418,6 +418,28 @@ const RootQueryType = new GraphQLObjectType({
             return { google_id: my.google_id, date: my.date, progress: my.progress, weekday: my.weekday, status: my.status, users_id: my.users_id  }      
         }
     },
+  allUserData: {
+    type: new GraphQLList(DataType),
+    description: 'All "data" water-cycle reports that correspond to data.user_id',
+    args: {
+      users_id: { type: new GraphQLNonNull(GraphQLInt) }
+    },
+    resolve: async (parent, args) => {
+      const { users_id } = args
+      let data = await alldataDB()
+        const mydata = data.filter(waterCycleData => waterCycleData.users_id === users_id)
+        return mydata
+      // const dataPromise = new Promise( (resolve, any) => {
+      //   const mydata = data.filter(waterCycleData => waterCycleData.users_id === users_id)
+      //   resolve(mydata ? mydata[0] : "nodata") 
+      // })
+      // return dataPromise
+      // .then( (data) => {
+      //   const d = data
+      //   return { google_id: d.google_id, date: d.date, progress: d.progress, weekday: d.weekday, status: d.status, users_id: d.users_id }
+      // })
+    }
+  },
   getDailyData: {
     type: DataType,
     description: 'Daily Data for Water Intake',
