@@ -13,7 +13,10 @@ export default function Streak() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
   const [localContHover, setLocalContHover] = useState(false)
-  const { mouseDroplet, puppetCup } = useImage()
+
+  const { mouseDroplet, puppetCup, confirmation } = useImage()
+
+
 
   useEffect(() => {
    (async() => {
@@ -41,7 +44,7 @@ export default function Streak() {
     }
     return streakData.map((day, index) => (
       <li key={index}>
-        <img style={{ margin: '0 0.5em'}} src={mouseDroplet}/>
+        <img style={{ height: '15px', width: '15px', margin: '0 0.25em'}} src={confirmation}/>
         {/* <StreakDay data={day} /> */}
       </li>
     ));
