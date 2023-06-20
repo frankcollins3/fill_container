@@ -4,9 +4,14 @@ import Streak from '../Streak';
 import Timer from '../Timer';
 import './panel.css';
 import {connect} from 'react-redux'
+import {useState} from 'react'
+import {useImage} from '../../../utility/Contexts/ImgContext'
 
  function Panel({ date, hydroIntake, hydroSchedule, BORDER_40_WATER_LIFE }) {
 
+  const [timer, setTimer] = useState();
+
+  const { clock, panda, calendar, target } = useImage()
 
   const RenderPanel = () => {
 
@@ -14,9 +19,10 @@ import {connect} from 'react-redux'
       <>
         <div style={{ border: BORDER_40_WATER_LIFE ? " 7.5px solid #72d3fe" : "none"}} className="panel-card">
           <Boop rotation={10} timing={150}>
-            <img src="/water_img/clock.png" />
+          {/* timer < 0 || timer > 3600 * 6 || timer === NaN */}
+            <img src={ timer < 0 || timer > 3600 * 6 || timer === NaN ? clock : panda} />
           </Boop>
-          <Timer hydroSchedule={hydroSchedule} />
+          <Timer hydroSchedule={hydroSchedule} timer={timer} setTimer={setTimer} />
         </div>
         <div style={{ border: BORDER_40_WATER_LIFE ? " 7.5px solid #72d3fe" : "none"}} className="panel-card">
           <Streak />
@@ -24,13 +30,13 @@ import {connect} from 'react-redux'
         <div style={{ border: BORDER_40_WATER_LIFE ? " 7.5px solid #72d3fe" : "none"}} className="panel-card">
           <div>
             <Boop rotation={10} timing={150}>
-              <img src="/water_img/calendar.png" />
+              <img src={calendar} />
             </Boop>
             <span style={{ color: 'silver', fontWeight: 'bolder' }}>{date}</span>
           </div>
-          <div style={{ marginLeft: '10px'}}>
+          <div style={{ marginLeft: '12px'}}>
             <Boop rotation={10} timing={150}>
-              <img src="/water_img/target.png" />
+              <img src={target} />
             </Boop>
             <span style={{ color: 'silver', fontWeight: 'bolder' }}>
               { hydroIntake ? hydroIntake.toFixed(3) : 0} fl oz
