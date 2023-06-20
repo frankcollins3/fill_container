@@ -10,7 +10,7 @@ export default function Panel({ date, hydroIntake, hydroSchedule }) {
     <div className="panel-container">
       <div className="panel-card">
         <Boop rotation={10} timing={150}>
-          <img src="/img/clock.png" />
+          <img src="/water_img/clock.png" />
         </Boop>
         <Timer hydroSchedule={hydroSchedule} />
       </div>
@@ -20,16 +20,16 @@ export default function Panel({ date, hydroIntake, hydroSchedule }) {
       <div className="panel-card">
         <div>
           <Boop rotation={10} timing={150}>
-            <img src="/img/calendar.png" />
+            <img src="/water_img/calendar.png" />
           </Boop>
-          <span>{date}</span>
+          <span style={{ color: 'silver', fontWeight: 'bolder' }}>{date}</span>
         </div>
         <div>
           <Boop rotation={10} timing={150}>
-            <img src="/img/target.png" />
+            <img src="/water_img/target.png" />
           </Boop>
-          <span>
-            {hydroIntake? hydroIntake: 0} fl oz / {(hydroIntake? hydroIntake: 0 / 8).toFixed(2)} cups
+          <span style={{ color: 'silver', fontWeight: 'bolder' }}>
+            { hydroIntake ? hydroIntake.toFixed(3) : 0} fl oz / {(hydroIntake? hydroIntake: 0 / 8).toFixed(3) } cups
           </span>
         </div>
       </div>
