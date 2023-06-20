@@ -28,8 +28,7 @@ function useInterval(callback, delay) {
   }, [delay]);
 }
 
-export default function Timer({ hydroSchedule }) {
-  const [timer, setTimer] = useState();
+export default function Timer({ hydroSchedule, timer, setTimer }) {
 
   useEffect(() => {
     const currentTime = new Date().getTime();
@@ -61,19 +60,20 @@ export default function Timer({ hydroSchedule }) {
   }, 1000);
 
   const renderTimer = () => {
-    if (timer < 0 || timer > 3600 * 6 || timer === NaN) {
-      return (
-        <div>
-          <img src="/img/panda.png" />
-        </div>
-      );
-    } else if (!timer) {
-      return (
-        <div>
-          0:00
-        </div>
-      )
-    }
+    // right way to do the timer within an hour or so:          I dont want this I want the timer to be timing no matter what.
+
+    // if (timer < 0 || timer > 3600 * 6 || timer === NaN) {
+    //   return (
+    //     <div>
+    //     </div>
+    //   );
+    // } else if (!timer) {
+    //   return (
+    //     <div>
+    //       0:00
+    //     </div>
+    //   )
+    // }
     return (
       <div>
         {Math.floor(timer / 60).toString().length < 2
