@@ -130,8 +130,13 @@ const initialState = {
     REMINDER: 0,
     ACTIVITY: 0,
     UNITS: 'imperial',
-    LOADING: true
+    LOADING: true,
     // end of settings    
+
+    // UI and friends.
+    BORDER_40_WATER_LIFE: false,
+    CALENDAR_DAY_DRIED_UP: false
+    // 
 
     // const [age, setAge] = useState(0);
     // const [weight, setWeight] = useState(0);
@@ -159,8 +164,7 @@ const initialState = {
       case 'SET_HYDRO_DATA':
         return {
           ...state,
-        HYDRO_DATA: { 
-            id: action.payload.id, google_id: action.payload.google_id, date: action.payload.date, progress: action.payload.progress,
+        HYDRO_DATA: {  google_id: action.payload.google_id, date: action.payload.date, progress: action.payload.progress,
             weekday: action.payload.weekday, status: action.payload.status, users_id: action.payload.users_id
           }
         }
@@ -605,17 +609,18 @@ const initialState = {
           LOADING: !state.LOADING
         }
 
-      
+      case "TOGGLE_BORDER_40_WATER_LIFE":
+        return {
+          ...state,
+          BORDER_40_WATER_LIFE: !state.BORDER_40_WATER_LIFE
+        }
 
-        // AGE: 0,
-        // WEIGHT: 0,
-        // HEIGHT: 0,
-        // START_TIME: 0,
-        // END_TIME: 0,
-        // REMINDER: 0,
-        // ACTIVITY: 0,
-        // UNITS: 'imperial',
-        // LOADING: true  
+      case "TOGGLE_CALENDAR_DAY_DRIED_UP":
+        return {
+          ...state,
+          CALENDAR_DAY_DRIED_UP: !state.CALENDAR_DAY_DRIED_UP
+        }
+
     
       default:
         return state;
@@ -624,69 +629,3 @@ const initialState = {
   
   export default rootReducer;
   
-
-
-  // hydroData                  // is the entire response of the data from the './data' route.     This is the same data that is associated to the user. 
-
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     const response = await WAPPRequest('/data', {
-  //       method: 'GET',
-  //     }).catch(() => {
-  //       setError(true);
-  //       return null;
-  //     });
-
-  //     if (response) {
-  //       setHydroData(response);
-
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
-
-
-
-// hydroIntake:             body weight based calculation for a value that apparently represents how much water the currentUser must drink.
-  // setHydroIntake(
-  //   response.settings  
-  //     ? Math.ceil(response.settings.weight * (2 / 3))      
-  //     : 100
-  // );
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
-
-
-//  hydroSchedule           [ username, email, password, age, settings, schedule ]      // the schedule is the same data in the schedule column for the user table.
-//  setHydroSchedule(response.schedule);
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
-
-
-
-//  hydroSettings          [username, email, password, age, settings, schedule ]        // settings is the same as the data in the user table column for postgres.
-//  setHydroSettings(response.settings);
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
-
-
-
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
-
-
-// [date, setDate] -----> 
-
-// 1: const date = new Date();        //      this date is not the same date as the state date. this date is a locally declared date within the useEffect( () => ) from App.jsx WAPP
-// setDate(
-  //   `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`
-  // );
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
-  
-  
-
-  // [loading, setLoading] = (true)
-  // setLoading(false);               // this is done in the opening useEffect that deals with the main data.
-
-  // if (loading) { <spinner/> }            // the loading is set to true until the data hits.
-
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
-  
-
-
-  // const [reload, setReload] = useState();
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
