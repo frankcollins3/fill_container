@@ -394,4 +394,6 @@ export const TOGGLE_LOADING = (action) => {
   }
 }
 
-// end of settings.
+export const TOGGLE_BORDER_40_WATER_LIFE = () => { return { type: "TOGGLE_BORDER_40_WATER_LIFE" } }
+
+export const TOGGLE_CALENDAR_DAY_DRIED_UP = () => { return { type: "TOGGLE_CALENDAR_DAY_DRIED_UP" } }
