@@ -14,7 +14,7 @@ export default function Streak() {
   const [error, setError] = useState();
   const [localContHover, setLocalContHover] = useState(false)
 
-  const { mouseDroplet, puppetCup, confirmation } = useImage()
+  const { mouseDroplet, puppetCup, confirmation, close } = useImage()
 
 
 
@@ -28,8 +28,11 @@ export default function Streak() {
       console.log(currentUserDataArray)
 
       if (currentUserDataArray) {
+        // also can start by finding the last day, seeing if it was perfect, and starting a new streak if it's not.
+
         let start = dataLength < 7 ? 0 : dataLength - 7
-        setStreakData(currentUserDataArray.slice(start, dataLength))
+        let dataslice = currentUserDataArray.slice(start, dataLength)
+        setStreakData(dataslice)
       } else { return }
    })()
 
@@ -44,8 +47,11 @@ export default function Streak() {
     }
     return streakData.map((day, index) => (
       <li key={index}>
-        <img style={{ height: '15px', width: '15px', margin: '0 0.25em'}} src={confirmation}/>
-        {/* <StreakDay data={day} /> */}
+        <img style={{ height: '15px', width: '15px', margin: '0 0.25em'}} src={day.progress === 100 ? confirmation : close}/>
+        {/* <pre style={{ height: '15px', width: '15px', margin: '0 0.25em'}}> { day.progress } </pre> */}
+        {/* <pre style={{ height: '15px', width: '15px', margin: '0 0.25em'}}> I </pre> */}
+        
+        
       </li>
     ));
   };
@@ -54,7 +60,6 @@ export default function Streak() {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
         <img style={{ height: '35px', width: '35px'}} src={puppetCup}/>
-        <h6 style={{ color: 'silver', fontWeight: 'bolder', }}> Sip Streak </h6>
       </div>
         )
   }
