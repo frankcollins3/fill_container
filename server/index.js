@@ -2,11 +2,11 @@
 const express = require('express');
 const bcrypt = require("bcryptjs");
 const path = require("path");
-const cors = require('cors');
 const axios = require("axios");
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const puppeteer = require("puppeteer");
+const cors = require("cors");
 require('dotenv').config()
 
 // routes functions:
@@ -36,6 +36,17 @@ const allPokemonAPI = async () => {
 // middleware
 app.use(express.json());
 app.use(cors())
+
+app.get('/locations/v1/CG0C6JlnXhBUOi4R9JlJILWZGyBP6LkD', async (req, res) => {
+  try {
+    const response = await axios.get('http://dataservice.accuweather.com/locations/v1/CG0C6JlnXhBUOi4R9JlJILWZGyBP6LkD?apikey=%09CG0C6JlnXhBUOi4R9JlJILWZGyBP6LkD');
+    res.json(response);
+  } catch (error) {
+    // res.status(500).json({ error: 'Internal server error' });
+    res.json( { error: 'see the error of your ways' })
+  }
+});
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -197,7 +208,8 @@ const SettingsType = new GraphQLObjectType({
           DATABASE_URL: { type: new GraphQLNonNull(GraphQLString) },          
           API: { type: new GraphQLNonNull(GraphQLString) },
           NODE_ENV: { type: GraphQLString },
-        GOOGLE_ID: { type: GraphQLString },          
+          GOOGLE_ID: { type: GraphQLString },     
+          WEATHER_KEY: { type: GraphQLString }
         })})
 
 const RootQueryType = new GraphQLObjectType({
@@ -272,6 +284,15 @@ const RootQueryType = new GraphQLObjectType({
         return obj          
       }
     }, 
+    ENV_WEATHER: {
+      type: GraphQLString,
+      description: 'Process.env.WEATHER_KEY from GraphQLObjectType ENVTYPE',
+      resolve: () => {
+        let env = process.env
+        let weatherkey = env.REACT_APP_WEATHER_KEY
+        return weatherkey
+      }
+    },
     allDBsettings: {
       type: new GraphQLList(SettingsType),
       // type: GraphQLString,
