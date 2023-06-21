@@ -425,6 +425,7 @@ const RootQueryType = new GraphQLObjectType({
       users_id: { type: new GraphQLNonNull(GraphQLInt) }
     },
     resolve: async (parent, args) => {
+    // const userdata = await fetch(`http://localhost:5000/fill_cont?query={allUserData(users_id:3){google_id,date,progress,weekday,status,users_id}}`)
       const { users_id } = args
       let data = await alldataDB()
         const mydata = data.filter(waterCycleData => waterCycleData.users_id === users_id)
@@ -486,16 +487,16 @@ const RootQueryType = new GraphQLObjectType({
     args: {
       users_id: { type: new GraphQLNonNull(GraphQLInt) },
       progress: { type: new GraphQLNonNull(GraphQLInt) },
-      status: { type: new GraphQLList(GraphQLString) }
+      status: { type: new GraphQLList(GraphQLString) },
+      date: { type: GraphQLString }
     },
     resolve: async (parent, args) => {
       // let predata = await fetch(`${API}fill_cont?query={updateDailyData(progress:${roundedProgress},status:"${status}",users_id:${pre_user.id}){google_id,date,progress,weekday,status,users_id}}`)
-      const { users_id, progress, status } = args;
+      const { users_id, progress, status, date } = args;
       const allusers = await allusersDB();
       const alldata = await alldataDB()
-      const mydata = alldata.find(data => data.users_id = users_id)
-      // let me = allusers.find(user => user.id === users_id);
-
+      const today = new Date().getDate()
+      const mydata = alldata.find(data => data.users_id === users_id && data.date === date)
       return await prisma.data.update({
         where: {
           id: mydata.id
@@ -506,7 +507,10 @@ const RootQueryType = new GraphQLObjectType({
         },
       }).then(updatedData => {
         const d = updatedData;
-        return { google_id: d.google_id, date: d.date, progress: d.progress, weekday: d.weekday, status: d.status, users_id: d.users_id };
+        return { google_id: d.google_id, date: date, progress: d.progress, weekday: d.weekday, status: d.status, users_id: d.users_id };
+
+        // return { google_id: d.google_id, date: date, progress: d.progress, weekday: d.weekday, status: d.status, users_id: d.users_id };
+        // return { google_id: d.google_id, date: date, progress: d.progress, weekday: d.weekday, status: d.status, users_id: d.users_id };
       });
     }
   },
