@@ -1,33 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux'
 import {useImage} from '../../../utility/Contexts/ImgContext'
 import {useRegex} from '../../../utility/Contexts/RegexMenu'
+import allDBurl from '../../../utility/fetch/allDBurl'
 import './reminder.css';
 import $ from 'jquery'
 
-import { SET_PROGRESS, SET_STATUS_INDEX, INCREMENT_REMINDER_CLICK } from '../../../redux/actions'
+import { SET_PROGRESS, SET_STATUS_INDEX, INCREMENT_REMINDER_CLICK, TOGGLE_REMINDER_NOT_ENOUGH_TIME, SET_API, SET_NODE_ENV, SET_DATE } from '../../../redux/actions'
   
 function Reminder(props: any) {
 
   const [isShown, setIsShown] = useState(false);
+  const [updateFunc, setUpdateFunc] = useState(false)
+
   const reminderContJQ = $('#Reminder-Cont')[0]
 
   const {mouseWaterCup, mouseDroplet, bg} = useImage()
-  const { MbetweenYearAndTimeZone, MreturnAlphaChar, McharBeforeFirstColon, RreturnNumbers, RcolonSandwichInt } = useRegex()
+  const { MbetweenYearAndTimeZone, MreturnAlphaChar, McharBeforeFirstColon, RreturnNumbers, RcolonSandwichInt, APIsplit } = useRegex()
 
   const { 
-    time, amt, amtper, percent, index, status, setStatus, disabled, setDisabled, HYDRO_SCHEDULE, HYDRO_DATA, HYDRO_INTAKE, STATUS, DISABLED, REMINDER_CLICK_COUNT,
-    SET_PROGRESS, SET_STATUS_INDEX, INCREMENT_REMINDER_CLICK
+    time, amt, amtper, percent, index, status, setStatus, disabled, setDisabled, HYDRO_SCHEDULE, HYDRO_DATA, HYDRO_INTAKE, STATUS, DISABLED, REMINDER_CLICK_COUNT, PROGRESS, API, NODE_ENV, DATE,
+    SET_PROGRESS, SET_STATUS_INDEX, INCREMENT_REMINDER_CLICK, TOGGLE_REMINDER_NOT_ENOUGH_TIME, SET_API, SET_NODE_ENV, SET_DATE
   } = props
 
   const transformers = ["rotate(90deg)", "scale(0.25)"].join(" ")
+
+  useEffect( () => {
+    if (REMINDER_CLICK_COUNT === HYDRO_SCHEDULE.length) {
+      if (!updateFunc) {      
+        (async() => {          
+          const urlbank = await allDBurl() 
+          const env = urlbank.ENVdata.data.ENV  
+            let pre_api = env.API.split(APIsplit)
+            SET_API( {payload: env.NODE_ENV === 'development' ? pre_api[0] : pre_api[1]})      
+          let currentUserStorage = localStorage.getItem("currentuser")                  
+          if (currentUserStorage != null) {
+            let pre_user = JSON.parse(currentUserStorage)                        
+            let id = pre_user.id                        
+            let roundedProgress = Math.ceil(PROGRESS * 100)                     
+              console.log("greater than 95 so perfect 100 ")
+              let predata = await fetch(`${API}fill_cont?query={updateDailyData(progress:${roundedProgress},date:"${DATE.toString()}",status:"${status}",users_id:${pre_user.id}){google_id,date,progress,weekday,status,users_id}}`)              
+              let data = await predata.json()
+              console.log('data')
+              console.log(data)
+              setUpdateFunc(true)
+            // } else {          
+            //   console.log('submitting updated user data without near perfection adjustment')
+            //   let predata = await fetch(`${API}fill_cont?query={updateDailyData(progress:${roundedProgress},status:"${status}",users_id:${pre_user.id}){google_id,date,progress,weekday,status,users_id}}`)        
+            //   let data = await predata.json()              
+            //   setUpdateFunc(true)
+            // }
+          }
+        })() 
+      }
+    } else { return }
+        // return { google_id: d.google_id, date: d.date, progress: d.progress, weekday: d.weekday, status: d.status, users_id: d.users_id }
+  }, [REMINDER_CLICK_COUNT])
 
   //  time, amt, amtper, percent, index, status, disabled
 
   // const { amt, amtper, percent, index, status} = props
 
-  const handleClick = (index:number) => {
-    INCREMENT_REMINDER_CLICK()
+  const handleClick = async (index:number) => {
     const newDisabled = [...disabled];
     newDisabled[index] = true;
     setDisabled(newDisabled);
@@ -36,71 +70,43 @@ function Reminder(props: any) {
     let indexTargetSpan = $(`#timeSpan${index}`)[0]  
     let elemindex = $(`#timeSpan${index}`)
     let todaydate = new Date()
+    let actualtoday = todaydate.getDate()
+
+    const year = await todaydate.getFullYear()
+    const month = await todaydate.getMonth() + 1; 
+    const day = await todaydate.getDate();
+    const formattedDate = `${year}-${month}-${day}`;
+    if (DATE.length < 1) SET_DATE({payload: formattedDate})
+
     let timeRightNow:any|null = todaydate.toString().match(MbetweenYearAndTimeZone)
     let currentTime = timeRightNow[1]
     let elemText = indexTargetSpan.innerHTML
     let elemNums:any;
-    const checkNumberPromise = new Promise( (resolve:any, reject:any) => {
-      let textTimeZone:any = elemText.match(MreturnAlphaChar)      
-      elemNums = elemText.slice(0, 2)
-      resolve(textTimeZone[0] ? textTimeZone[0] : "notimezone")      
-    })
-    checkNumberPromise
-    .then( (timezone) => {
+
+    
+     
+
+    // const newStatus = [...status];   
+    // newStatus[index] = 'check';
+    // setStatus(newStatus);     
       let currentTimeHours = currentTime.match(McharBeforeFirstColon)
-      let currentTimeMinutes = currentTime.replace(RcolonSandwichInt, '')
-      let currentHours = currentTimeHours[0]
-      if (timezone === 'pm' && time > 12) {
-        console.log("in the conditon")
-        const newStatus = [...status];        
-        if (time > currentHours) {
-          newStatus[index] = 'check';
-          setStatus(newStatus);
-        } else {          
-          newStatus[index] = 'false';
-          setStatus(newStatus);
-        }
-      } else {
-        if (time > currentHours) {
-          newStatus[index] = 'check';
-          setStatus(newStatus);
-        } else {          
-          newStatus[index] = 'false';
-          setStatus(newStatus);
-        }
-      }
-    })
-    
-    console.log('REMINDER_CLICK_COUNT')
-    console.log(REMINDER_CLICK_COUNT)
-
-    if (REMINDER_CLICK_COUNT === HYDRO_SCHEDULE.length) {
-      console.log('hi guys how are you')
-    }
-
-
+      let timeHours = currentTimeHours[0]
       
-
-
-
-
-
-    
-
-
-
-
-    const newStatus = [...status];
-    newStatus[index] = 'check';
-    setStatus(newStatus);
-
-    // SET_STATUS( {payload: STATUS[index] === 'check'})
-    let calc = Math.ceil((HYDRO_INTAKE / HYDRO_SCHEDULE.length) * (index + 1) / HYDRO_INTAKE)
-    SET_PROGRESS( {payload: percent / 100 } )
-    // SET_PROGRESS( {payload: 100 / HYDRO_SCHEDULE.length / 100 } )
-    console.log('percent')
-    console.log(percent)    
-    // console.log(Math.floor(hydroIntake / hydroSchedule.length) * (index + 1)) / hydroIntake))      
+      if (time - timeHours >= 2) {
+        console.log("We need to drop in within 90 minutes");
+        TOGGLE_REMINDER_NOT_ENOUGH_TIME()
+        setTimeout( () => TOGGLE_REMINDER_NOT_ENOUGH_TIME(), 2000)
+      }
+      SET_PROGRESS( {payload: 100 / HYDRO_SCHEDULE.length / 100 } )
+      const newStatus = [...status];   
+    // if (time > timeHours) {
+      newStatus[index] = 'check';
+          setStatus(newStatus);     
+      INCREMENT_REMINDER_CLICK()
+        // } else {
+      // newStatus[index] = 'nope';
+          // setStatus(newStatus);             
+    // }    
 }
 
 
@@ -155,13 +161,21 @@ const mapStateToProps = (state:any) => ({
     HYDRO_INTAKE: state.HYDRO_INTAKE,
     STATUS: state.STATUS,
     DISABLED: state.DISABLED,
-    REMINDER_CLICK_COUNT: state.REMINDER_CLICK_COUNT
+    REMINDER_CLICK_COUNT: state.REMINDER_CLICK_COUNT,    
+    PROGRESS: state.PROGRESS,
+    API:  state.API,
+    NODE_ENV: state.NODE_ENV,
+    DATE: state.DATE
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
     SET_PROGRESS: (action:any) => dispatch(SET_PROGRESS(action)), 
     SET_STATUS_INDEX: (action:any) => dispatch(SET_STATUS_INDEX(action)), 
     INCREMENT_REMINDER_CLICK: () => dispatch(INCREMENT_REMINDER_CLICK()), 
+    TOGGLE_REMINDER_NOT_ENOUGH_TIME: () => dispatch(TOGGLE_REMINDER_NOT_ENOUGH_TIME()),
+    SET_API: (action:any) => dispatch(SET_API(action)),
+    SET_NODE_ENV: (action:any) => dispatch(SET_NODE_ENV(action)),
+    SET_DATE: (action:any) => dispatch(SET_DATE(action)),
 })
 
 const ConnectedReminder = connect(mapStateToProps, mapDispatchToProps)(Reminder)
