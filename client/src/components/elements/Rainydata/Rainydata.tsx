@@ -1,5 +1,6 @@
-import React, { useState } from 'react' 
+import React, { useState, useEffect } from 'react' 
 import {useImage} from '../../../utility/Contexts/ImgContext'
+import {useRegex} from '../../../utility/Contexts/RegexMenu'
 import "./rainydata.css"
 import {nothingFunc} from '../../../utility/UtilityValues'
 import $ from 'jquery'
@@ -11,7 +12,25 @@ const RainyData = () => {
     const [lastChar, setLastChar] = useState("");
     const [inputVal, setInputVal] = useState("city name");
     const [focusYet, setFocusYet] = useState(false);
+    const [api, setApi] = useState('');
     const [weatherCity, setWeatherCity] = useState("");
+    const [weatherKey, setWeatherKey] = useState('');
+    const inputValJQ = $('#input-val')
+
+    const {APIsplit} = useRegex()
+
+    useEffect( () => {
+        (async() => {
+            // webpack for API
+            let pre_envdata:any = await fetch(`http://localhost:5000/fill_cont?query={ENV{DATABASE_URL,API,NODE_ENV,GOOGLE_ID}}`)
+            pre_envdata = await pre_envdata.json()
+            let envdata = pre_envdata.data.ENV  
+            let envAPI = envdata.API.split(APIsplit)            
+            setApi(envdata.NODE_ENV === 'development' ? envAPI[0] : envAPI[1])            
+        })()
+
+    }, [])
+    
 
     const peeek = () => setPeek(!peek)
 
@@ -39,8 +58,37 @@ const RainyData = () => {
         setLastChar('')
     }
 
-    const checkCityRain = () => {
-        
+    const checkCityRain = async () => {
+        let inputvalue:any = $(inputValJQ).attr('value')    // cant be string even if the value returned is a string because then .attr() wouldn't be available as a method to be used on such an element.
+        console.log('inputvalue')
+        console.log(inputvalue)
+
+        const keyPROMISE = new Promise(async(resolve:any, reject:any) => {
+            let prekey:any = await fetch(`${api}fill_cont?query={ENV_WEATHER}`)
+            prekey = await prekey.json()
+            let weatherkey = prekey.data.ENV_WEATHER            
+            setWeatherKey(weatherkey)
+            resolve(weatherkey ? weatherkey : "nokey")
+        })
+        keyPROMISE
+        .then(async(key:any) => {            
+            let pre_location:any = await fetch(`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${key}&q=${inputvalue}&offset=25`)
+            pre_location = await pre_location.json()
+            let keyToTheCity = pre_location[0].Key
+            console.log('pre_location')
+            console.log(pre_location)
+
+            console.log('keyToTheCity')
+            console.log(keyToTheCity)
+
+            const rainPROMISE = new Promise(async(resolve:any, reject:any) => {                
+                let currentLocationConditions = await fetch(`http://dataservice.accuweather.com/currentconditions/v1/${keyToTheCity}?apikey=${key}`)      
+                currentLocationConditions = await currentLocationConditions.json()
+                console.log('currentLocationConditions')
+                console.log(currentLocationConditions)                
+            })            
+        })
+
 
         // const prekey = await axios.get('http://localhost:5000/fill_cont?query={ENV_WEATHER}')
         // const key = prekey.data.data.ENV_WEATHER
