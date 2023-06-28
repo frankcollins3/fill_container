@@ -15,6 +15,7 @@ const RainyData = () => {
     const [api, setApi] = useState('');
     const [weatherCity, setWeatherCity] = useState("");
     const [weatherKey, setWeatherKey] = useState('');
+    const [rainText, setRainText] = useState('');
     const inputValJQ = $('#input-val')
 
     const {APIsplit} = useRegex()
@@ -75,6 +76,8 @@ const RainyData = () => {
             let pre_location:any = await fetch(`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${key}&q=${inputvalue}&offset=25`)
             pre_location = await pre_location.json()
             let keyToTheCity = pre_location[0].Key
+            let cityName:string = pre_location[0].EnglishName
+            
             console.log('pre_location')
             console.log(pre_location)
 
@@ -82,41 +85,20 @@ const RainyData = () => {
             console.log(keyToTheCity)
 
             const rainPROMISE = new Promise(async(resolve:any, reject:any) => {                
-                let currentLocationConditions = await fetch(`http://dataservice.accuweather.com/currentconditions/v1/${keyToTheCity}?apikey=${key}`)      
-                currentLocationConditions = await currentLocationConditions.json()
+                let currentLocationConditions:any = await fetch(`http://dataservice.accuweather.com/currentconditions/v1/${keyToTheCity}?apikey=${key}`)      
+                currentLocationConditions = await currentLocationConditions.json()                
                 console.log('currentLocationConditions')
                 console.log(currentLocationConditions)                
+                let rain:boolean = currentLocationConditions[0].HasPrecipitation
+                if (rain === false) {
+                    setRainText(`It's not raining in ${cityName}`)
+                } else {
+                    setRainText(`Rainy Day in ${cityName}`)
+                }
+                console.log('rain')
+                console.log(rain)
             })            
         })
-
-
-        // const prekey = await axios.get('http://localhost:5000/fill_cont?query={ENV_WEATHER}')
-        // const key = prekey.data.data.ENV_WEATHER
-        // console.log('prekey')
-        // console.log(prekey)
-    
-        // let city:string = 'bergenfield'
-    
-        // // get input from user on city name to be used at the end of the /locations/ query so described below:       &q=bergenfield&offset=25
-    
-        // const rainPROMISE = new Promise(async (resolve:any, reject:any) => {
-        //   const pre_data = await axios.get(`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${key}&q=${city}&offset=25`)    
-        //   // const pre_data = await axios.get('http://dataservice.accuweather.com/locations/v1/cities/search?apikey=CG0C6JlnXhBUOi4R9JlJILWZGyBP6LkD&q=bergenfield&offset=25')    
-        //   const weatherdata = await pre_data.data[0]
-        //   let locationKey:string = weatherdata.Key
-      
-        //   const currentLocationConditions = await  axios.get(`http://dataservice.accuweather.com/currentconditions/v1/${locationKey}?apikey=${key}`)      
-        //   resolve(currentLocationConditions ? currentLocationConditions : "no weather conditions or no city or both")
-        // })
-        // rainPROMISE
-        // .then( (todayCityConditions:any) => {
-        //       console.log('todayCityConditions')
-        //       console.log(todayCityConditions)
-        //       let rainToday = todayCityConditions.data[0].HasPrecipitation
-        //       console.log('rainToday')
-        //       console.log(rainToday)
-        // })
-
     }
     
 
@@ -127,7 +109,8 @@ const RainyData = () => {
         return (
             <>
             <img onClick={pullCurtain} className="curtain" src={peek ? window : curtain} />
-            <h1 className="text"> { peek ? "Which City" : "Is it Raining Out there?" } </h1>
+            <h1 className="text"> { rainText ? rainText : peek ? "Which City" : "Is it Raining Out there?" } </h1>
+            {/* <h1 className="text"> { peek ? "Which City" : "Is it Raining Out there?" } </h1> */}
             <input style={{ display: peek ? "" : "none" }} onKeyDown={fakeChanger} onChange={nothingFunc} onFocus={noValueFocus} type="text" id="input-val" value={inputVal}/>
 
     <button onClick={checkCityRain} style={{ display: peek ? "" : "none", backgroundImage: `url('${curtain}')`}}> </button>    
