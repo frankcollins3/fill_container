@@ -64,6 +64,7 @@ type imgContextType = {
     cup: string;
     drink: string;
     clouds: string;
+    window: string;
     googleBigG: string;
     googleRedO: string;
     googleYellowO: string;
@@ -154,6 +155,7 @@ const imgDefaults: imgContextType = {
     ink: `${imagePrefix}ink.png`,
     inkBottle:`${imagePrefix}ink-bottle.png`,
     clouds: `${imagePrefix}clouds.png`,
+    window: `${imagePrefix}window.png`,
     googleBigG: `${googlePrefix}google_big_g.png`,
     googleRedO: `${googlePrefix}google_red_o.png`,
     googleYellowO: `${googlePrefix}google_yellow_o.png`,
@@ -238,6 +240,7 @@ export function ImgProvider({ children }: Props) {
     const [squidOrHook, setSquidOrHook] = useState<string>(`${imagePrefix}squidOrHook.png`);
     const [ink, setInk] = useState<string>(`${imagePrefix}ink.png`);
     const [clouds, setClouds] = useState<string>(`${imagePrefix}clouds.png`);
+    const [window, setWindow] = useState<string>(`${imagePrefix}window.png`);
     const [inkBottle, setInkBottle] = useState<string>(`${imagePrefix}ink-bottle.png`);
     const [googleBigG, setGoogleBigG] = useState<string>(`${googlePrefix}google_big_g.png`);
     const [googleRedO, setGoogleRedO] = useState<string>(`${googlePrefix}google_red_o.png`);
@@ -312,6 +315,7 @@ export function ImgProvider({ children }: Props) {
     ink,
     inkBottle, 
     clouds,   
+    window,
     googleBigG,
     googleRedO,
     googleYellowO,
