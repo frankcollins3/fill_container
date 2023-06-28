@@ -3,18 +3,19 @@ import React, { useState, useEffect } from 'react';
 import './navbar.css';
 import { animated, useSpring } from 'react-spring';
 import $ from 'jquery'
-
 import CSS from '../../../utility/CSS'
 import PromiseFunc from '../../../utility/PromiseFunc'
 import MathRandom from '../../../utility/MathRandom'
+import getItemWithExpiration from '../../../utility/getItemWithExpiration'
 import Boop from '../../../utility/ParentchildParent/Boop'
-import {useImage} from '../../../utility/ImgContext'
+import {useImage} from '../../../utility/Contexts/ImgContext'
 import linkUserWithGoogle from '../../../utility/fetch/linkUserWithGoogle'
-
+import axios from 'axios'
 import allUrl from '../../../utility/fetch/allDBurl'
 
-import { TOGGLE_HYDRO_SETTINGS, SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT } from '../../../redux/actions'
+import { TOGGLE_HYDRO_SETTINGS, SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, TOGGLE_USER_ICON_CONFIRM, SET_PROGRESS } from '../../../redux/actions'
 import ConnectedSignupLoginChecker from '../SignupLoginChecker';
+import { assertValidExecutionArguments } from 'graphql/execution/execute';
 // import $ from 'jquery'
 
 // import Profile from '../Profile';
@@ -22,11 +23,11 @@ import ConnectedSignupLoginChecker from '../SignupLoginChecker';
   const dispatch = useDispatch()
 
   const { 
-    HYDRO_SETTINGS, LOG_IN_OUT_TYPE, GOOGLE_LINK_ACCT_SCREEN, SPIN_BOTTLE_SEARCHING, ICON_NOT_INPUT, SELECT_ICON_SCREEN,
-    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT,
+    HYDRO_DATA, SPIN_BOTTLE_SEARCHING, ICON_NOT_INPUT, SELECT_ICON_SCREEN, NON_GOOGLE_IMG_URL, USER_ICON_CONFIRM, APP_PAGE_ICON_CONFIRM, HYDRO_SCHEDULE, DATE, PROGRESS, STATUS, DISABLED,
+    TOGGLE_HYDRO_SETTINGS, SET_LOG_IN_OUT_TYPE, SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, TOGGLE_USER_ICON_CONFIRM, SET_PROGRESS
    } = props
 
-   const {  msgBottle, smallDroplet, home, exit, statistics, settings, mouseWaterCup, cup, drink, bottle, bottles } = useImage()
+   const {  msgBottle, smallDroplet, home, exit, statistics, settings, mouseWaterCup, cup, drink, bottle, bottles, clouds } = useImage()
 
   const [loginType, setLoginType] = useState("")
   let location = window.location
@@ -48,7 +49,7 @@ import ConnectedSignupLoginChecker from '../SignupLoginChecker';
 //   const Boop = ({ rotation, timing, children }) => {
     const [isBooped, setIsBooped] = useState(false);
 
-  useEffect( () => {
+  useEffect( () => {  
     navbardropletJQ = $('#navbar-droplet')[0]
     navbardropletID = navbardropletJQ.id
     msgbottleJQ = $('#msg-bottle')[0]
@@ -57,7 +58,7 @@ import ConnectedSignupLoginChecker from '../SignupLoginChecker';
 
   }, [])
 
-const homeclick = () => { window.location.href = "/"}
+  const homeclick = () => { window.location.href = "/"}
   const statclick = () => {  window.location.href = "/dashboard" }
   const doorclick = () => { window.location.href = "/loginoutgoogle"}
 
@@ -93,9 +94,48 @@ const homeclick = () => { window.location.href = "/"}
     // const predata = await fetch(`http://localhost:5000/fill_cont?query={userSignup{id,googleId,icon,username,email,age}}`)
   }
 
-  const test2 = () => {
-    console.log('test2')
+  const test2 = async () => {
+    console.log('HYDRO_SCHEDULE')
+    console.log(HYDRO_SCHEDULE)
   }
+
+  const test3 = async () => {
+    const prekey = await axios.get('http://localhost:5000/fill_cont?query={ENV_WEATHER}')
+    const key = prekey.data.data.ENV_WEATHER
+    console.log('prekey')
+    console.log(prekey)
+
+    let city:string = 'bergenfield'
+
+    // get input from user on city name to be used at the end of the /locations/ query so described below:       &q=bergenfield&offset=25
+
+    const rainPROMISE = new Promise(async (resolve:any, reject:any) => {
+      const pre_data = await axios.get(`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${key}&q=${city}&offset=25`)    
+      // const pre_data = await axios.get('http://dataservice.accuweather.com/locations/v1/cities/search?apikey=CG0C6JlnXhBUOi4R9JlJILWZGyBP6LkD&q=bergenfield&offset=25')    
+      const weatherdata = await pre_data.data[0]
+      let locationKey:string = weatherdata.Key
+  
+      const currentLocationConditions = await  axios.get(`http://dataservice.accuweather.com/currentconditions/v1/${locationKey}?apikey=${key}`)      
+      resolve(currentLocationConditions ? currentLocationConditions : "no weather conditions or no city or both")
+    })
+    rainPROMISE
+    .then( (todayCityConditions:any) => {
+          console.log('todayCityConditions')
+          console.log(todayCityConditions)
+          let rainToday = todayCityConditions.data[0].HasPrecipitation
+          console.log('rainToday')
+          console.log(rainToday)
+    })
+    
+    
+
+
+
+    
+
+
+  }
+
 
     const testuser = { username: 'test', email: 'test', password: 'test', age: 'test', GOOGLE_ID: 'GOOGLE_ID' }
 
@@ -119,14 +159,15 @@ const homeclick = () => { window.location.href = "/"}
 
 
   return (
-    <div className="navbar-container" 
+    <div className="navbar-container"
     >
     <div className="logo">
     <img style={{ border: 'none' }} className={bothElemById} id="navbar-droplet" src={smallDroplet} />    
     
     
-    <img onClick={SELECT_ICON_SCREEN ? sike : spinbottlefunc} className={pathname === "/loginoutgoogle" && !SPIN_BOTTLE_SEARCHING && ICON_NOT_INPUT ? "Msg-Bottle-Animation" :  "" } style={{ border: 'none' }} id="msg-bottle"  src={msgBottle} />
-    
+    <img onClick={SELECT_ICON_SCREEN ? sike : spinbottlefunc} className={pathname === "/loginoutgoogle" && !SPIN_BOTTLE_SEARCHING && ICON_NOT_INPUT ? "Msg-Bottle-Animation" :  "" } style={{ border: 'none' }} id="msg-bottle"  src={ location.pathname === "/dashboard" ? clouds : msgBottle} />
+      <button onClick={test2} style={{ backgroundColor: 'moccasin', border: '1px dashed peachpuff' }}> </button> 
+     <button onClick={test3} style={{ margin: '0 2em', backgroundColor: 'coral', border: '1px dashed dodgerblue' }}> </button>  
 
     
     </div>
@@ -140,7 +181,8 @@ const homeclick = () => { window.location.href = "/"}
           <img onClick={homeclick} src={home} />
           <img onClick={statclick} src={statistics} />
           <img onClick={settingsclick} src={settings} />          
-          <img onClick={doorclick} src={exit} />           
+          {/* <img onClick={doorclick} src={NON_GOOGLE_IMG_URL && USER_ICON_CONFIRM ? NON_GOOGLE_IMG_URL : exit} />            */}
+          <img id="loginLogoutIcon" onClick={doorclick} src={NON_GOOGLE_IMG_URL && USER_ICON_CONFIRM && APP_PAGE_ICON_CONFIRM ? NON_GOOGLE_IMG_URL : exit} />           
       </div>
  
     </div>
@@ -160,16 +202,29 @@ const mapStateToProps = (state:any) => ({
     EMAIL_INPUT: state.EMAIL_INPUT,
     AGE_INPUT: state.AGE_INPUT,
     GOOGLE_IMG_URL: state.GOOGLE_IMG_URL,
+    NON_GOOGLE_IMG_URL: state.NON_GOOGLE_IMG_URL,
     SPIN_BOTTLE_SEARCHING: state.SPIN_BOTTLE_SEARCHING,
     ICON_NOT_INPUT: state.ICON_NOT_INPUT,
-    SELECT_ICON_SCREEN: state.SELECT_ICON_SCREEN
+    SELECT_ICON_SCREEN: state.SELECT_ICON_SCREEN,
+    USER_ICON_CONFIRM: state.USER_ICON_CONFIRM,
+    APP_PAGE_ICON_CONFIRM: state.APP_PAGE_ICON_CONFIRM,
+    ONLINK_GOOGLE_CONFIRM_DATA: state.ONLINK_GOOGLE_CONFIRM_DATA,
+    HYDRO_SCHEDULE: state.HYDRO_SCHEDULE,
+    DATE: state.DATE,
+    PROGRESS: state.PROGRESS,
+    STATUS: state.STATUS,
+    DISABLED: state.DISABLED,    
+    // TOGGLE_BORDER_40_WATER_LIFE
+    
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
     TOGGLE_HYDRO_SETTINGS: () => dispatch(TOGGLE_HYDRO_SETTINGS()),
     SET_SPIN_BOTTLE_IMG: (action:any) => dispatch(SET_SPIN_BOTTLE_IMG(action)),
     TOGGLE_SPIN_BOTTLE_SEARCHING: () => dispatch(TOGGLE_SPIN_BOTTLE_SEARCHING()),
-    TOGGLE_SPIN_BOTTLE_SHOW_INPUT: () => dispatch(TOGGLE_SPIN_BOTTLE_SHOW_INPUT())
+    TOGGLE_SPIN_BOTTLE_SHOW_INPUT: () => dispatch(TOGGLE_SPIN_BOTTLE_SHOW_INPUT()),
+    TOGGLE_USER_ICON_CONFIRM: () => dispatch(TOGGLE_USER_ICON_CONFIRM()),
+    SET_PROGRESS: (action:any) => dispatch(SET_PROGRESS(action))
 })
 
 const ConnectedNavbar = connect(mapStateToProps, mapDispatchToProps)(Navbar)
