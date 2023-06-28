@@ -135,7 +135,9 @@ const initialState = {
 
     // UI and friends.
     BORDER_40_WATER_LIFE: false,
-    CALENDAR_DAY_DRIED_UP: false
+    CALENDAR_DAY_DRIED_UP: false,
+    CALENDAR_WEATHER_CONDITIONS: false,
+    WEATHER_CHANNEL: false,
     // 
 
     // const [age, setAge] = useState(0);
@@ -619,6 +621,18 @@ const initialState = {
         return {
           ...state,
           CALENDAR_DAY_DRIED_UP: !state.CALENDAR_DAY_DRIED_UP
+        }
+
+      case "TOGGLE_CALENDAR_WEATHER_CONDITIONS":
+        return {
+          ...state,
+          CALENDAR_WEATHER_CONDITIONS: !state.CALENDAR_WEATHER_CONDITIONS
+        }
+      
+      case "TOGGLE_WEATHER_CHANNEL":
+        return {
+          ...state,
+          WEATHER_CHANNEL: !state.WEATHER_CHANNEL
         }
 
     
