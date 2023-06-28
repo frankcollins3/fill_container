@@ -1,4 +1,3 @@
-//        /Navbar.tsx ------->      const settingsclick = () => { } else { TOGGLE_HYDRO_SETTINGS() } }   ----> gear.png.click()   TOGGLE_HYDRO_SETTINGS() make the settings sidebar appear or navigate page to do so
 export const TOGGLE_HYDRO_SETTINGS = () => { return { type: 'TOGGLE_HYDRO_SETTINGS', } };
 
 export const SET_HYDRO_DATA = (action) => {
@@ -397,3 +396,9 @@ export const TOGGLE_LOADING = (action) => {
 export const TOGGLE_BORDER_40_WATER_LIFE = () => { return { type: "TOGGLE_BORDER_40_WATER_LIFE" } }
 
 export const TOGGLE_CALENDAR_DAY_DRIED_UP = () => { return { type: "TOGGLE_CALENDAR_DAY_DRIED_UP" } }
+
+export const TOGGLE_CALENDAR_WEATHER_CONDITIONS = () => { return { type: "TOGGLE_CALENDAR_WEATHER_CONDITIONS" } }
+
+export const TOGGLE_WEATHER_CHANNEL = () => { return { type: "TOGGLE_WEATHER_CHANNEL" } }
+
+
