@@ -21,7 +21,7 @@ import {useRegex} from './utility/Contexts/RegexMenu'
 
 // * components from src/components *
 import Navbar from './components/elements/Navbar'
-import Dashboard from './components/elements/Dashboard/Dashboard'
+import ConnectedDashboard from './components/elements/Dashboard/Dashboard'
 import ConnectedCredits from './components/elements/Credits/Credits.tsx'
 import ConnectedLogInOutGoogle from './components/elements/LogInOutGoogle/LogInOutGoogle'
 import ConnectedMeIcon from './components/elements/MeIcon/'
@@ -47,17 +47,18 @@ let API:string = ''
 let urlbank:any;
 
 
-function App( props:any ) {
+function App( props:any ) {  
 
   const dispatch = useDispatch()
   setCursor($('*'))   
 
   const { 
-    CURRENT_USER,ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG, FLIP_FLOP_ICON, NODE_ENV, API, HYDRO_DATA, HYDRO_INTAKE, SETTINGS_HYDRO, HYDRO_SCHEDULE, DATE, DISABLED, RELOAD, BORDER_40_WATER_LIFE,
+    CURRENT_USER,ICON_NOT_INPUT, LOG_IN_OUT_FLASH_MSG, FLIP_FLOP_ICON, NODE_ENV, API, HYDRO_DATA, HYDRO_INTAKE, SETTINGS_HYDRO, HYDRO_SCHEDULE, DATE, DISABLED, RELOAD, BORDER_40_WATER_LIFE, APIBOTH,
     SET_NON_GOOGLE_IMG_URL, TOGGLE_USER_ICON_CONFIRM, SET_USERNAME_INPUT, SET_CURRENT_USER, TOGGLE_APP_PAGE_ICON_CONFIRM, SET_GOOGLE_IMG_URL, SET_NODE_ENV, SET_API, SET_HYDRO_DATA, SET_HYDRO_INTAKE, SET_HYDRO_SCHEDULE, SET_SETTINGS_HYDRO, SET_DATE, SET_PROGRESS, SET_STATUS, SET_DISABLED, TOGGLE_RELOAD, 
   } = props    // object destructuring props haven't done this before.
 
   const [currentUserInit, setCurrentUserInit] = useState(false)
+  const environment:any = process.env.NODE_ENV
 
   const { bite, multiColorG, hand } = useImage()
   const { APIsplit } = useRegex()
@@ -67,7 +68,8 @@ function App( props:any ) {
     (async() => {
       urlbank = await allDBurl() 
       env = urlbank.ENVdata.data.ENV  
-      let pre_api = env.API.split(APIsplit)
+      let pre_api:any = environment.split(APIsplit)
+      // let pre_api = env.API.split(APIsplit)
       SET_API( {payload: env.NODE_ENV === 'development' ? pre_api[0] : pre_api[1]})      
             
       clientId = env.GOOGLE_ID
@@ -95,10 +97,9 @@ function App( props:any ) {
       const localUser:any = await localStorage.getItem('wateruser')      
       const googletokencheck = await localStorage.getItem('GTOKEN')
       const logincheck = await localStorage.getItem("login")
-      
+        console.log("guess were in here");
       if (googletokencheck === null) {     
         if (logincheck != null) {
-          console.log("right in here wittit")
           const preuser = await localStorage.getItem("loginuser")
           if (preuser != null) {
             const preuserParse = await JSON.parse(preuser)
@@ -203,7 +204,7 @@ function App( props:any ) {
     {/* <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedLogInOutGoogle/> : <ConnectedMeIcon googleImageUrl={GOOGLE_IMAGE_URL}/>  } /> */}
     <Route path={'/loginoutgoogle'} element={ ICON_NOT_INPUT ? <ConnectedMeIcon /> : <ConnectedLogInOutGoogle/>  } />
 
-    <Route path={'/dashboard'} element={ < Dashboard /> } />
+    <Route path={'/dashboard'} element={ < ConnectedDashboard /> } />
     </Routes>
     </Router>  
       </div>
@@ -246,6 +247,7 @@ const mapStateToProps = (state:any) => ({
     USER: state.USER,
     NODE_ENV: state.NODE_ENV,
     API: state.API,
+    APIBOTH: state.APIBOTH,
     
     // regular app props
     LOG_IN_OUT_TYPE: state.LOG_IN_OUT_TYPE,
