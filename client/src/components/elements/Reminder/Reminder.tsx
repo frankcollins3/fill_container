@@ -39,6 +39,8 @@ function Reminder(props: any) {
             let id = pre_user.id                        
             let roundedProgress = Math.ceil(PROGRESS * 100)                     
               console.log("greater than 95 so perfect 100 ")
+              console.log('status')
+              console.log(status)
               let predata = await fetch(`${API}fill_cont?query={updateDailyData(progress:${roundedProgress},date:"${DATE.toString()}",status:"${status}",users_id:${pre_user.id}){google_id,date,progress,weekday,status,users_id}}`)              
               let data = await predata.json()
               console.log('data')
@@ -96,17 +98,18 @@ function Reminder(props: any) {
         console.log("We need to drop in within 90 minutes");
         TOGGLE_REMINDER_NOT_ENOUGH_TIME()
         setTimeout( () => TOGGLE_REMINDER_NOT_ENOUGH_TIME(), 2000)
+        SET_PROGRESS( {payload: 100 / HYDRO_SCHEDULE.length / 100 } )
       }
-      SET_PROGRESS( {payload: 100 / HYDRO_SCHEDULE.length / 100 } )
       const newStatus = [...status];   
-    // if (time > timeHours) {
-      newStatus[index] = 'check';
-          setStatus(newStatus);     
-      INCREMENT_REMINDER_CLICK()
-        // } else {
-      // newStatus[index] = 'nope';
-          // setStatus(newStatus);             
-    // }    
+      if (time > timeHours) {
+        newStatus[index] = 'check';
+        setStatus(newStatus);     
+        INCREMENT_REMINDER_CLICK()
+        SET_PROGRESS( {payload: 100 / HYDRO_SCHEDULE.length / 100 } )
+        } else {
+      newStatus[index] = 'nope';
+          setStatus(newStatus);             
+    }    
 }
 
 
@@ -123,7 +126,8 @@ function Reminder(props: any) {
           style={{
             backgroundColor: status[index] === '' ? `#98ddfc${percent}` : status[index] === 'check' ? `#98ddfc${percent}` : '#dedede70',
             width: `${percent}%`,
-            border: isShown ? "1px dashed #73defe" : "none"
+            border: isShown ? "1px dashed #73defe" : "none",
+            borderRadius: '0%',
             // width: `${percent}%`,
           }}
           onMouseEnter={() => setIsShown(true)}
