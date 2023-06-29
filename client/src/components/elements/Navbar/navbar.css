@@ -22,26 +22,13 @@
     border: 5px solid green;
   }
   
-  @media only screen and (max-width: 600px) {
-    .navbar-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-    }
-  
-    .logo {
-      height: 100px;
-      width: 100px;
-      position: relative;
-      left: -25%;  
-    }
-  }
+  .test { border: 5px solid hotpink; }
 
-  #msg-bottle {
+  .Msg-Bottle-Animation {
     animation-name: Boop;
     animation-duration: 4s;
     animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
+    animation-iteration-count: infinite;    
   }
 
   @keyframes Boop {
@@ -49,12 +36,27 @@
       transform: rotate(0deg);
     }
     25% {
-      transform: rotate(65deg);
+      transform: rotate(45deg);
     }
     75% {
-      transform: rotate(-65deg);
+      transform: rotate(-45deg);
     }
     100% {
       transform: rotate(0deg);
     }
   }
+
+  @media only screen and (max-width: 800px) {
+    .navbar-container {
+      padding: 0 2em;
+      /* justify-content: center; */
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    .navbar-container {
+      padding: 0 2em;
+      /* justify-content: center; */
+    }    
+  }
+
