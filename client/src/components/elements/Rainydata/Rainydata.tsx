@@ -18,6 +18,8 @@ const RainyData = () => {
     const [rainText, setRainText] = useState('');
     const inputValJQ = $('#input-val')
 
+    const { bgBlue } = useImage()
+
     const {APIsplit} = useRegex()
 
     useEffect( () => {
@@ -73,7 +75,11 @@ const RainyData = () => {
         })
         keyPROMISE
         .then(async(key:any) => {            
+
             let pre_location:any = await fetch(`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${key}&q=${inputvalue}&offset=25`)
+            if (!pre_location) { 
+                setRainText("Cant Find City. Sorry!")
+            }
             pre_location = await pre_location.json()
             let keyToTheCity = pre_location[0].Key
             let cityName:string = pre_location[0].EnglishName
@@ -89,11 +95,18 @@ const RainyData = () => {
                 currentLocationConditions = await currentLocationConditions.json()                
                 console.log('currentLocationConditions')
                 console.log(currentLocationConditions)                
-                let rain:boolean = currentLocationConditions[0].HasPrecipitation
+                let weathertext:string = currentLocationConditions[0].WeatherText
+                console.log('weathertext')
+                console.log(weathertext)
+
+                let rain:boolean = currentLocationConditions[0].HasPrecipitation                
                 if (rain === false) {
+                    // setRainText(`It's not raining in ${cityName}`)
                     setRainText(`It's not raining in ${cityName}`)
                 } else {
+                    // setRainText(`${cityName}`)
                     setRainText(`Rainy Day in ${cityName}`)
+                    $('#rainydata-cont').css('background-image', `url('${bgBlue}')`)
                 }
                 console.log('rain')
                 console.log(rain)
@@ -117,7 +130,7 @@ const RainyData = () => {
             </>
         )
     }
-    return <div id="rainydata-cont"> {RenderRainyData()} </div>
+    return <div id="rainydata-cont" className={rainText.slice(0, 5) === "Rainy" ? "its-raining-cont" : ""}> {RenderRainyData()} </div>
 
 }
 
