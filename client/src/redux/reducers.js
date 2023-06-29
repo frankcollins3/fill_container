@@ -47,7 +47,8 @@ const initialState = {
 
     // environment variables from process.env (accessed through GraphQL)
       NODE_ENV: '',
-      API: '',  
+      APIBOTH: "http://localhost:5000/***http://vercelorfriends.com/prod/myapp",        
+      API: '',
       GOOGLE_ID: '',   
     // 
       
@@ -138,17 +139,9 @@ const initialState = {
     CALENDAR_DAY_DRIED_UP: false,
     CALENDAR_WEATHER_CONDITIONS: false,
     WEATHER_CHANNEL: false,
+    CITY_NAME: '',
     // 
 
-    // const [age, setAge] = useState(0);
-    // const [weight, setWeight] = useState(0);
-    // const [height, setHeight] = useState(0);
-    // const [startTime, setStartTime] = useState(0);
-    // const [endTime, setEndTime] = useState(0);
-    // const [reminder, setReminder] = useState(0);
-    // const [units, setUnits] = useState('imperial');
-    // const [loading, setLoading] = useState(true);
-    // const [error, setError] = useState();
 
 
   };
@@ -633,6 +626,12 @@ const initialState = {
         return {
           ...state,
           WEATHER_CHANNEL: !state.WEATHER_CHANNEL
+        }
+      
+      case "SET_CITY_NAME":
+        return {
+          ...state,
+          CITY_NAME: action.payload
         }
 
     
