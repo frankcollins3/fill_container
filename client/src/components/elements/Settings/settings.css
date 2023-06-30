@@ -1,11 +1,8 @@
-
-
 .settings-container {
   width: 60%;
   height: 100%;
   margin: 0 auto;
   text-align: center;
-  padding-top: 0.5em;
 }
 
 .settings-container .settings-title {
@@ -19,14 +16,15 @@ form {
   justify-content: space-around;
   align-items: stretch;
   margin: 0 auto;
+  margin-top: 0;
 }
 
-.form-group {
+.form-group-settings {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
-  border-bottom: 5px solid #dedede70;
+  border-bottom: 5px solid #83d9fe;
   padding-bottom: 10px;
   margin: 10px 0;
 }
@@ -40,22 +38,17 @@ form {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: transparent;
-  padding-left: -3em;
+  background: #ffffff;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #dedede70;
-  width: 20px;
-  position: relative;
-  margin-left: 200px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #98ddfc;
-
 }
 
 ::-webkit-scrollbar-button {
@@ -161,4 +154,13 @@ button.settings:hover {
 
 button.units:focus{
   background-color: #72d3fe;
+}
+
+@media only screen and (width: 800px) {
+  .settings-container {
+   border: 5px solid blue;
+   width: 75%;
+  }
+
+  
 }
