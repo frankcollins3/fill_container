@@ -52,43 +52,47 @@
 
 @media only screen and (max-width: 600px) {
   .schedule-container {
-    -ms-transform: rotate(0deg);
-    transform: rotate(0deg);
-    width: 75%;
-    height: 50%;
+    /* border: 4px dotted olive; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
+  /* .schedule-container { */
+    /* -ms-transform: rotate(0deg);
+    transform: rotate(0deg); */
+    /* width: 75%; */
+    /* height: 50%; */
+  /* } */
 
-  .schedule-container ul {
+  /* .schedule-container ul {
     height: 100%;
     list-style-type: none;
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-end;
-  }
+  } */
 
-  .schedule-container ul li {
+  /* .schedule-container ul li {
     flex: 1;
     display: flex;
     justify-content: center;
     flex-direction: column;
     margin: 5px 0;
-  }
+  } */
 
-  .schedule-container ul li button {
+  /* .schedule-container ul li button {
     flex: 1;
     display: flex;
     justify-content: flex-end;
     margin: 0px 0;
     padding: 0px;
-  }
-
-  .schedule-container ul li div {
-  }
+  } */
 
   .schedule-container ul li div img {
     position: relative;
-    -ms-transform: rotate(0deg);
-    transform: rotate(0deg);
+    /* -ms-transform: rotate(0deg);
+    transform: rotate(0deg); */
     height: 30px;
     width: 30px;
     left: 100%;
