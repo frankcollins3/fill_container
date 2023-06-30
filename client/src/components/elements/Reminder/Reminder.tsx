@@ -5,6 +5,7 @@
   import allDBurl from '../../../utility/fetch/allDBurl'
   import './reminder.css';
   import $ from 'jquery'
+  import Container from 'react-bootstrap/Container'
 
   import { SET_PROGRESS, SET_STATUS_INDEX, INCREMENT_REMINDER_CLICK, TOGGLE_REMINDER_NOT_ENOUGH_TIME, SET_API, SET_NODE_ENV, SET_DATE } from '../../../redux/actions'
     
@@ -19,19 +20,22 @@
     const { MbetweenYearAndTimeZone, MreturnAlphaChar, McharBeforeFirstColon, RreturnNumbers, RcolonSandwichInt, APIsplit } = useRegex()
 
     const { 
-      time, amt, amtper, percent, index, status, setStatus, disabled, setDisabled, HYDRO_SCHEDULE, HYDRO_DATA, HYDRO_INTAKE, STATUS, DISABLED, REMINDER_CLICK_COUNT, PROGRESS, API, NODE_ENV, DATE,
+      time, amt, amtper, percent, index, status, setStatus, disabled, setDisabled, HYDRO_SCHEDULE, HYDRO_DATA, HYDRO_INTAKE, STATUS, DISABLED, REMINDER_CLICK_COUNT, PROGRESS, API, NODE_ENV, DATE, APIBOTH,
       SET_PROGRESS, SET_STATUS_INDEX, INCREMENT_REMINDER_CLICK, TOGGLE_REMINDER_NOT_ENOUGH_TIME, SET_API, SET_NODE_ENV, SET_DATE
     } = props
+    const environment = process.env.NODE_ENV
+    let width = $(window).width()
 
     const transformers = ["rotate(90deg)", "scale(0.25)"].join(" ")
 
-    useEffect( () => {
+    useEffect( () => {  
       if (REMINDER_CLICK_COUNT === HYDRO_SCHEDULE.length) {
         if (!updateFunc) {      
           (async() => {          
             const urlbank = await allDBurl() 
-            const env = urlbank.ENVdata.data.ENV  
-              let pre_api = env.API.split(APIsplit)
+            const env = urlbank.ENVdata.data.ENV              
+              let pre_api = APIBOTH.split(APIsplit)
+              // let pre_api = env.API.split(APIsplit)
               SET_API( {payload: env.NODE_ENV === 'development' ? pre_api[0] : pre_api[1]})      
             let currentUserStorage = localStorage.getItem("currentuser")                  
             if (currentUserStorage != null) {
@@ -109,8 +113,7 @@
 
     // reminder component
     return (
-      <div id="Reminder-Cont">
-
+      <Container id="Reminder-Cont">
         <li key={index}>
           <button
             disabled={disabled[index]}
@@ -118,7 +121,7 @@
             onClick={() => handleClick(index)}
             style={{
               backgroundColor: status[index] === '' ? `#98ddfc${percent}` : status[index] === 'check' ? `#98ddfc${percent}` : '#dedede70',
-              width: `${percent}%`,
+              width: width! <= 600 ? `${percent/3.5}` : width! <= 800 ? `${percent/2.5}` :`${percent}%`,
               border: isShown ? "1px dashed #73defe" : "none",
               borderRadius: '0%',
               // width: `${percent}%`,
@@ -135,7 +138,7 @@
               </span>
             </span>
           </button>
-          <div className="timeline-text">
+          <Container className="timeline-text">
             <span
               id={`timeSpan${index}`}
               className="timeline-display"
@@ -145,9 +148,9 @@
             </span>
 
             {/* {isShown && <div className="timeline-hover"><img src="/water_img/mouse_droplet.png" /></div>} */}
-          </div>
+          </Container>
         </li>
-        </div>    
+        </Container>    
     );
   }
 
@@ -161,6 +164,7 @@
       REMINDER_CLICK_COUNT: state.REMINDER_CLICK_COUNT,    
       PROGRESS: state.PROGRESS,
       API:  state.API,
+      APIBOTH: state.APIBOTH,
       NODE_ENV: state.NODE_ENV,
       DATE: state.DATE
   })
