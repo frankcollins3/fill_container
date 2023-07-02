@@ -132,6 +132,7 @@ const initialState = {
     ACTIVITY: 0,
     UNITS: 'imperial',
     LOADING: true,
+    UPDATE_RESET_HOVER: '',
     // end of settings    
 
     // UI and friends.
@@ -140,6 +141,8 @@ const initialState = {
     CALENDAR_WEATHER_CONDITIONS: false,
     WEATHER_CHANNEL: false,
     CITY_NAME: '',
+    CALENDAR_SHOW: false,
+    PROGRESS_SHOW: false,
     // 
 
 
@@ -193,6 +196,12 @@ const initialState = {
           ...state,
           // PROGRESS: action.payload
           PROGRESS: state.PROGRESS += action.payload
+        }
+
+      case "SET_STATUS":
+        return {
+          ...state,
+          STATUS: action.payload
         }
 
       case "SET_STATUS_LENGTH":
@@ -598,6 +607,12 @@ const initialState = {
           UNITS: action.payload // was going to set this up as toggle but [imperial] [metric] are 2 buttons to click on so just set because you can't click imperial when its imperial and toggle to metric. 
         }
 
+      case "SET_UPDATE_RESET_HOVER":
+        return {
+          ...state,
+          UPDATE_RESET_HOVER: action.payload
+        }
+
       case "TOGGLE_LOADING":
         return {
           ...state,
@@ -627,12 +642,29 @@ const initialState = {
           ...state,
           WEATHER_CHANNEL: !state.WEATHER_CHANNEL
         }
+
+      case "TOGGLE_CALENDAR_SHOW":
+        return {
+          ...state,
+          CALENDAR_SHOW: !state.CALENDAR_SHOW
+        }
+
+      case "TOGGLE_PROGRESS_SHOW":
+          return {
+            ...state,
+            PROGRESS_SHOW: !state.PROGRESS_SHOW
+          }
       
       case "SET_CITY_NAME":
         return {
           ...state,
           CITY_NAME: action.payload
         }
+
+
+
+    //     CALENDAR_SHOW: false,
+    // PROGRESS_SHOW: false,
 
     
       default:
