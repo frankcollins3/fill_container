@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {connect, useDispatch} from 'react-redux'
 import Spinner from '../Spinner';
 import './settings.css';
-import { SET_AGE, SET_WEIGHT, SET_HEIGHT, SET_START_TIME, SET_END_TIME, SET_REMINDER, SET_ACTIVITY, SET_UNITS, TOGGLE_LOADING } from '../../../redux/actions'
+import { SET_AGE, SET_WEIGHT, SET_HEIGHT, SET_START_TIME, SET_END_TIME, SET_REMINDER, SET_ACTIVITY, SET_UNITS, TOGGLE_LOADING, SET_UPDATE_RESET_HOVER } from '../../../redux/actions'
 
 interface Props {
   AGE: number,
@@ -14,6 +14,7 @@ interface Props {
   ACTIVITY: number,
   UNITS: string,
   LOADING: number,
+  UPDATE_RESET_HOVER: string,
 
   SET_AGE: any,
   SET_WEIGHT: any,
@@ -24,13 +25,14 @@ interface Props {
   SET_ACTIVITY: any,
   SET_UNITS: any,
   TOGGLE_LOADING: any,
+  SET_UPDATE_RESET_HOVER: any,
 }
 
  function Settings(props: Props) {
 
   const {
-    AGE, HEIGHT, WEIGHT, START_TIME, END_TIME, REMINDER, ACTIVITY, UNITS, LOADING,
-    SET_AGE, SET_WEIGHT, SET_HEIGHT, SET_START_TIME, SET_END_TIME, SET_REMINDER, SET_ACTIVITY, SET_UNITS, TOGGLE_LOADING
+    AGE, HEIGHT, WEIGHT, START_TIME, END_TIME, REMINDER, ACTIVITY, UNITS, LOADING, UPDATE_RESET_HOVER,
+    SET_AGE, SET_WEIGHT, SET_HEIGHT, SET_START_TIME, SET_END_TIME, SET_REMINDER, SET_ACTIVITY, SET_UNITS, TOGGLE_LOADING, SET_UPDATE_RESET_HOVER,
   } = props
 
   const [age, setAge] = useState(0);
@@ -91,15 +93,46 @@ interface Props {
       reminder,
     };
 
-    // const response = await WAPPRequest('/profile/settings', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(updatedSettings),
-    // });
+    console.log('AGE')
+    console.log(AGE)
+    console.log('weight')
+    console.log(weight)
+    console.log('height')
+    console.log(height)
+    console.log('startTime')
+    console.log(startTime)
+    console.log('endTime')
+    console.log(endTime)
 
-    // history.push('/');
-    // window.location.reload();
+    console.log('reminder')
+    console.log(reminder)
+
+    let preuser = localStorage.getItem('wateruser');
+    if (preuser != null) {
+      let preuser2 = await JSON.parse(preuser)
+      let uservalue = await JSON.parse(preuser2.value)
+      let user = uservalue.clone.data.userSignup
+      console.log('user')
+      console.log(user)
+      let predata = await fetch(`http://localhost:5000/fill_cont?query={postSettings(weight:${weight},height:${height},age:${AGE},start_time:${startTime},end_time:${endTime},reminder:${reminder},users_id:${user.id}){id,weight,height,age,reminder,start_time,end_time,reminder,users_id}}`)
+      let data = await predata.json()
+      console.log('data')
+      console.log(data)
+    }
   };
+
+  const URhover = (event:any) => {
+    const id:string = event.target.id
+
+    if (id === "Ubtn") {
+      SET_UPDATE_RESET_HOVER({payload: "Ur Settings"})
+    } else if (id === "Rbtn") {
+      SET_UPDATE_RESET_HOVER({payload: "Resettings"})
+    }
+
+  }
+
+
 
   const handleReset = async () => {
       console.log('hey thats a nice one')
@@ -118,18 +151,18 @@ interface Props {
         <button
           className="settings units"
           onClick={() => {
-            setUnits('imperial');
+            setUnits('I');
           }}
         >
-          Imperial
+          I
         </button>
         <button
           className="settings units"
           onClick={() => {
-            setUnits('metric');
+            setUnits('M');
           }}
         >
-          Metric
+          M
         </button>
         <div>{units.toUpperCase()}</div>
 
@@ -232,17 +265,18 @@ interface Props {
             <div>Every {reminder} Hours</div>
           </div>
         </form>
-        <button className="settings" type="submit" onClick={handleSubmit}>
-          Update
+        <button onMouseEnter={URhover} className="settings" id="Ubtn" type="submit" onClick={handleSubmit}>
+          U
         </button>
-        <button className="settings" onClick={handleReset}>
-          Reset
+        <button onMouseEnter={URhover} className="settings" id="Rbtn" onClick={handleReset}>
+          R
         </button>
+        <h4 style={{ color: UPDATE_RESET_HOVER ? "#73defe" : "silver" }}> { UPDATE_RESET_HOVER || "U R"} </h4>
       </>
     );
   };
 
-  return <div className="settings-container">{renderSettings()}</div>;
+  return <div style={{ overflow: 'scroll'}} className="settings-container">{renderSettings()}</div>;
 }
 
 
@@ -255,7 +289,8 @@ const mapStateToProps = (state:any) => ({
     REMINDER: state.REMINDER,
     ACTIVITY: state.ACTIVITY,
     UNITS: state.UNITS,
-    LOADING: state.LOADING
+    LOADING: state.LOADING,
+    UPDATE_RESET_HOVER: state.UPDATE_RESET_HOVER
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
@@ -268,6 +303,7 @@ const mapDispatchToProps = (dispatch:any) => ({
     SET_ACTIVITY: (action:any) => dispatch(SET_ACTIVITY(action)),
     SET_UNITS: (action:any) => dispatch(SET_UNITS(action)),
     TOGGLE_LOADING: (action:any) => dispatch(TOGGLE_LOADING(action)),
+    SET_UPDATE_RESET_HOVER: (action:any) => dispatch(SET_UPDATE_RESET_HOVER(action)),
 })
 
 const ConnectedSettings = connect(mapStateToProps, mapDispatchToProps)(Settings)
