@@ -22,7 +22,7 @@ import ReusableImage from '../../../components/elements/ReusableImage'
 
 import allDBurl from '../../../utility/fetch/allDBurl'
 
-import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE, TOGGLE_USER_ICON_CONFIRM, SET_LAST_ICON_SELECTION_TEXT, SET_SAVE_FOR_WEEKS_INPUT_VALUE, SET_NODE_ENV, SET_API, SET_PUPPETEER_SEARCH_TERM} from '../../../redux/actions'
+import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE, TOGGLE_USER_ICON_CONFIRM, SET_LAST_ICON_SELECTION_TEXT, SET_SAVE_FOR_WEEKS_INPUT_VALUE, SET_NODE_ENV, SET_API, SET_PUPPETEER_SEARCH_TERM, TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_ICON_NOT_INPUT, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM} from '../../../redux/actions'
 
  function MeIcon (props:any) {
 
@@ -36,7 +36,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
 
     const {
       FLIP_FLOP_ICON, SPIN_BOTTLE_IMG, SPIN_BOTTLE_SEARCHING, SPIN_BOTTLE_SHOW_INPUT, GOOGLE_IMG_URL, NON_GOOGLE_IMG_URL, SELECT_ICON_SCREEN, PRE_SELECTED_ICON_SRC, PSI_HOVER, GLASS_SCREEN_B4_NAV, GLASS_HALF_FULL_DB_CHOICE, LAST_ICON_SELECTION_TEXT, SAVE_FOR_WEEKS_INPUT_VALUE, NODE_ENV, API, PUPPETEER_SEARCH_TERM,
-      SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE, TOGGLE_USER_ICON_CONFIRM, SET_LAST_ICON_SELECTION_TEXT, SET_SAVE_FOR_WEEKS_INPUT_VALUE, SET_PUPPETEER_SEARCH_TERM
+      SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_SHOW_INPUT, SET_GOOGLE_IMG_URL, SET_NON_GOOGLE_IMG_URL, TOGGLE_SELECT_ICON_SCREEN, SET_PRE_SELECTED_ICON_SRC, TOGGLE_PSI_HOVER, TOGGLE_GLASS_SCREEN_B4_NAV, TOGGLE_GLASS_HALF_FULL_DB_CHOICE, TOGGLE_USER_ICON_CONFIRM, SET_LAST_ICON_SELECTION_TEXT, SET_SAVE_FOR_WEEKS_INPUT_VALUE, SET_PUPPETEER_SEARCH_TERM, TOGGLE_LOGIN_SIGNUP_BTN, TOGGLE_ICON_NOT_INPUT, TOGGLE_SUBMIT_INPUT_DATA, TOGGLE_SHOW_FORM
     } = props
 
    const [bathingSuit, setBathingSuit] = useState<boolean>(false)
@@ -61,13 +61,12 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
         let url = await allDBurl()
         env = url.ENVdata.data.ENV
         let pre_API = env.API.split(APIsplit)
+        console.log('pre_API')
+        console.log(pre_API)
         NODE_ENV === "development" ? SET_API({payload: pre_API[0]}) : SET_API({payload: pre_API[1]})
         SET_NODE_ENV( { payload: env.NODE_ENV})
         console.log('NODE_ENV')
-        console.log(NODE_ENV)
-
-        console.log('pre_API')
-        console.log(pre_API)    
+        console.log(NODE_ENV)        
       })()
       
     }, [])
@@ -100,13 +99,12 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                 const PuppetPromise = new Promise( (resolve, reject) => {
                   let terms:string[] = ["blue-ocean", "blue-water", "blue-river", "blue-seacreature", "blue-fish", "blue-octopus", "blue-shark", ]
                   let randomTerm = MathRandom(terms)
-                  console.log(randomTerm)
-                    TOGGLE_SPIN_BOTTLE_SEARCHING()
-                    // fix routes API localhost:5000
-                    
+                    TOGGLE_SPIN_BOTTLE_SEARCHING()                    
                     SET_PUPPETEER_SEARCH_TERM( { payload: value } )
+  // Promise resolve sends the return data from  GraphQL Endpoint searchTerm and prefix the user string with "light-blue" for damage control on the image having colors that don't match the blue. 
                     resolve(fetch(`${API}fill_cont?query={puppeteer(searchTerm:"light-blue-${value}")}`))    
                     // resolve(fetch(`http://localhost:5000/fill_cont?query={puppeteer(searchTerm:"light-blue-${value}")}`))    
+                    // 
                     reject(SET_SPIN_BOTTLE_IMG( { payload: randomIcon || '/water_img/squid.png' }))  
                 })
                 PuppetPromise.then(async (data:any) => {
@@ -168,7 +166,7 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
             TOGGLE_SELECT_ICON_SCREEN()
             if (SPIN_BOTTLE_SHOW_INPUT) TOGGLE_SPIN_BOTTLE_SHOW_INPUT()
             $(event.target)
-            .css('border', '5px solid hotpink')
+            .css('border', '5px solid #73edefe')
             .animate({
               top: '100px'
             }, 500)       
@@ -209,28 +207,18 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                   
           
           let value:string = event.target.value
-          let key:string = event.key
-          
-          console.log('key')
-          console.log(key)
+          let key:string = event.key                    
           let oneThruNine = [1,2,3,4,5,6,7,8,9]
-          // let oneThruNine = AgeArray.pop()   // from src/utility/UtilityValues        
+          // let oneThruNine = AgeArray.pop()   // from src/utility/UtilityValues 
+          // if the user rejects saving their icon to the database they have to choose how long the localStorage data will expire. If they choose more than 1 month / 4 weeks default down to 4 weeks.
           if (oneThruNine.includes(parseInt(key))) {
               parseInt(key) >= 4 ? SET_SAVE_FOR_WEEKS_INPUT_VALUE( { payload: 4 }) : SET_SAVE_FOR_WEEKS_INPUT_VALUE( { payload: key })
             } else {
               SET_SAVE_FOR_WEEKS_INPUT_VALUE( { payload: ' ' })
           }                  
-          if (key === 'Enter') {
-
-            console.log('key')
-            console.log(`enter: ${key}`)
-            console.log('NON_GOOGLE_IMG_URL')
-            console.log(NON_GOOGLE_IMG_URL)
-
-            console.log('PUPPETEER_SEARCH_TERM')
-            console.log(PUPPETEER_SEARCH_TERM)
-
+          if (key === 'Enter') {            
             if (PUPPETEER_SEARCH_TERM.length > 1) {
+              // this separates the puppeteer search term from regular selection of icons from the /<MeIcon/> page.
               SET_LAST_ICON_SELECTION_TEXT({ payload: `${PUPPETEER_SEARCH_TERM} will dry out in ${parseInt(value) > 1 ? value : 1 } ${parseInt(value) > 1 ? 'weeks' : 'week'} ${username}`})
             } else {
               let pre_img = NON_GOOGLE_IMG_URL.substring(NON_GOOGLE_IMG_URL.lastIndexOf('/'))
@@ -248,39 +236,46 @@ import { SET_SPIN_BOTTLE_IMG, TOGGLE_SPIN_BOTTLE_SEARCHING, TOGGLE_SPIN_BOTTLE_S
                     window.location.href = "/"
                   }, 2000)
               })
-            }
-            
-            
-            // SET_LAST_ICON_SELECTION_TEXT({ payload: `${username} ${img} dry out in ${value === '4' || key === '3' || key === '2' ? key : 1 } ${parseInt(key) > 1 ? 'weeks' : 'week'}`})
+            }                      
           } 
-
-          }
-
-            
-
-                  
+        }
+                          
         const SaveUserFull = () => {            
             const saveUserPromise = new Promise( (resolve:any, reject:any) => {
-              let preUser = localStorage.getItem("user");              
+              let preUser = localStorage.getItem("user");      
+              console.log('preUser SaveUserFull')        
+              console.log(preUser)        
+
+              // let password = encodeURIComponent(PASSWORD_LOGIN_INPUT.replace(/\s/g, ''));      
               if (preUser !== null) {
                 let userObj = JSON.parse(preUser);          
                 let userSignup = userObj.clone.data.userSignup
                 let userId = userSignup.id
                 let storageUserIcon:string = userSignup.icon 
                 // let storageUserIcon:string = userObj.clone.data.userSignup.icon 
-                storageUserIcon = NON_GOOGLE_IMG_URL // userObj.clone.data.userSignup.icon
-                resolve(fetch(`${API}fill_cont?query={NonGoogleIconUpdate(id:${parseInt(userId)},icon:"${NON_GOOGLE_IMG_URL}"){id,icon}}`))
+                storageUserIcon = NON_GOOGLE_IMG_URL.trim().replace(/\s/g, '') // userObj.clone.data.userSignup.icon
+                console.log('storageUserIcon from MeIcon')
+                console.log(storageUserIcon)
+                resolve(fetch(`${API}fill_cont?query={NonGoogleIconUpdate(id:${parseInt(userId)},icon:"${storageUserIcon}"){id,icon}}`))
+                // resolve(fetch(`${API}fill_cont?query={NonGoogleIconUpdate(id:${parseInt(userId)},icon:"${encodeURIComponent(NON_GOOGLE_IMG_URL).replace(/\s/g, '')}"){id,icon}}`))
                 // resolve(fetch(`http://localhost:5000/fill_cont?query={NonGoogleIconUpdate(id:3,icon:"${NON_GOOGLE_IMG_URL}"){id,icon}}`))
                 reject(empty)
               }
             })
             saveUserPromise
             .then( (updatedUser:any) => {              
-              SET_LAST_ICON_SELECTION_TEXT({payload: "Icon Saved. Taking you Home."})
+              console.log("were definitely in here")
+              SET_LAST_ICON_SELECTION_TEXT({payload: "Icon Saved. Taking you Home."})              
+              addIconToLocalStorageUser(NON_GOOGLE_IMG_URL)                       
+              TOGGLE_ICON_NOT_INPUT()
+              TOGGLE_SUBMIT_INPUT_DATA()
               TOGGLE_USER_ICON_CONFIRM()
-              setTimeout( () => {
-                window.location.href = "/"
-              }, 1000)
+              TOGGLE_SHOW_FORM({payload: ''})
+              TOGGLE_SHOW_FORM({payload: 'login'})
+              // TOGGLE_LOGIN_SIGNUP_BTN()
+              // setTimeout( () => {
+                // window.location.href = "/"
+              // }, 1000)
             }).catch( (err) => {
               
             })
@@ -437,7 +432,11 @@ const mapDispatchToProps = (dispatch:any) => ({
     SET_SAVE_FOR_WEEKS_INPUT_VALUE: (action:any) => dispatch(SET_SAVE_FOR_WEEKS_INPUT_VALUE(action)),
     SET_NODE_ENV: (action:any) => dispatch(SET_NODE_ENV(action)),
     SET_API: (action:any) => dispatch(SET_API(action)),
-    SET_PUPPETEER_SEARCH_TERM: (action:any) => dispatch(SET_PUPPETEER_SEARCH_TERM(action))
+    SET_PUPPETEER_SEARCH_TERM: (action:any) => dispatch(SET_PUPPETEER_SEARCH_TERM(action)),
+    TOGGLE_LOGIN_SIGNUP_BTN: () => dispatch(TOGGLE_LOGIN_SIGNUP_BTN()),
+    TOGGLE_ICON_NOT_INPUT: () => dispatch(TOGGLE_ICON_NOT_INPUT()),
+    TOGGLE_SUBMIT_INPUT_DATA: () => dispatch(TOGGLE_SUBMIT_INPUT_DATA()),
+    TOGGLE_SHOW_FORM: (action:any) => dispatch(TOGGLE_SHOW_FORM(action))
 })
 
 const ConnectedMeIcon = connect(mapStateToProps, mapDispatchToProps)(MeIcon)
