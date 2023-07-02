@@ -36,6 +36,8 @@ import { TOGGLE_CALENDAR_DAY_DRIED_UP, SET_CITY_NAME, TOGGLE_WEATHER_CHANNEL, TO
 
   useEffect(() => {
     (async() => {
+      $(tilenow).css('background-color', 'none')
+      // $(tilenow).css('border', '5px solid purple')
        let currentUser = await currentuserJSONparse()
        console.log('currentUser')
        console.log(currentUser)
@@ -57,6 +59,10 @@ import { TOGGLE_CALENDAR_DAY_DRIED_UP, SET_CITY_NAME, TOGGLE_WEATHER_CHANNEL, TO
         })              
     })()
    }, []);
+
+   useEffect( () => {
+    $(tilenow).css('background-color', 'none')
+   }, [PROGRESS_SHOW])  
 
 
    async function getDataForClickedDay(highlightedDay) {
