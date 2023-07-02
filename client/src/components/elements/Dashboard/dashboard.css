@@ -11,9 +11,11 @@
 }
 
 .react-calendar {
+  /* width: 80% !important;
+  height: 80% !important; */
   width: 600px !important;
   height: 600px !important;
-  border: none !important;
+  /* border: none !important; */
   font-size: 30px !important;
 
   /* border: 10px solid #72d3fe !important; */
@@ -24,7 +26,7 @@
   width: 600px;
   display: flex;
   flex-flow: column nowrap;
-  justify-content: center;
+  justify-content: center;  
   align-items: center;
 }
 
@@ -51,6 +53,7 @@ button.react-calendar__tile.react-calendar__month-view__days__day {
   height: 80px;
   width: 1fr;
   border-radius: 50%;
+  /* border: 5px solid blue; */
 }
 
 button.react-calendar__tile.react-calendar__month-view__days__day:hover {
@@ -62,13 +65,38 @@ button.react-calendar__tile.react-calendar__month-view__days__day:hover {
   ) !important;
 }
 
+button.react-calendar__tile:not(.react-calendar__tile--now) {
+  /* Add your desired styling for non-current days */
+  background-color: #ffffff;
+  color: silver;
+  /* Other CSS properties */
+}
+
+button.react-calendar__tile--now {
+  
+}
+
+button.react-calendar__tile.react-calendar__month-view__days__day.calendarCurrentDay {
+  /* Add your custom styles here for the current day */
+  color: #dedede70;
+  border: 1px dashed #73defe;
+}
+
+
 .react-calendar__navigation {
   /* background-color:#72d3fe !important; */
+  border: 5px solid #dedede70;
 }
 
 .react-calendar__navigation__label {
-  border: 5px solid #72d3fe !important;
-  border-radius: 10px;
+  color: #73defe;
+  /* border: 5px solid #72d3fe !important; */
+  /* border-radius: 10px; */
+}
+
+.react-calendar__navigation__label:hover {
+  /* border: 5px solid #72d3fe !important; */
+  /* border-radius: 10px; */
 }
 
 .react-calendar__navigation button {
@@ -77,12 +105,14 @@ button.react-calendar__tile.react-calendar__month-view__days__day:hover {
   align-items: center !important;
   font-size: 40px !important;
   text-transform: uppercase !important;
+  
 }
 
 .react-calendar__navigation button:hover {
   background-color: #72d3fe !important;
   color: white !important;
   border-radius: 10px;
+  border: 5px solid #dedede70;
 }
 
 .calendarHighlight {
@@ -90,7 +120,6 @@ button.react-calendar__tile.react-calendar__month-view__days__day:hover {
   background-color: white !important;
   border-radius: 50% !important;
   font-size: 15px !important;
-  color: black !important;
 }
 
 abbr {
@@ -149,3 +178,57 @@ abbr {
     border-radius: 50%;
   }
 }
+
+  @media only screen and (max-width: 1400px) {
+    .dashboard-container {
+      height: 80vh;
+      margin: 0 auto;
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 40px dotted #72d3fe;
+      /* border-left: 40px dotted #72d3fe;
+      border-right: 40px dotted #72d3fe; */
+    }
+
+    .react-calendar {
+      width: 40%;
+      transform: scale(0.75);
+    }
+  } 
+
+  @media only screen and (max-width: 800px) {
+    .react-calendar__navigation__label {
+      font-size: 20px;
+    }
+    /* .dashboard-container {
+      height: 80vh;
+      margin: 0 auto;
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 40px dotted #72d3fe;
+      
+    } */
+
+
+    .navbar-container {
+      padding: 0 2em;
+      /* justify-content: center; */
+    } 
+    .react-calendar {
+      /* width: 40vw !important; */
+      /* transform: scale(0.5); */
+      height: 500px !important;
+    }   
+  }
+
+  @media only screen and (max-width: 600px) {
+    .react-calendar__navigation__label {
+      /* font-size: 0.5em; */
+      transform: scale(0.75);
+      /* color: red; */
+    }
+  }
