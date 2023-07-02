@@ -7,6 +7,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const puppeteer = require("puppeteer");
 const cors = require("cors");
+const { createProxyMiddleware } = require("http-proxy-middleware")
 require('dotenv').config()
 
 // routes functions:
@@ -37,15 +38,15 @@ const allPokemonAPI = async () => {
 app.use(express.json());
 app.use(cors())
 
-app.get('/locations/v1/CG0C6JlnXhBUOi4R9JlJILWZGyBP6LkD', async (req, res) => {
-  try {
-    const response = await axios.get('http://dataservice.accuweather.com/locations/v1/CG0C6JlnXhBUOi4R9JlJILWZGyBP6LkD?apikey=%09CG0C6JlnXhBUOi4R9JlJILWZGyBP6LkD');
-    res.json(response);
-  } catch (error) {
-    // res.status(500).json({ error: 'Internal server error' });
-    res.json( { error: 'see the error of your ways' })
-  }
-});
+// Define the proxy middleware
+// const apiProxy = createProxyMiddleware('/isItRaining', {
+//   target: 'http://pokeapi.co',
+//   changeOrigin: true,
+//   pathRewrite: {
+//     '^/isItRaining': '/api/v2/pokemon'
+//   }
+// });
+
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -351,7 +352,8 @@ const RootQueryType = new GraphQLObjectType({
         users_id: { type: GraphQLInt },        
       }, 
       resolve: async (parent, args) => {
-        let { weight, height, age, start_time, end_time, reminder, activity, users_id } = args
+        let { weight, height, age, start_time, end_time, reminder, users_id } = args
+        // let { weight, height, age, start_time, end_time, reminder, activity, users_id } = args
         let meAsUser = await prisma.users.findUnique({ where: { id: users_id }})
 
         let allSettings = await prisma.settings.findMany()
@@ -377,13 +379,13 @@ const RootQueryType = new GraphQLObjectType({
                     start_time: start_time,
                     end_time: end_time,
                     reminder: reminder,
-                    activity: activity,
+                    activity: 0,
                     users_id: users_id,
               }
           }).then(async(data) => {
             return { id, weight, height, age, start_time, end_time, reminder, activity, users_id } = data
           }).catch( () => {
-            return { id: settingsLength || 0, weight: weight || 0, height: height || 0, age: age || 0, start_time: start_time || 0, end_time: end_time || 0, reminder: reminder || 0, activity: activity || 0, users_id: users_id || 0 }            
+            return { id: newLength || 0, weight: weight || 0, height: height || 0, age: age || 0, start_time: start_time || 0, end_time: end_time || 0, reminder: reminder || 0, activity: activity || 0, users_id: users_id || 0 }            
           })
       }
     },
@@ -618,7 +620,8 @@ const RootQueryType = new GraphQLObjectType({
     resolve: async (parent, args) => {
       const { username, googleId, icon  } = args
       let argsArray = [googleId, icon]
-      let iconGIDconcat = `${googleId}///${icon}`
+
+      // let iconGIDconcat = `${googleId}///${icon}`    // this would've joined GoogleAPI userID with their corresponding icon. Instead I dismantled the tables and rebuilt with their own data columns with Postgres.
       let allusers = await prisma.users.findMany()    
       let me = allusers.filter(user => user.username === username)
       
@@ -626,6 +629,7 @@ const RootQueryType = new GraphQLObjectType({
         
       let encodePromise = new Promise( (resolve, reject) => {
           let encodedArray = argsArray.map((arg) =>                   // map over the elements which will return an array
+          // loop through the array of args, any argument that is a string, encode and remove white space with regex, if the arguments aren't strings, return empty array. 
           typeof arg === 'string' ? encodeURIComponent(arg).replace(/\s/g, '') : []
         );
           resolve(encodedArray);
@@ -633,19 +637,22 @@ const RootQueryType = new GraphQLObjectType({
       })
       return encodePromise
       .then(async(encoded) => {
+        // loop through allusers to see if any current user has that "GID / googleId" or if the icon is in use. some returns a boolean upon strict equal match. Bool then can be used as flag for truthiness if > 0
         let alreadyUsedGoogleId = allusers.some(user => user.google_id === googleId)
         let alreadyUsedGoogleIcon = allusers.some(user => user.icon === icon)
         
-        return await prisma.users.update({
-        // const updateUser = await prisma.users.update({
+        return await prisma.users.update({  
+          // id because the table wasn't specified with a foreign key so using the username would not work in this case.
           where: {
             id: myid
           },
           data: {          
+  // alreadyUsedGoogleId? if this condition is true, that means the allusers.some(gid === googleId) returns a truthy one which indicates user already using ID. googleId comes from args which comes from localStorage to persist data
             google_id: alreadyUsedGoogleId ? 'Google Account in Use. Profile can Fix.' : googleId,          // access .map() ----> let argsArray = [googleId, icon]   [0] = googleId  [1] = icon
             icon: alreadyUsedGoogleIcon ? "Good icon is used for another account" : icon,
           },
-        }).then( (updatedUser) => {        
+        }).then( (updatedUser) => {       
+          // technically we've chained promises to get here which is why "return encodePromise" must be declared as well. encodePromise leads us to the prisma.users.update({ which returns a Promise } 
           const u = updatedUser
         return { id: u.id || 1, googleId: u.google_id, icon: u.icon, username: u.username, password: u.password, email: u.email, age: u.age }      
         })
@@ -775,78 +782,8 @@ app.use('/fill_cont', expressGraphQL({
 
 app.use('/data', dataRouter)
 app.use('/anotherdata', anotherDataRouter);
+// app.use('/isItRaining', apiProxy)
 
 app.listen(PORT || 5000, () => console.log(`Drink up on Port: ${PORT}`))
 
 module.exports = app;
-
-      // puppeteer: {
-      //   type: GraphQLString,
-      //   description: 'Invoke Puppeteer',
-      //   args: {
-      //     searchTerm: { type: GraphQLString },
-      //     // backupArr: { type: new GraphQLList(GraphQLString) }
-      //   },
-      //   resolve: async (parent, args) => {
-      //     const { searchTerm, } = args;
-      //     const backupArr = ['/water_img/water-park.png', '/water_img/manta-ray.png', '/water_img/aqua-jogging.png', '/water_img/whale.png'];
-      //     let randomValue = backupArr[Math.floor(Math.random() * backupArr.length)].trim()
-      //     const browser = await puppeteer.launch({headless: true});
-      //     const page = await browser.newPage();
-          
-      //     // Navigate to Google Images
-      //     await page.goto(`https://www.google.com/search?q="${searchTerm}"}&tbm=isch`);
-      //     // await page.goto(`https://www.google.com/search?q=${encodeURIComponent(searchTerm)}&tbm=isch`);
-          
-      //     // Wait for the images to load
-      //     // await page.waitForSelector('.rg_i');
-      //     await page.waitForSelector('.rg_i', { timeout: 60000 })
-        
-      //     // Evaluate the page and extract the first image URL
-      //     return imageUrl = await page.evaluate(() => {
-      //       const image = document.querySelector('.rg_i');
-      //       const url = image.getAttribute('data-src') || image.getAttribute('src') || '/water_img/hand.png';          
-      //       return url ? url : randomValue
-      //     }).catch( () => {
-      //       return randomValue
-      //     })        
-      //   }
-      // },
-
-      // const RelatedUsersSettingsType = new GraphQLObjectType({
-      //   type: "RelatedUsersSettings",
-      //   description: 'Users with related Settings as Associated Data',
-      //   fields: () => ({
-      //     ...UsersType.getFields(),
-      //     settings: {
-      //       type: SettingsType
-      //     }
-      //   })
-      // })
-
-      // Settings: {
-      //   type: RelatedUsersSettingsType,
-      //   description: 'Return User data connected to the Provided Args, and that Users associated Settings data',
-      //   args: {
-      //     users_id: { type: GraphQLInt}
-      //   },
-      //   resolve: async (parent, args) => {
-      //     const {users_id} = args
-      //     return RelatedUserSettings = prisma.users.findUnique({
-      //       where: {
-      //         id: users_id
-      //       },
-      //       include: {
-      //         settings: true
-      //       }
-      //     }).then( (data) => {
-      //       googleId,icon,username,password,email,age,height,weight,start_time,end_time,reminder,activity,users_id
-      //       const s = data.settings
-      //         return {
-      //           googleId: data.googleId, icon: data.googleIcon, username: data.username, password: data.password, email: data.email, age: data.age, 
-      //           start_time: s.start_time, end_time: s.end_time, reminder: s.reminder, activity: s.activity, users_id: s.users_id
-      //         }
-      //         // return {data}
-      //     })
-      //   }
-      // },
