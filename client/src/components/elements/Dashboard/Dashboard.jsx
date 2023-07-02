@@ -16,9 +16,12 @@ import { set } from 'date-fns';
 import Spinner from '../Spinner';
 import $ from 'jquery';
 
-import { TOGGLE_CALENDAR_DAY_DRIED_UP } from '../../../redux/actions'
+import Rainydata from '../../../components/elements/Rainydata'
+import Container from 'react-bootstrap/Container'
 
- function Dashboard( { CALENDAR_DAY_DRIED_UP, TOGGLE_CALENDAR_DAY_DRIED_UP }) {
+import { TOGGLE_CALENDAR_DAY_DRIED_UP, SET_CITY_NAME, TOGGLE_WEATHER_CHANNEL, TOGGLE_CALENDAR_SHOW, TOGGLE_PROGRESS_SHOW, } from '../../../redux/actions'
+
+ function Dashboard( { CALENDAR_DAY_DRIED_UP, TOGGLE_CALENDAR_DAY_DRIED_UP, WEATHER_CHANNEL, TOGGLE_WEATHER_CHANNEL, CALENDAR_SHOW, TOGGLE_CALENDAR_SHOW, PROGRESS_SHOW, TOGGLE_PROGRESS_SHOW, CITY_NAME, SET_CITY_NAME, APIBOTH }) {
   const [value, onChange] = useState(new Date());
   const [hydroData, setHydroData] = useState();
   const [hydroDays, setHydroDays] = useState([]);
@@ -28,12 +31,14 @@ import { TOGGLE_CALENDAR_DAY_DRIED_UP } from '../../../redux/actions'
 
   const tilenow = $('.react-calendar__tile--now')
 
-  const { close, confirmation, bg } = useImage()
+  const { close, confirmation, bg, calendar } = useImage()
   const { dayofMonthSplit } = useRegex()
 
   useEffect(() => {
     (async() => {
        let currentUser = await currentuserJSONparse()
+       console.log('currentUser')
+       console.log(currentUser)
        let currentuserID = currentUser.id
        let currentUserDataArray = await getAllUserData(currentuserID)
        let dataLength = currentUserDataArray.length      
@@ -55,33 +60,8 @@ import { TOGGLE_CALENDAR_DAY_DRIED_UP } from '../../../redux/actions'
 
 
    async function getDataForClickedDay(highlightedDay) {
-
-    const prekey = await axios.get('http://localhost:5000/fill_cont?query={ENV_WEATHER}')
-    const key = prekey.data.data.ENV_WEATHER
-    console.log('prekey')
-    console.log(prekey)
-
-    let city= 'bergenfield'
-
-    // get input from user on city name to be used at the end of the /locations/ query so described below:       &q=bergenfield&offset=25
-
-    const rainPROMISE = new Promise(async (resolve, reject) => {
-      const pre_data = await axios.get(`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${key}&q=${city}&offset=25`)    
-      // const pre_data = await axios.get('http://dataservice.accuweather.com/locations/v1/cities/search?apikey=CG0C6JlnXhBUOi4R9JlJILWZGyBP6LkD&q=bergenfield&offset=25')    
-      const weatherdata = await pre_data.data[0]
-      let locationKey = weatherdata.Key
-  
-      const currentLocationConditions = await  axios.get(`http://dataservice.accuweather.com/currentconditions/v1/${locationKey}?apikey=${key}`)      
-      resolve(currentLocationConditions ? currentLocationConditions : "no weather conditions or no city or both")
-    })
-    rainPROMISE
-    .then( (todayCityConditions) => {
-          console.log('todayCityConditions')
-          console.log(todayCityConditions)
-          let rainToday = todayCityConditions.data[0].HasPrecipitation
-          console.log('rainToday')
-          console.log(rainToday)
-    })
+    if (WEATHER_CHANNEL) TOGGLE_WEATHER_CHANNEL()
+    
 
 
 
@@ -105,6 +85,7 @@ import { TOGGLE_CALENDAR_DAY_DRIED_UP } from '../../../redux/actions'
       console.log('getDay')
       console.log(getDay)
       setSelectedDay(getDay);
+      TOGGLE_PROGRESS_SHOW()
     } else {
       setSelectedDay(null)
       if (CALENDAR_DAY_DRIED_UP === false) TOGGLE_CALENDAR_DAY_DRIED_UP()
@@ -124,6 +105,10 @@ import { TOGGLE_CALENDAR_DAY_DRIED_UP } from '../../../redux/actions'
     }
   }
 
+  const calendarclick = () => {
+    TOGGLE_PROGRESS_SHOW()
+  }
+
   const renderDashboard = () => {
     if (loading) {
       // return <Spinner />;
@@ -135,7 +120,13 @@ import { TOGGLE_CALENDAR_DAY_DRIED_UP } from '../../../redux/actions'
 
     return (
       <>
-        <div className="calendar-details">
+        {/* { */}
+          {/* WEATHER_CHANNEL === false */}
+                {/* // ? */}
+                {
+                  PROGRESS_SHOW === true && WEATHER_CHANNEL === false
+                        ?
+        <Container className="calendar-details">
           {selectedDay ? (
             <>
               <div className="calendar-date">
@@ -149,30 +140,50 @@ import { TOGGLE_CALENDAR_DAY_DRIED_UP } from '../../../redux/actions'
                         }
                 
               </div>
-              <div className="calendar-status">
+              <Container className="calendar-status">
               {
                   selectedDay.status[0]
                             ?
               selectedDay.status[0].split(',').map((d, index) => (
-                  <div key={`div${index}`}>
+                  <Container key={`div${index}`}>
                     {d.trim() === 'check' ? (
                       <img key={`confirm${index}`} src={confirmation} />
                     ) : (
                       <img key={`close${index}`} src={close} />
                     )}
-                  </div>
-                ))  
+                  </Container>
+                ))                  
                         :
                   <pre></pre>
                 
                 }
-              </div>
+                <img onClick={calendarclick} src={calendar}/>
+              </Container>
             </>
           ) : (
-            <div className="calendar-progress">Pick A Highlighted Day</div>
+            <Container style={{ color: 'silver', fontWeight: 'bolder' }} className="calendar-progress">Pick A Highlighted Day</Container>
           )}
-        </div>
-        <div className="calendar">
+        </Container>
+                        :
+                        <pre></pre>
+                }
+
+          {
+            WEATHER_CHANNEL 
+            ?
+             <Container  className="calendar-details">
+                <Rainydata/>
+            </Container> 
+            : <pre> </pre>            
+          }
+
+          {/* <Container  className="calendar-details">
+              <Rainydata/>
+          </Container> */}
+          {
+            PROGRESS_SHOW === false && WEATHER_CHANNEL === false
+                      ?
+        <Container className="calendar">
           <Calendar
             tileClassName={tileClassName}
             // tileClassName={tileClassName}
@@ -180,20 +191,32 @@ import { TOGGLE_CALENDAR_DAY_DRIED_UP } from '../../../redux/actions'
             value={value}
             onClickDay={(value, event) => getDataForClickedDay(value)}
           />
-        </div>
+        </Container>
+                    :
+                <pre></pre>
+          }
       </>
     );
   };
 
-  return <div className="dashboard-container">{renderDashboard()}</div>;
+  return <Container className="dashboard-container">{renderDashboard()}</Container>;
 }
 
 const mapStateToProps = (state) => ({
-  CALENDAR_DAY_DRIED_UP: state.CALENDAR_DAY_DRIED_UP
+  CALENDAR_DAY_DRIED_UP: state.CALENDAR_DAY_DRIED_UP,
+  WEATHER_CHANNEL: state.WEATHER_CHANNEL,
+  CALENDAR_SHOW: state.CALENDAR_SHOW,
+  PROGRESS_SHOW: state.PROGRESS_SHOW,
+  APIBOTH: state.APIBOTH,
+  CITY_NAME: state.CITY_NAME
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  TOGGLE_CALENDAR_DAY_DRIED_UP: () => dispatch(TOGGLE_CALENDAR_DAY_DRIED_UP())
+  TOGGLE_CALENDAR_DAY_DRIED_UP: () => dispatch(TOGGLE_CALENDAR_DAY_DRIED_UP()),
+  TOGGLE_WEATHER_CHANNEL: () => dispatch(TOGGLE_WEATHER_CHANNEL()),
+  TOGGLE_CALENDAR_SHOW: () => dispatch(TOGGLE_CALENDAR_SHOW()),
+  TOGGLE_PROGRESS_SHOW: () => dispatch(TOGGLE_PROGRESS_SHOW()),
+  SET_CITY_NAME: (dispatch) => dispatch(SET_CITY_NAME(dispatch))
 })
 
 const ConnectedDashboard = connect(mapStateToProps, mapDispatchToProps)(Dashboard)
