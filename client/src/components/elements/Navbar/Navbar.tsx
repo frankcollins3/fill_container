@@ -61,7 +61,23 @@ import Container from 'react-bootstrap/Container'
 
   const homeclick = () => { window.location.href = "/"}
   const statclick = () => {  window.location.href = "/dashboard" }
-  const doorclick = () => { window.location.href = "/loginoutgoogle"}
+  const doorclick = () => { 
+    console.log("clicking the door please")
+
+    let preuser = localStorage.getItem("currentuser")
+    if (preuser !== null) {
+      console.log("hey good sir")    
+
+      localStorage.removeItem("currentuser")
+      localStorage.removeItem("wateruser")
+      localStorage.removeItem("loginuser")
+      localStorage.removeItem("user")
+      localStorage.removeItem("login")
+    } else {
+      console.log("else block please")      
+    }
+    window.location.href = "/loginoutgoogle"
+}
 
   const settingsclick = () => {  
     let noslashregex = /\//
@@ -98,6 +114,17 @@ import Container from 'react-bootstrap/Container'
   const test2 = async () => {
     console.log('HYDRO_SCHEDULE')
     console.log(HYDRO_SCHEDULE)
+
+    // let predata = await fetch(`http://localhost:5000/fill_cont?query={allDBsettings{id,weight,height,age,reminder,start_time,end_time,reminder,activity,users_id}}`)
+    let predata = await fetch(`http://localhost:5000/fill_cont?query={allDBusers{id,googleId,icon,username,email,password,age}}`)
+    let data = await predata.json()
+    console.log('data')
+    console.log(data)
+    
+        //  return { id, weight, height, age, reminder, start_time, end_time, reminder, activity, users_id } = settings 
+        // return { id, googleId, icon, username, email, password, age } = allusers
+    
+
   }
 
   const test3 = async () => {
@@ -174,8 +201,8 @@ import Container from 'react-bootstrap/Container'
     <img 
     onMouseEnter={location.pathname === "/dashboard" ? cloudhover : sike}
     onClick={SELECT_ICON_SCREEN ? sike : spinbottlefunc} className={pathname === "/loginoutgoogle" && !SPIN_BOTTLE_SEARCHING && ICON_NOT_INPUT ? "Msg-Bottle-Animation" :  "" } style={{ border: 'none' }} id="msg-bottle"  src={ location.pathname === "/dashboard" ? clouds : msgBottle} />
-    {/* <button onClick={test2} style={{ backgroundColor: 'moccasin', border: '1px dashed peachpuff' }}> </button> 
-     <button onClick={test3} style={{ margin: '0 2em', backgroundColor: 'coral', border: '1px dashed dodgerblue' }}> </button>   */}
+     {/* <button onClick={test2} style={{ backgroundColor: 'moccasin', border: '1px dashed peachpuff' }}> </button>  */}
+     {/* <button onClick={test3} style={{ margin: '0 2em', backgroundColor: 'coral', border: '1px dashed dodgerblue' }}> </button>   */}
     </div>
       
       <div className="logo">
