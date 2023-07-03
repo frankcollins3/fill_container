@@ -8,6 +8,7 @@ const prisma = new PrismaClient();
 const puppeteer = require("puppeteer");
 const cors = require("cors");
 const { createProxyMiddleware } = require("http-proxy-middleware")
+const config = require("./config")
 require('dotenv').config()
 
 // routes functions:
@@ -22,6 +23,11 @@ const anotherDataRouter = require('./routes/allPokemon')
 // graphiql ----------> localhost:5000/graphql
 const PORT = 5000;
 const app = express();
+const API_DEV = process.env.REACT_APP_API_DEV
+const API_PROD = process.env.REACT_APP_API_PROD
+// const NODE_ENV = process.env.NODE_ENV
+const clientstring = `${process.env.NODE_ENV}:${API_DEV}***${API_PROD}`
+
 
 const allusersDB = prisma.users.findMany
 const alldataDB = prisma.data.findMany
@@ -333,12 +339,9 @@ const RootQueryType = new GraphQLObjectType({
                 activity: s.activity || 1, 
                 users_id: id 
               }       
-              // return { id, weight, height, age, start_time, end_time, reminder, activity, users_id } = mySettings          
-          // }
       }   
     },
     postSettings: {
-      // let predata = await fetch(`http://localhost:5000/fill_cont?query={postSettings(weight:${WEIGHT},height:${HEIGHT},age:${AGE},start_time:${START_TIME},end_time:${END_TIME},reminder:${REMINDER},activity:${ACTIVITY},users_id:${user_id}){id,weight,height,age,reminder,start_time,end_time,reminder,activity,users_id}}`)
       type: SettingsType,
       description: 'Post Settings',
       args: {
@@ -433,7 +436,6 @@ const RootQueryType = new GraphQLObjectType({
       users_id: { type: GraphQLInt }
     },
     resolve: async ( parent, args ) => {
-      // let predata = await fetch(`http://localhost:5000/fill_cont?query={userData(users_id:1){google_id,date,progress,weekday,status,users_id}}`)
           let data = await prisma.data.findMany()          
           let my_data = data.filter(data => data.users_id === args.users_id)
           let my = my_data[0]          
@@ -448,20 +450,10 @@ const RootQueryType = new GraphQLObjectType({
       users_id: { type: new GraphQLNonNull(GraphQLInt) }
     },
     resolve: async (parent, args) => {
-    // const userdata = await fetch(`http://localhost:5000/fill_cont?query={allUserData(users_id:3){google_id,date,progress,weekday,status,users_id}}`)
       const { users_id } = args
       let data = await alldataDB()
         const mydata = data.filter(waterCycleData => waterCycleData.users_id === users_id)
         return mydata
-      // const dataPromise = new Promise( (resolve, any) => {
-      //   const mydata = data.filter(waterCycleData => waterCycleData.users_id === users_id)
-      //   resolve(mydata ? mydata[0] : "nodata") 
-      // })
-      // return dataPromise
-      // .then( (data) => {
-      //   const d = data
-      //   return { google_id: d.google_id, date: d.date, progress: d.progress, weekday: d.weekday, status: d.status, users_id: d.users_id }
-      // })
     }
   },
   getDailyData: {
@@ -774,6 +766,15 @@ const schema = new GraphQLSchema({
   mutation: RootMutationType
 })
 
+app.use('/config', (req, res) => {
+  const config = {
+    NODE_ENV: app.get('env'),
+    REACT_APP_API_DEV: process.env.REACT_APP_API_DEV,
+    REACT_APP_API_PROD: process.env.REACT_APP_API_PROD
+  };
+
+  res.json(config);
+});
 
 app.use('/fill_cont', expressGraphQL({
   schema: schema,
